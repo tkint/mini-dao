@@ -1,6 +1,7 @@
 package com.thomaskint.minidao.query.update;
 
 import com.thomaskint.minidao.MDConnection;
+import com.thomaskint.minidao.config.MDConnectionConfig;
 import com.thomaskint.minidao.model.User;
 import com.thomaskint.minidao.query.MDCondition;
 import com.thomaskint.minidao.utils.MDEntityUtils;
@@ -13,7 +14,7 @@ import static com.thomaskint.minidao.enumeration.MDParam.UPDATE;
  */
 public class MDUpdate {
 
-	public static <T> boolean updateEntities(Class<T> entityClass, MDCondition mdCondition, MDUpdateFieldList mdUpdateFieldList) throws Exception {
+	public static <T> boolean updateEntities(MDConnectionConfig mdConnectionConfig, Class<T> entityClass, MDCondition mdCondition, MDUpdateFieldList mdUpdateFieldList) throws Exception {
 		if (!MDEntityUtils.includeParam(entityClass, UPDATE)) {
 			throw new Exception("");
 		}
@@ -31,17 +32,17 @@ public class MDUpdate {
 		// Adding conditions
 		if (mdCondition != null) {
 			queryBuilder.append(" WHERE ");
-			queryBuilder.append(mdCondition.build());
+			queryBuilder.append(mdCondition.build(entityClass));
 		}
 
 		// Executing query
-		updated = MDConnection.getInstance().executeUpdate(queryBuilder.toString()) > 0;
+		updated = MDConnection.executeUpdate(mdConnectionConfig, queryBuilder.toString()) > 0;
 
 		return updated;
 	}
 
-	public static <T> boolean updateEntity(Class<T> entityClass, int id, MDUpdateFieldList mdUpdateFieldList) throws Exception {
+	public static <T> boolean updateEntity(MDConnectionConfig mdConnectionConfig, Class<T> entityClass, int id, MDUpdateFieldList mdUpdateFieldList) throws Exception {
 		MDCondition mdCondition = new MDCondition(MDFieldUtils.getIdFieldName(entityClass), id);
-		return updateEntities(User.class, mdCondition, mdUpdateFieldList);
+		return updateEntities(mdConnectionConfig, User.class, mdCondition, mdUpdateFieldList);
 	}
 }

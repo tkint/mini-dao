@@ -24,4 +24,14 @@ public class User {
 
 	@MDField(name = "password")
 	public String password;
+
+	@Override
+	public String toString() {
+		return "User{" +
+				"id=" + id +
+				", pseudo='" + pseudo + '\'' +
+				", login='" + login + '\'' +
+				", password='" + password + '\'' +
+				'}';
+	}
 }

@@ -14,20 +14,19 @@ import javax.naming.NamingException;
  */
 public class MDConnectionConfig {
 
-    static MDConnectionConfig config = null;
-
-    public static MDConnectionConfig getInstance() throws NamingException {
-        if (config == null) {
-            config = (MDConnectionConfig) ((new InitialContext()).lookup("JDBC-Config"));
-        }
-        return config;
-    }
-
     private String url;
     private String port;
     private String login;
     private String password;
     private String database;
+
+    public MDConnectionConfig(String url, String port, String login, String password, String database) {
+        this.url = url;
+        this.port = port;
+        this.login = login;
+        this.password = password;
+        this.database = database;
+    }
 
     public String getUrl() {
         return url;

@@ -1,6 +1,7 @@
 package com.thomaskint.minidao.query.create;
 
 import com.thomaskint.minidao.MDConnection;
+import com.thomaskint.minidao.config.MDConnectionConfig;
 import com.thomaskint.minidao.utils.MDEntityUtils;
 
 import static com.thomaskint.minidao.enumeration.MDParam.INSERT;
@@ -10,7 +11,7 @@ import static com.thomaskint.minidao.enumeration.MDParam.INSERT;
  */
 public class MDCreate {
 
-	public static <T> boolean createEntity(Class<T> entityClass, MDCreateFieldList mdCreateFieldList) throws Exception {
+	public static <T> boolean createEntity(MDConnectionConfig mdConnectionConfig, Class<T> entityClass, MDCreateFieldList mdCreateFieldList) throws Exception {
 		if (!MDEntityUtils.includeParam(entityClass, INSERT)) {
 			throw new Exception("");
 		}
@@ -26,7 +27,7 @@ public class MDCreate {
 		queryBuilder.append(mdCreateFieldList.build());
 
 		// Executing query
-		created = MDConnection.getInstance().executeUpdate(queryBuilder.toString()) > 0;
+		created = MDConnection.executeUpdate(mdConnectionConfig, queryBuilder.toString()) > 0;
 
 		return created;
 	}

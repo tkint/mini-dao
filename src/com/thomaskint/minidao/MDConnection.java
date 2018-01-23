@@ -17,65 +17,35 @@ import java.util.logging.Logger;
  */
 public class MDConnection {
 
-	private static MDConnection instance;
-	private java.sql.Connection connection = null;
-	private Statement statement = null;
+	private java.sql.Connection connection;
+	private Statement statement;
 
-	private MDConnection() {
+	private MDConnection(MDConnectionConfig mdConnectionConfig) throws ClassNotFoundException, SQLException {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 
-			MDConnectionConfig connexion = MDConnectionConfig.getInstance();
+			String jdbcUrl = "jdbc:mysql://" +
+					mdConnectionConfig.getUrl() +
+					":" +
+					mdConnectionConfig.getPort() +
+					"/" +
+					mdConnectionConfig.getDatabase() +
+					"?zeroDateTimeBehavior=convertToNull";
 
-			String url = connexion.getUrl();
-			String port = connexion.getPort();
-			String login = connexion.getLogin();
-			String password = connexion.getPassword();
-			String database = connexion.getDatabase();
-
-			String jdbcUrl = "jdbc:mysql://" + url + ":" + port + "/" + database;
-
-			connection = DriverManager.getConnection(jdbcUrl, login, password);
+			connection = DriverManager.getConnection(jdbcUrl, mdConnectionConfig.getLogin(), mdConnectionConfig.getPassword());
 
 			statement = connection.createStatement();
 
-		} catch (ClassNotFoundException ex) {
-			System.out.println(ex.getMessage());
-		} catch (SQLException ex) {
-			System.out.println(ex.getMessage());
-		} catch (NamingException ex) {
-			Logger.getLogger(MDConnection.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (ClassNotFoundException | SQLException ex) {
+			throw ex;
 		}
 	}
 
-	public java.sql.Connection getConnection() {
-		return connection;
+	public static ResultSet executeQuery(MDConnectionConfig mdConnectionConfig, String sql) throws SQLException, ClassNotFoundException {
+		return new MDConnection(mdConnectionConfig).statement.executeQuery(sql);
 	}
 
-	public void setConnection(java.sql.Connection connection) {
-		this.connection = connection;
-	}
-
-	public Statement getStatement() {
-		return statement;
-	}
-
-	public void setStatement(Statement statement) {
-		this.statement = statement;
-	}
-
-	public ResultSet executeQuery(String sql) throws SQLException {
-		return statement.executeQuery(sql);
-	}
-
-	public int executeUpdate(String sql) throws SQLException {
-		return statement.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
-	}
-
-	public static MDConnection getInstance() {
-		if (instance == null) {
-			instance = new MDConnection();
-		}
-		return instance;
+	public static int executeUpdate(MDConnectionConfig mdConnectionConfig, String sql) throws SQLException, ClassNotFoundException {
+		return new MDConnection(mdConnectionConfig).statement.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
 	}
 }

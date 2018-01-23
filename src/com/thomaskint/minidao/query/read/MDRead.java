@@ -1,6 +1,8 @@
 package com.thomaskint.minidao.query.read;
 
 import com.thomaskint.minidao.MDConnection;
+import com.thomaskint.minidao.config.MDConnectionConfig;
+import com.thomaskint.minidao.model.User;
 import com.thomaskint.minidao.query.MDCondition;
 import com.thomaskint.minidao.utils.MDEntityUtils;
 import com.thomaskint.minidao.utils.MDFieldUtils;
@@ -17,7 +19,7 @@ import static com.thomaskint.minidao.enumeration.MDParam.SELECT;
  */
 public class MDRead {
 
-	public static <T> List<T> getEntities(Class<T> entityClass, MDCondition mdCondition) throws Exception {
+	public static <T> List<T> getEntities(MDConnectionConfig mdConnectionConfig, Class<T> entityClass, MDCondition mdCondition) throws Exception {
 		if (!MDEntityUtils.includeParam(entityClass, SELECT)) {
 			throw new Exception("");
 		}
@@ -42,12 +44,11 @@ public class MDRead {
 
 			// Adding conditions
 			if (mdCondition != null) {
-				queryBuilder.append(" WHERE ");
-				queryBuilder.append(mdCondition.build());
+				queryBuilder.append(mdCondition.build(User.class));
 			}
 
 			// Executing query
-			ResultSet resultSet = MDConnection.getInstance().executeQuery(queryBuilder.toString());
+			ResultSet resultSet = MDConnection.executeQuery(mdConnectionConfig, queryBuilder.toString());
 
 			while (resultSet.next()) {
 				entities.add(MDEntityUtils.mapEntity(entityClass, resultSet));
@@ -60,10 +61,15 @@ public class MDRead {
 		return entities;
 	}
 
-	public static <T> T getEntityById(Class<T> entityClass, int id) throws Exception {
+	public static <T> T getEntityById(MDConnectionConfig mdConnectionConfig, Class<T> entityClass, int id) throws Exception {
 		MDCondition mdCondition = new MDCondition(MDFieldUtils.getIdFieldName(entityClass), id);
-		List<T> entities = getEntities(entityClass, mdCondition);
+		List<T> entities = getEntities(mdConnectionConfig, entityClass, mdCondition);
 
-		return entities.get(0);
+		T entity = null;
+		if (entities.size() > 0) {
+			entity = entities.get(0);
+		}
+
+		return entity;
 	}
 }
