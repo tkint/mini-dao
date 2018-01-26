@@ -2,7 +2,6 @@ package com.thomaskint.minidao.query.read;
 
 import com.thomaskint.minidao.connection.MDConnection;
 import com.thomaskint.minidao.connection.MDConnectionConfig;
-import com.thomaskint.minidao.model.User;
 import com.thomaskint.minidao.query.MDCondition;
 import com.thomaskint.minidao.utils.MDEntityUtils;
 import com.thomaskint.minidao.utils.MDFieldUtils;
@@ -44,7 +43,7 @@ public class MDRead {
 
 			// Adding conditions
 			if (mdCondition != null) {
-				queryBuilder.append(mdCondition.build(User.class));
+				queryBuilder.append(mdCondition.build(entityClass));
 			}
 
 			// Executing query
