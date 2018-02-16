@@ -50,5 +50,11 @@ Ensuite, il faudra l'inclure dans le projet maven avec les dépendances suivante
         <artifactId>mysql-connector-java</artifactId>
         <version>5.1.45</version>
     </dependency>
+    
+    <dependency>
+        <groupId>com.oracle.jdbc</groupId>
+        <artifactId>ojdbc8</artifactId>
+        <version>12.2.0.1</version>
+    </dependency>
 </dependencies>
 ```

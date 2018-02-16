@@ -5,7 +5,10 @@
  */
 package com.thomaskint.minidao.connection;
 
-import java.sql.*;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * @author tkint
@@ -17,9 +20,11 @@ public class MDConnection {
 
 	private MDConnection(MDConnectionConfig mdConnectionConfig) throws ClassNotFoundException, SQLException {
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
+			Class.forName(mdConnectionConfig.getMdDriver().getValue());
 
-			String jdbcUrl = "jdbc:mysql://" +
+			String jdbcUrl = "jdbc:" +
+					mdConnectionConfig.getMdDriver().getUrlPart() +
+					"://" +
 					mdConnectionConfig.getUrl() +
 					":" +
 					mdConnectionConfig.getPort() +
