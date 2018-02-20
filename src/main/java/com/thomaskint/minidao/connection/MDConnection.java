@@ -22,15 +22,7 @@ public class MDConnection {
 		try {
 			Class.forName(mdConnectionConfig.getMdDriver().getValue());
 
-			String jdbcUrl = "jdbc:" +
-					mdConnectionConfig.getMdDriver().getUrlPart() +
-					"://" +
-					mdConnectionConfig.getUrl() +
-					":" +
-					mdConnectionConfig.getPort() +
-					"/" +
-					mdConnectionConfig.getDatabase() +
-					"?zeroDateTimeBehavior=convertToNull";
+			String jdbcUrl = mdConnectionConfig.getCompleteUrl();
 
 			connection = DriverManager.getConnection(jdbcUrl, mdConnectionConfig.getLogin(), mdConnectionConfig.getPassword());
 

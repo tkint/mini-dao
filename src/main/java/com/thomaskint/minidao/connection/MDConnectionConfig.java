@@ -18,14 +18,14 @@ public class MDConnectionConfig {
     private String password;
     private String database;
 
-    public MDConnectionConfig(MDDriver mdDriver, String url, String port, String login, String password, String database) {
-        this.mdDriver = mdDriver;
-        this.url = url;
-        this.port = port;
-        this.login = login;
-        this.password = password;
-        this.database = database;
-    }
+	public MDConnectionConfig(MDDriver mdDriver, String url, String port, String login, String password, String database) {
+		this.mdDriver = mdDriver;
+		this.url = url;
+		this.port = port;
+		this.login = login;
+		this.password = password;
+		this.database = database;
+	}
 
     public MDDriver getMdDriver() {
         if (mdDriver == null) {
@@ -76,5 +76,9 @@ public class MDConnectionConfig {
 
     public void setDatabase(String database) {
         this.database = database;
+    }
+
+    public String getCompleteUrl() {
+        return mdDriver.getCompleteUrl(url, port, database);
     }
 }
