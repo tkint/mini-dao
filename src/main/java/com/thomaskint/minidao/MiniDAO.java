@@ -52,7 +52,7 @@ public class MiniDAO {
 		return getEntities(mdConnectionConfig, entityClass, mdCondition);
 	}
 
-	public static <T> T getEntityById(Class<T> entityClass, int id) throws Exception {
+	public static <T> T getEntityById(Class<T> entityClass, Object id) throws Exception {
 		verifyMDConnectionConfig();
 		return getEntityById(mdConnectionConfig, entityClass, id);
 	}
@@ -65,7 +65,7 @@ public class MiniDAO {
 		return MDRead.getEntities(mdConnectionConfig, entityClass, mdCondition);
 	}
 
-	public static <T> T getEntityById(MDConnectionConfig mdConnectionConfig, Class<T> entityClass, int id) throws Exception {
+	public static <T> T getEntityById(MDConnectionConfig mdConnectionConfig, Class<T> entityClass, Object id) throws Exception {
 		return MDRead.getEntityById(mdConnectionConfig, entityClass, id);
 	}
 
@@ -92,7 +92,7 @@ public class MiniDAO {
 		return deleteEntities(mdConnectionConfig, entityClass, mdCondition);
 	}
 
-	public static <T> boolean deleteEntity(Class<T> entityClass, int id) throws Exception {
+	public static <T> boolean deleteEntity(Class<T> entityClass, Object id) throws Exception {
 		verifyMDConnectionConfig();
 		return deleteEntity(mdConnectionConfig, entityClass, id);
 	}
@@ -114,7 +114,7 @@ public class MiniDAO {
 		return MDDelete.deleteEntity(mdConnectionConfig, entity);
 	}
 
-	public static <T> boolean deleteEntity(MDConnectionConfig mdConnectionConfig, Class<T> entityClass, int id) throws Exception {
+	public static <T> boolean deleteEntity(MDConnectionConfig mdConnectionConfig, Class<T> entityClass, Object id) throws Exception {
 		return MDDelete.deleteEntity(mdConnectionConfig, entityClass, id);
 	}
 }

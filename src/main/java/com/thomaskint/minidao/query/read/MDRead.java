@@ -60,7 +60,7 @@ public class MDRead {
 		return entities;
 	}
 
-	public static <T> T getEntityById(MDConnectionConfig mdConnectionConfig, Class<T> entityClass, int id) throws Exception {
+	public static <T> T getEntityById(MDConnectionConfig mdConnectionConfig, Class<T> entityClass, Object id) throws Exception {
 		MDCondition mdCondition = new MDCondition(MDFieldUtils.getIdFieldName(entityClass), id);
 		List<T> entities = getEntities(mdConnectionConfig, entityClass, mdCondition);
 

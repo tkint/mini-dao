@@ -37,7 +37,7 @@ public class MDDelete {
 		return deleted;
 	}
 
-	public static <T> boolean deleteEntity(MDConnectionConfig mdConnectionConfig, Class<T> entityClass, int id) throws Exception {
+	public static <T> boolean deleteEntity(MDConnectionConfig mdConnectionConfig, Class<T> entityClass, Object id) throws Exception {
 		MDCondition mdCondition = new MDCondition(MDFieldUtils.getIdFieldName(entityClass), id);
 		return deleteEntities(mdConnectionConfig, entityClass, mdCondition);
 	}
