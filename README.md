@@ -2,36 +2,21 @@
 
 Librairie qui permet de lier un modèle avec une base de données de type MySQL
 
-## Sommaire
+# Summary
 
+* Quick Start
+  * Maven dependency
+  * Simple use case
+* Annotations
+* Configuration
+* Development
+* License
 
-## Annotations
+# Quick Start
 
-MiniDAO s'appuie sur des annotations pour lier le modèle avec la base de données. 
-Ces annotations sont susceptibles d'être modifiées ultérieurement afin de répondre 
-au mieux aux besoins des applications l'utilisant.
+## Maven dependency
 
-### MDEntity
-
-### MDField
-
-### MDId
-
-### MDOneToMany
-
-### MDManyToMany
-
-## Maven Local Repository
-
-Afin de faciliter l'utilisation de la librairie, il est fortement conseillé de la pousser
-sur le repository maven local. Pour se faire, il suffit de faire comme suit:
-
-```sh
-mvn clean install -s settings.xml
-```
-
-Ensuite, il faudra l'inclure dans le projet maven avec les dépendances suivantes:
-
+Add those lines in your pom.xml:
 ```xml
 <dependencies>
     <!-- Other dependencies -->
@@ -42,3 +27,61 @@ Ensuite, il faudra l'inclure dans le projet maven avec les dépendances suivante
     </dependency>
 </dependencies>
 ```
+
+# Simple use case
+
+Start by creating an MDConnectionConfig object with login informations to your database:
+```java
+MDConnectionConfig mdConnectionConfig = new MDConnectionConfig(MDDriver.MYSQL, "{url}", "{port}", "{username}", "{password}", "{database}");
+```
+
+For example:
+```java
+MDConnectionConfig mdConnectionConfig = new MDConnectionConfig(MDDriver.MYSQL, "127.0.0.1", "3306", "minidao", "password", "minidao");
+```
+
+Then, set the library config:
+```java
+MiniDAO.config(mdConnectionConfig);
+```
+
+Create an object reflecting one of your database table:
+```java
+@MDEntity(name = "user")
+public class User { 
+    
+    @MDId
+    @MDField(name = "id_user", params = SELECT)
+    public BigDecimal id_user;
+    
+    @MDField(name = "email")
+    public String email;
+    
+    @MDField(name = "login")
+    public String login;
+    
+    @MDField(name = "password")
+    public String password;
+}
+```
+
+Now, you can retrieve data from your database:
+```java
+public List<User> getUsers() {
+    List<User> users = null;
+    try {
+        users = MiniDAO.getEntities(User.class);
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return users;
+}
+```
+
+# Annotations
+
+# Configuration
+
+# Development
+
+# License
