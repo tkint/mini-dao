@@ -4,13 +4,14 @@ Java library for quick connection between java model and database tables.
 
 # Summary
 
-* Quick Start
-  * Maven dependency
-  * Simple use case
-* Annotations
-* Configuration
-* Development
-* License
+
+* [Quick Start](#quick-start)
+  * [Maven dependency](#maven-dependency)
+  * [Simple use case](#simple-use-case)
+* [Annotations](#annotations)
+* [Configuration](#configuration)
+* [Development](#development)
+* [License](#license)
 
 # Quick Start
 
@@ -80,8 +81,16 @@ public List<User> getUsers() {
 
 # Annotations
 
+_In progress_
+
 # Configuration
+
+_In progress_
 
 # Development
 
+_In progress_
+
 # License
+
+_Not yet_
