@@ -1,13 +1,4 @@
 language: java
-sudo: false
+jdk: oraclejdk8
 install: true
-
-jdk:
-- oraclejdk8
-
-script:
-- mvn clean install -s settings.xml
-
-cache:
-  directories:
-    - '$HOME/.m2/repository'
+script: mvn clean install -s settings.xml
