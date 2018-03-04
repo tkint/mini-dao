@@ -1,4 +1,4 @@
-# MiniDAO
+# MiniDAO [![Build Status](https://travis-ci.org/tkint/MiniDAO.svg?branch=master)](https://travis-ci.org/tkint/MiniDAO)
 
 Librairie qui permet de lier un modèle avec une base de données de type MySQL
 
