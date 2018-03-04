@@ -1,4 +1,7 @@
-# MiniDAO [![Build Status](https://travis-ci.org/tkint/MiniDAO.svg?branch=master)](https://travis-ci.org/tkint/MiniDAO)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/tkint/MiniDAO/blob/master/LICENSE)
+[![Build Status](https://travis-ci.org/tkint/MiniDAO.svg?branch=master)](https://travis-ci.org/tkint/MiniDAO)
+
+# MiniDAO 
 
 Java library for quick connection between java model and database tables.
 
