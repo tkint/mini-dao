@@ -27,11 +27,7 @@ Afin de faciliter l'utilisation de la librairie, il est fortement conseillé de 
 sur le repository maven local. Pour se faire, il suffit de faire comme suit:
 
 ```sh
-mvn clean package
-
-cd target
-
-mvn install:install-file -Dfile=minidao-1.0-SNAPSHOT.jar -DgroupId=com.thomaskint -DartifactId=minidao -Dversion=1.0-SNAPSHOT -Dpackaging=jar
+mvn clean install -s settings.xml
 ```
 
 Ensuite, il faudra l'inclure dans le projet maven avec les dépendances suivantes:
@@ -43,18 +39,6 @@ Ensuite, il faudra l'inclure dans le projet maven avec les dépendances suivante
         <groupId>com.thomaskint</groupId>
         <artifactId>minidao</artifactId>
         <version>1.0-SNAPSHOT</version>
-    </dependency>
-    
-    <dependency>
-        <groupId>mysql</groupId>
-        <artifactId>mysql-connector-java</artifactId>
-        <version>5.1.45</version>
-    </dependency>
-    
-    <dependency>
-        <groupId>com.oracle.jdbc</groupId>
-        <artifactId>ojdbc8</artifactId>
-        <version>12.2.0.1</version>
     </dependency>
 </dependencies>
 ```
