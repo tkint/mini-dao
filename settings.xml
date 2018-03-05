@@ -1,26 +1,26 @@
 <settings>
-    <servers>
-        <server>
-            <id>maven.oracle.com</id>
-            <username>thomaskint.pro@gmail.com</username>
-            <password>{j3SD8XOLo/wHA8xtwdwhZdb0CX+eUx2KKf3hGoPSmZ0=}</password>
-            <configuration>
-                <basicAuthScope>
-                    <host>ANY</host>
-                    <port>ANY</port>
-                    <realm>OAM 11g</realm>
-                </basicAuthScope>
-                <httpConfiguration>
-                    <all>
-                        <params>
-                            <property>
-                                <name>http.protocol.allow-circular-redirects</name>
-                                <value>%b,true</value>
-                            </property>
-                        </params>
-                    </all>
-                </httpConfiguration>
-            </configuration>
-        </server>
-    </servers>
+	<servers>
+		<server>
+			<id>maven.oracle.com</id>
+			<username>{oracle_username}</username>
+			<password>{oracle_password}</password>
+			<configuration>
+				<basicAuthScope>
+					<host>ANY</host>
+					<port>ANY</port>
+					<realm>OAM 11g</realm>
+				</basicAuthScope>
+				<httpConfiguration>
+					<all>
+						<params>
+							<property>
+								<name>http.protocol.allow-circular-redirects</name>
+								<value>%b,true</value>
+							</property>
+						</params>
+					</all>
+				</httpConfiguration>
+			</configuration>
+		</server>
+	</servers>
 </settings>
