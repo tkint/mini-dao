@@ -94,7 +94,7 @@ Clone project:
 git clone https://github.com/tkint/MiniDAO.git
 ```
 
-If ojdbc8 (12.2.0.1) is not already installed in your local maven repository will need to [create an oracle account]((https://profile.oracle.com/myprofile/account/create-account.jspx)).
+If ojdbc8 (12.2.0.1) is not already installed in your local maven repository will need to [create an oracle account](https://profile.oracle.com/myprofile/account/create-account.jspx).
 Then you can either [download and install ojdbc8](#download-and-install-ojdbc8)
 or [install ojdbc8 during maven build](#install-ojdbc8-during-maven-build)
 
