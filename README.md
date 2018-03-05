@@ -96,4 +96,4 @@ _In progress_
 
 # License
 
-_Not yet_
+MiniDAO is developed and distributed under the terms of the [MIT License](https://github.com/tkint/MiniDAO/blob/master/LICENSE)
