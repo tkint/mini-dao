@@ -10,9 +10,8 @@ package com.thomaskint.minidao.utils;
  * @author tkint
  */
 public class MDStringUtils {
-    
-    public static String toUpperFirst(String string) {
+
+    public static String firstLetterToUpperCase(String string) {
         return string.substring(0, 1).toUpperCase() + string.substring(1);
     }
-    
 }

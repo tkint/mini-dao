@@ -1,6 +1,11 @@
 <settings>
 	<servers>
 		<server>
+			<id>ossrh</id>
+			<username>{sonatype_username}</username>
+			<password>{sonatype_password}</password>
+		</server>
+		<server>
 			<id>maven.oracle.com</id>
 			<username>{oracle_username}</username>
 			<password>{oracle_password}</password>

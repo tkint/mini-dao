@@ -2,6 +2,7 @@ package com.thomaskint.minidao.query;
 
 import com.thomaskint.minidao.enumeration.MDConditionLink;
 import com.thomaskint.minidao.enumeration.MDConditionOperator;
+import com.thomaskint.minidao.exception.MDFieldNotDeclaredException;
 import com.thomaskint.minidao.utils.MDFieldUtils;
 
 import static com.thomaskint.minidao.enumeration.MDConditionOperator.DIFFERENT;
@@ -118,9 +119,11 @@ public class MDCondition {
 		return str;
 	}
 
-	private void verifyCondition(Class entityClass) throws Exception {
-		if (MDFieldUtils.getFieldByName(entityClass, field) == null) {
-			throw new Exception("Database field " + field + " is not declared " + entityClass.getName());
+	private void verifyCondition(Class entityClass) throws MDFieldNotDeclaredException {
+		try {
+			MDFieldUtils.getFieldByName(entityClass, field);
+		} catch (MDFieldNotDeclaredException e) {
+			throw e;
 		}
 	}
 }

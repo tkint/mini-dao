@@ -1,5 +1,6 @@
 package com.thomaskint.minidao.query.create;
 
+import com.thomaskint.minidao.exception.MDFieldNotDeclaredException;
 import com.thomaskint.minidao.utils.MDFieldUtils;
 
 import java.lang.reflect.Field;
@@ -15,7 +16,7 @@ public class MDCreateFieldList {
 
 	private List<MDCreateFieldValue> mdCreateFieldValues;
 
-	public MDCreateFieldList(Class entityClass, MDCreateFieldValue... mdCreateFieldValues) {
+	public MDCreateFieldList(Class entityClass, MDCreateFieldValue... mdCreateFieldValues) throws MDFieldNotDeclaredException {
 		this.mdCreateFieldValues = new ArrayList<>();
 		for (MDCreateFieldValue mdCreateFieldValue : mdCreateFieldValues) {
 			Field field = MDFieldUtils.getFieldByName(entityClass, mdCreateFieldValue.getField());

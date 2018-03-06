@@ -1,13 +1,14 @@
 package com.thomaskint.minidao.utils;
 
-import com.thomaskint.minidao.annotations.MDField;
-import com.thomaskint.minidao.annotations.MDId;
-import com.thomaskint.minidao.enumeration.MDParam;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.thomaskint.minidao.annotations.MDField;
+import com.thomaskint.minidao.annotations.MDId;
+import com.thomaskint.minidao.enumeration.MDParam;
+import com.thomaskint.minidao.exception.MDFieldNotDeclaredException;
 
 /**
  * Created by tkint on 19/01/2018.
@@ -21,9 +22,9 @@ public class MDFieldUtils {
 	/**
 	 * Return every @{@link MDField} of given entity
 	 *
-	 * @param entityClass
-	 * @param param
-	 * @return
+	 * @param entityClass {@link Class}
+	 * @param param {@link MDParam}
+	 * @return List of Field
 	 */
 	public static List<Field> getFields(Class entityClass, MDParam param) {
 		List<Field> fields = new ArrayList<>();
@@ -59,8 +60,8 @@ public class MDFieldUtils {
 	/**
 	 * Return field name based on its @{@link MDField} name
 	 *
-	 * @param field
-	 * @return
+	 * @param field {@link Field}
+	 * @return String
 	 */
 	public static String getFieldName(Field field) {
 		String fieldName = null;
@@ -73,7 +74,7 @@ public class MDFieldUtils {
 		return fieldName;
 	}
 
-	public static Field getFieldByName(Class entityClass, String name) {
+	public static Field getFieldByName(Class entityClass, String name) throws MDFieldNotDeclaredException {
 		Field field = null;
 		List<Field> fields = getFields(entityClass);
 
@@ -85,14 +86,18 @@ public class MDFieldUtils {
 			i++;
 		}
 
+		if (field == null) {
+			throw new MDFieldNotDeclaredException(entityClass, name);
+		}
+
 		return field;
 	}
 
 	/**
 	 * Verify if given field is annotated by @{@link MDField}
 	 *
-	 * @param field
-	 * @return
+	 * @param field {@link Field}
+	 * @return boolean
 	 */
 	public static boolean isMDField(Field field) {
 		boolean isMDField = false;
@@ -112,8 +117,9 @@ public class MDFieldUtils {
 	/**
 	 * Verify if given field is annotated by @{@link MDField}
 	 *
-	 * @param field
-	 * @return
+	 * @param field {@link Field}
+	 * @param param {@link MDParam}
+	 * @return boolean
 	 */
 	public static boolean includeParam(Field field, MDParam param) {
 		boolean includeParams = false;

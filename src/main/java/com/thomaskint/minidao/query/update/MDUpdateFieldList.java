@@ -1,5 +1,6 @@
 package com.thomaskint.minidao.query.update;
 
+import com.thomaskint.minidao.exception.MDFieldNotDeclaredException;
 import com.thomaskint.minidao.utils.MDFieldUtils;
 
 import java.lang.reflect.Field;
@@ -15,7 +16,7 @@ public class MDUpdateFieldList {
 
 	private List<MDUpdateFieldValue> mdUpdateFieldValues;
 
-	public MDUpdateFieldList(Class entityClass, MDUpdateFieldValue... mdUpdateFieldValues) {
+	public MDUpdateFieldList(Class entityClass, MDUpdateFieldValue... mdUpdateFieldValues) throws MDFieldNotDeclaredException {
 		this.mdUpdateFieldValues = new ArrayList<>();
 		for (MDUpdateFieldValue mdUpdateFieldValue : mdUpdateFieldValues) {
 			Field field = MDFieldUtils.getFieldByName(entityClass, mdUpdateFieldValue.getField());

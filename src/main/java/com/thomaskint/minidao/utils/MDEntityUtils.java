@@ -5,14 +5,14 @@
  */
 package com.thomaskint.minidao.utils;
 
-import com.thomaskint.minidao.annotations.MDEntity;
-import com.thomaskint.minidao.annotations.MDField;
-import com.thomaskint.minidao.enumeration.MDParam;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import com.thomaskint.minidao.annotations.MDEntity;
+import com.thomaskint.minidao.annotations.MDField;
+import com.thomaskint.minidao.enumeration.MDParam;
 
 /**
  * @author tkint
@@ -22,8 +22,8 @@ public class MDEntityUtils {
 	/**
 	 * Return table name based on @{@link MDEntity} name annotation
 	 *
-	 * @param entityClass Class
-	 * @return tableName {@link String}
+	 * @param entityClass {@link Class}
+	 * @return {@link String}
 	 */
 	public static String getTableName(Class entityClass) {
 		String tableName = null;
@@ -39,8 +39,8 @@ public class MDEntityUtils {
 	/**
 	 * Verify if given entity is annotated by @{@link MDField}
 	 *
-	 * @param entityClass
-	 * @return
+	 * @param entityClass {@link Class}
+	 * @return boolean
 	 */
 	public static boolean isMDEntity(Class entityClass) {
 		boolean isMDEntity = false;
@@ -61,9 +61,9 @@ public class MDEntityUtils {
 	/**
 	 * Verify if given entity include given param
 	 *
-	 * @param entityClass
-	 * @param param
-	 * @return
+	 * @param entityClass {@link Class}
+	 * @param param {@link MDParam}
+	 * @return boolean
 	 */
 	public static boolean includeParam(Class entityClass, MDParam param) {
 		boolean includeParam = false;
@@ -89,10 +89,10 @@ public class MDEntityUtils {
 	/**
 	 * Return instance of entity based on its entity class and given resultset
 	 *
-	 * @param entityClass
-	 * @param resultSet
-	 * @param <T>
-	 * @return
+	 * @param entityClass {@link Class}
+	 * @param resultSet {@link ResultSet}
+	 * @param <T> T
+	 * @return T
 	 */
 	public static <T> T mapEntity(Class<T> entityClass, ResultSet resultSet) {
 		T instance = null;

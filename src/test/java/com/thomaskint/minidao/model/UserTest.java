@@ -12,28 +12,21 @@ import static com.thomaskint.minidao.enumeration.MDParam.SELECT;
 @MDEntity(name = "user")
 public class UserTest {
 
-	public static final String id_user = "id_user";
+	public static final String id_userField = "id_user";
 
-	@MDId
-	@MDField(name = id_user, params = SELECT)
+	public static final String pseudoField = "pseudo";
+
+	public static final String loginField = "login";
+
+	@MDId @MDField(name = id_userField, params = SELECT)
 	public int id;
 
-	@MDField(name = "pseudo")
+	@MDField(name = pseudoField)
 	public String pseudo;
 
-	@MDField(name = "login")
+	@MDField(name = loginField)
 	public String login;
 
 	@MDField(name = "password")
 	public String password;
-
-	@Override
-	public String toString() {
-		return "User{" +
-				"id=" + id +
-				", pseudo='" + pseudo + '\'' +
-				", login='" + login + '\'' +
-				", password='" + password + '\'' +
-				'}';
-	}
 }
