@@ -20,7 +20,6 @@ env:
 install: mvn install -P !build-extras -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 script: mvn test -P !build-extras -B
 
-
 cache:
   directories:
   - ~/.m2/repository
