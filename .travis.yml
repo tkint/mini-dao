@@ -26,5 +26,5 @@ cache:
 
 after_success:
   - ls -a
-  - ./before-deploy.sh
-  - ./travis/deploy.sh
+  - sh travis/before-deploy.sh
+  - sh travis/deploy.sh
