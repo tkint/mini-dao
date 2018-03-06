@@ -5,6 +5,7 @@
  */
 package com.thomaskint.minidao.connection;
 
+import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,16 +16,17 @@ import java.sql.Statement;
  */
 public class MDConnection {
 
-	private java.sql.Connection connection;
 	private Statement statement;
 
 	private MDConnection(MDConnectionConfig mdConnectionConfig) throws ClassNotFoundException, SQLException {
 		try {
 			Class.forName(mdConnectionConfig.getMdDriver().getValue());
 
-			String jdbcUrl = mdConnectionConfig.getCompleteUrl();
+			String completeUrl = mdConnectionConfig.getCompleteUrl();
+			String login = mdConnectionConfig.getLogin();
+			String password = mdConnectionConfig.getPassword();
 
-			connection = DriverManager.getConnection(jdbcUrl, mdConnectionConfig.getLogin(), mdConnectionConfig.getPassword());
+			Connection connection = DriverManager.getConnection(completeUrl, login, password);
 
 			statement = connection.createStatement();
 

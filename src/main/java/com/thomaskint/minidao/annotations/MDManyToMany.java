@@ -18,10 +18,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MDManyToMany {
 
-    public String name();
+    String name();
     
-    public String table();
+    String table();
     
-    public Class entity();
-
+    Class entity();
 }

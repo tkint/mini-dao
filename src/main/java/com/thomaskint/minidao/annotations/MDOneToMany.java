@@ -18,6 +18,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MDOneToMany {
 
-    public Class entity();
-
+    Class entity();
 }

@@ -1,9 +1,16 @@
 <settings>
     <servers>
+        <!-- OSSRH Maven Repository -->
+        <server>
+            <id>ossrh</id>
+            <username>${env.OSSRH_JIRA_USERNAME}</username>
+            <password>${env.OSSRH_JIRA_PASSWORD}</password>
+        </server>
+        <!-- Oracle Maven Repository -->
         <server>
             <id>maven.oracle.com</id>
-            <username>${OTN_USERNAME}</username>
-            <password>${OTN_PASSWORD}</password>
+            <username>${env.OTN_USERNAME}</username>
+            <password>${env.OTN_PASSWORD}</password>
             <configuration>
                 <basicAuthScope>
                     <host>ANY</host>
@@ -23,4 +30,20 @@
             </configuration>
         </server>
     </servers>
+
+    <profiles>
+        <!-- GPG -->
+        <profile>
+            <id>ossrh</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <gpg.executable>gpg</gpg.executable>
+                <gpg.keyname>${env.GPG_KEY_NAME}</gpg.keyname>
+                <gpg.passphrase>${env.GPG_PASSPHRASE}</gpg.passphrase>
+            </properties>
+
+        </profile>
+    </profiles>
 </settings>

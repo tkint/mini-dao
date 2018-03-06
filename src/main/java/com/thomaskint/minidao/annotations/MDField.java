@@ -21,7 +21,7 @@ import static com.thomaskint.minidao.enumeration.MDParam.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MDField {
 
-	public String name();
+	String name();
 
-	public MDParam[] params() default {SELECT, INSERT, UPDATE};
+	MDParam[] params() default {SELECT, INSERT, UPDATE};
 }
