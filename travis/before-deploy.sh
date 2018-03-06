@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
 if [ $TRAVIS_BRANCH = 'master' ] && [ $TRAVIS_PULL_REQUEST = 'false' ]; then
-    openssl aes-256-cbc -K $encrypted_82147ee85a3c_key -iv $encrypted_82147ee85a3c_iv -in travis/codesigning.asc.enc -out travis/codesigning.asc -d
-    gpg --fast-import travis/codesigning.asc
+    gpg --import travis/private-key.gpg
 fi
