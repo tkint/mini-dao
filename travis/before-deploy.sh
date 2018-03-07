@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-if [ $TRAVIS_BRANCH = 'master' ] && [ $TRAVIS_PULL_REQUEST = 'false' ]; then
+if [ -n "$TRAVIS_TAG" ]; then
     gpg --import travis/private-key.gpg
 fi
