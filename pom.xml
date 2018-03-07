@@ -6,7 +6,7 @@
 
 	<groupId>com.thomaskint</groupId>
 	<artifactId>minidao</artifactId>
-	<version>0.0.0</version>
+	<version>0.0.1-alpha</version>
 
 	<name>MiniDAO</name>
 	<description>Java light library for quick link between database and java model</description>
