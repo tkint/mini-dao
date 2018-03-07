@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if [ ${TRAVIS_TAG+x} ]; then
+if [ -n "$TRAVIS_TAG" ]; then
     if [ $TRAVIS_PULL_REQUEST = 'false' ]; then
         echo "Deploying $TRAVIS_TAG"
         if [ $TRAVIS_BRANCH = 'master' ]; then
