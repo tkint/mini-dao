@@ -1,5 +1,27 @@
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/tkint/MiniDAO/blob/master/LICENSE)
-[![Build Status](https://travis-ci.org/tkint/MiniDAO.svg?branch=master)](https://travis-ci.org/tkint/MiniDAO)
+<table>
+ <tr style="text-align: center">
+  <td>License</td>
+  <td>Master</td>
+  <td>Develop</td>
+ </tr>
+ <tr>
+  <td>
+   <a href="https://github.com/tkint/MiniDAO/blob/master/LICENSE">
+    <img src="https://img.shields.io/badge/License-MIT-yellow.svg"/>
+   </a>
+  </td>
+  <td>
+   <a href="https://travis-ci.org/tkint/MiniDAO">
+    <img src="https://travis-ci.org/tkint/MiniDAO.svg?branch=master"/>
+   </a>
+  </td>
+  <td>
+   <a href="https://travis-ci.org/tkint/MiniDAO">
+    <img src="https://travis-ci.org/tkint/MiniDAO.svg?branch=develop"/>
+   </a>
+  </td>
+ </tr>
+</table>
 
 # MiniDAO 
 
