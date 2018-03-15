@@ -37,7 +37,23 @@ Java library for quick connection between java model and database tables.
   * [Download and install ojdbc8](#download-and-install-ojdbc8)
   * [Install ojdbc8 during maven build](#install-ojdbc8-during-maven-build)
 * [Annotations](#annotations)
+  * [@MDEntity](#mdentity)
+  * [@MDField](#mdfield)
+  * [@MDId](#mdid)
+  * [@MDInheritLink](#mdinheritlink)
+  * [@MDManyToOne](#mdmanytoone)
+  * [@MDOneToMany - _Feature Incoming_](#mdonetomany---feature-incoming)
 * [Configuration](#configuration)
+* [Main class : MiniDAO](#main-class--minidao)
+  * [read() - MDRead](#read---mdread)
+  * [create() - MDCreate](#create---mdcreate)
+  * [update() - MDUpdate](#update---mdupdate)
+  * [delete() - MDDelete](#delete---mddelete)
+* [Query Builders](#query-builders)
+  * [MDSelectBuilder](#mdselectbuilder)
+  * [MDInsertBuilder](#mdinsertbuilder)
+  * [MDUpdateBuilder](#mdupdatebuilder)
+  * [MDDeleteBuilder](#mddeletebuilder)
 * [Development](#development)
 * [License](#license)
 
@@ -71,7 +87,7 @@ MDConnectionConfig connectionConfig = new MDConnectionConfig(MDDriver.MYSQL, "12
 
 Then, set the library config:
 ```java
-MiniDAO.config(connectionConfig);
+MiniDAO miniDAO = new MiniDAO(connectionConfig);
 ```
 
 Create an object reflecting one of your database table:
@@ -80,7 +96,7 @@ Create an object reflecting one of your database table:
 public class User { 
     
     @MDId
-    @MDField(name = "id_user", params = SELECT)
+    @MDField(name = "id_user", verbs = SELECT)
     public BigDecimal id_user;
     
     @MDField(name = "email")
@@ -99,8 +115,8 @@ Now, you can retrieve data from your database:
 public List<User> getUsers() {
     List<User> users = null;
     try {
-        users = MiniDAO.getEntities(User.class);
-    } catch (Exception e) {
+        users = miniDAO.read().getEntities(User.class);
+    } catch (MDException e) {
         e.printStackTrace();
     }
     return users;
@@ -162,13 +178,103 @@ It will automatically install MiniDAO and ojdbc8 on your local maven repository 
 
 # Annotations
 
-_In progress_
+#### @MDEntity
+
+Define class as an object of database
+- constraints:
+  - class must be public
+  - must have an empty constructor if custom ones are defined
+- name: table name in database
+- params: authorized verbs on this entity
+  - default: { SELECT, INSERT, UPDATE, DELETE }
+
+#### @MDField
+
+Define field as a column of the entity table
+- constraints:
+  - field must be public
+- name: field name in database
+- verbs: authorized verbs on this field
+  - default: { SELECT, INSERT, UPDATE, DELETE }
+
+#### @MDId
+
+Define field as the primary key of the entity table
+- constraints:
+  - must be on a field annotated with MDField
+
+#### @MDInheritLink
+
+Define field as a link of the entity table to the parent class table
+- constraints:
+  - must be on a field annotated with MDField
+  - MDField must be a foreign key referencing the parent entity primary key
+
+#### @MDManyToOne
+
+Define field as a foreign key link to the referenced entity
+- constraints:
+  - field must be public
+  - field must be an MDEntity object reference
+  - must not be on a field annotated with MDField
+- name: field name of the foreign key in database
+- entity: entity to link
+- loadPolicy:
+  - LAZY: avoid loading of linked entity when current one is retrieved
+  - HEAVY: force loading of linked entity when current one is retrieved
+
+#### @MDOneToMany - _Feature incoming_
+
+Define field as a foreign key link to the referenced entity
+- constraints:
+  - field must be public
+  - field must be an MDEntity object reference
+  - must not be on a field annotated with MDField
+- entity: entity to link
+- loadPolicy:
+  - LAZY: avoid loading of linked entity when current one is retrieved
+  - HEAVY: force loading of linked entity when current one is retrieved
 
 # Configuration
 
 _In progress_
 
-# Development
+# Main class : MiniDAO
+
+#### read() - MDRead
+
+_In progress_
+
+#### create() - MDCreate
+
+_In progress_
+
+#### update() - MDUpdate
+
+_In progress_
+
+#### delete() - MDDelete
+
+_In progress_
+
+# Query Builders
+
+When the default methods are not enough to get what you want, you
+can use Query Builders to make your own queries and execute them.
+
+#### MDSelectBuilder
+
+_In progress_
+
+#### MDInsertBuilder
+
+_In progress_
+
+#### MDUpdateBuilder
+
+_In progress_
+
+#### MDDeleteBuilder
 
 _In progress_
 
