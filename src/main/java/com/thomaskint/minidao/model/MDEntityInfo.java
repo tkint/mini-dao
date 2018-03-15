@@ -156,12 +156,12 @@ public class MDEntityInfo {
 			Object object;
 			MDFieldInfo idFieldInfo = getIDFieldInfo();
 			if (idFieldInfo != null) {
-				object = resultSet.getObject(idFieldInfo.getFieldFullName());
+				object = resultSet.getObject(idFieldInfo.getFieldName());
 				idFieldInfo.getField().set(instance, object);
 			}
 
 			for (MDFieldInfo fieldInfo : fieldInfos) {
-				object = resultSet.getObject(fieldInfo.getFieldFullName());
+				object = resultSet.getObject(fieldInfo.getFieldName());
 				fieldInfo.getField().set(instance, object);
 			}
 
