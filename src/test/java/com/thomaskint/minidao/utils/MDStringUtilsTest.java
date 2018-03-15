@@ -4,9 +4,13 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * @author Thomas Kint
+ */
 public class MDStringUtilsTest {
 
-	@Test public void firstLetterToUpperCase() throws Exception {
+	@Test
+	public void firstLetterToUpperCase() throws Exception {
 		// GIVEN
 		String string = "hello world";
 		String expectedString = "Hello world";

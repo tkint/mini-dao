@@ -1,5 +1,8 @@
 package com.thomaskint.minidao.enumeration;
 
+/**
+ * @author Thomas Kint
+ */
 public enum MDConditionOperator {
 	EQUAL("="),
 	DIFFERENT("!="),
@@ -13,7 +16,8 @@ public enum MDConditionOperator {
 		this.value = value;
 	}
 
-	public String getValue() {
+	@Override
+	public String toString() {
 		return value;
 	}
 }

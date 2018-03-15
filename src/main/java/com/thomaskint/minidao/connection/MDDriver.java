@@ -1,13 +1,14 @@
 package com.thomaskint.minidao.connection;
 
-import java.util.Arrays;
-
 /**
- * Created by tkint on 13/02/2018.
+ * @author Thomas Kint
  */
 public enum MDDriver {
 	MYSQL("com.mysql.jdbc.Driver", "mysql://", "/", "?zeroDateTimeBehavior=convertToNull"),
-	ORACLE("oracle.jdbc.driver.OracleDriver", "oracle:thin:@", ":");
+	ORACLE("oracle.jdbc.driver.OracleDriver", "oracle:thin:@", ":"),
+	H2("org.h2.Driver", "h2:", "/");
+
+	public static final MDDriver DEFAULT = MYSQL;
 
 	private String value;
 
@@ -40,8 +41,10 @@ public enum MDDriver {
 		StringBuilder completeUrlBuilder = new StringBuilder("jdbc:");
 		completeUrlBuilder.append(urlPart);
 		completeUrlBuilder.append(url);
-		completeUrlBuilder.append(":");
-		completeUrlBuilder.append(port);
+		if (!name().equals(H2.name())) {
+			completeUrlBuilder.append(":");
+			completeUrlBuilder.append(port);
+		}
 		completeUrlBuilder.append(databaseSeparator);
 		completeUrlBuilder.append(database);
 		if (complements != null) {

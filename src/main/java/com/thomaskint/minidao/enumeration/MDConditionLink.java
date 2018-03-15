@@ -1,10 +1,11 @@
 package com.thomaskint.minidao.enumeration;
 
 /**
- * Created by tkint on 19/01/2018.
+ * @author Thomas Kint
  */
 public enum MDConditionLink {
-	OR("OR"), AND("AND");
+	OR("OR"),
+	AND("AND");
 
 	private String value;
 
@@ -12,7 +13,8 @@ public enum MDConditionLink {
 		this.value = value;
 	}
 
-	public String getValue() {
+	@Override
+	public String toString() {
 		return value;
 	}
 }
