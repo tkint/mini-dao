@@ -5,20 +5,18 @@
  */
 package com.thomaskint.minidao.connection;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import com.thomaskint.minidao.exception.MDException;
+
+import java.sql.*;
 
 /**
- * @author tkint
+ * @author Thomas Kint
  */
 public class MDConnection {
 
 	private Statement statement;
 
-	private MDConnection(MDConnectionConfig mdConnectionConfig) throws ClassNotFoundException, SQLException {
+	private MDConnection(MDConnectionConfig mdConnectionConfig) throws MDException {
 		try {
 			Class.forName(mdConnectionConfig.getMdDriver().getValue());
 
@@ -31,15 +29,23 @@ public class MDConnection {
 			statement = connection.createStatement();
 
 		} catch (ClassNotFoundException | SQLException ex) {
-			throw ex;
+			throw new MDException(ex);
 		}
 	}
 
-	public static ResultSet executeQuery(MDConnectionConfig mdConnectionConfig, String sql) throws SQLException, ClassNotFoundException {
-		return new MDConnection(mdConnectionConfig).statement.executeQuery(sql);
+	public static ResultSet executeQuery(MDConnectionConfig mdConnectionConfig, String sql) throws MDException {
+		try {
+			return new MDConnection(mdConnectionConfig).statement.executeQuery(sql);
+		} catch (SQLException e) {
+			throw new MDException(e);
+		}
 	}
 
-	public static int executeUpdate(MDConnectionConfig mdConnectionConfig, String sql) throws SQLException, ClassNotFoundException {
-		return new MDConnection(mdConnectionConfig).statement.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
+	public static int executeUpdate(MDConnectionConfig mdConnectionConfig, String sql) throws MDException {
+		try {
+			return new MDConnection(mdConnectionConfig).statement.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
+		} catch (SQLException e) {
+			throw new MDException(e);
+		}
 	}
 }

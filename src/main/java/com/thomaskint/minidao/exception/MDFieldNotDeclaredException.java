@@ -1,5 +1,8 @@
 package com.thomaskint.minidao.exception;
 
+/**
+ * @author Thomas Kint
+ */
 public class MDFieldNotDeclaredException extends MDException {
 
 	public MDFieldNotDeclaredException(Class entityClass, String field) {

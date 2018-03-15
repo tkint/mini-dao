@@ -61,17 +61,17 @@ Add those lines in your pom.xml:
 
 Start by creating an MDConnectionConfig object with login informations to your database:
 ```java
-MDConnectionConfig mdConnectionConfig = new MDConnectionConfig(MDDriver.MYSQL, "{url}", "{port}", "{username}", "{password}", "{database}");
+MDConnectionConfig connectionConfig = new MDConnectionConfig(MDDriver.MYSQL, "{url}", "{port}", "{username}", "{password}", "{database}");
 ```
 
 For example:
 ```java
-MDConnectionConfig mdConnectionConfig = new MDConnectionConfig(MDDriver.MYSQL, "127.0.0.1", "3306", "minidao", "password", "minidao");
+MDConnectionConfig connectionConfig = new MDConnectionConfig(MDDriver.MYSQL, "127.0.0.1", "3306", "minidao", "password", "minidao");
 ```
 
 Then, set the library config:
 ```java
-MiniDAO.config(mdConnectionConfig);
+MiniDAO.config(connectionConfig);
 ```
 
 Create an object reflecting one of your database table:
