@@ -19,7 +19,7 @@ import static com.thomaskint.minidao.enumeration.MDVerb.SELECT;
 
 /**
  * @author Thomas Kint
- *         Class exposing methods to read entities from database
+ * Class exposing methods to read entities from database
  */
 public class MDRead extends MDCRUDBase {
 
@@ -54,7 +54,20 @@ public class MDRead extends MDCRUDBase {
 		return getEntities(entityInfo, condition);
 	}
 
+	public <T> List<T> getEntities(Class<T> entityClass, MDCondition condition, boolean subRequest) throws MDException {
+		MDEntityInfo entityInfo = new MDEntityInfo(entityClass);
+		return getEntities(entityInfo, condition, subRequest);
+	}
+
+	private <T> List<T> getEntities(MDEntityInfo entityInfo) throws MDException {
+		return getEntities(entityInfo, null);
+	}
+
 	private <T> List<T> getEntities(MDEntityInfo entityInfo, MDCondition condition) throws MDException {
+		return getEntities(entityInfo, condition, false);
+	}
+
+	private <T> List<T> getEntities(MDEntityInfo entityInfo, MDCondition condition, boolean subRequest) throws MDException {
 		if (!entityInfo.isMDEntity()) {
 
 		}
@@ -65,23 +78,30 @@ public class MDRead extends MDCRUDBase {
 		MDSelectBuilder selectBuilder = new MDSelectBuilder();
 		selectBuilder.select().from(entityInfo.getEntityClass());
 
+		// Condition
 		if (condition != null) {
 			selectBuilder.where(condition);
 		}
 
+		// InheritLink
 		MDEntityInfo parentEntityInfo = entityInfo.getParentEntityInfo();
 		if (parentEntityInfo != null) {
 			selectBuilder.innerJoin(parentEntityInfo.getEntityClass());
 		}
 
-		List<MDEntityInfo> manyToOneEntityInfos = entityInfo.getManyToOneEntityInfos(HEAVY);
-		if (!manyToOneEntityInfos.isEmpty()) {
-			for (MDEntityInfo manyToOneEntityInfo : manyToOneEntityInfos) {
-				selectBuilder.innerJoin(manyToOneEntityInfo.getEntityClass());
+		// Many To Ones entities
+		if (!subRequest) {
+			List<MDEntityInfo> manyToOneEntityInfos = entityInfo.getManyToOneEntityInfos(HEAVY);
+			if (!manyToOneEntityInfos.isEmpty()) {
+				for (MDEntityInfo manyToOneEntityInfo : manyToOneEntityInfos) {
+					selectBuilder.innerJoin(manyToOneEntityInfo.getEntityClass());
+				}
 			}
 		}
 
 		String query = selectBuilder.build();
+
+		System.out.println(query);
 
 		ResultSet resultSet;
 		resultSet = MDConnection.executeQuery(mdConnectionConfig, query);
@@ -89,7 +109,7 @@ public class MDRead extends MDCRUDBase {
 		List<T> entities = new ArrayList<>();
 		try {
 			while (resultSet.next()) {
-				entities.add(entityInfo.mapEntity(resultSet));
+				entities.add(entityInfo.mapEntity(resultSet, this, subRequest));
 			}
 		} catch (SQLException e) {
 			throw new MDException(e);

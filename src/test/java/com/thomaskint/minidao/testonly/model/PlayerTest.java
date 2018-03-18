@@ -10,18 +10,18 @@ import java.math.BigDecimal;
 /**
  * @author Thomas Kint
  */
-@MDEntity(name = "player")
+@MDEntity(tableName = "player")
 public class PlayerTest extends ContactTest {
 
 	@MDId
-	@MDField(name = "id_player")
+	@MDField(fieldName = "id_player")
 	public BigDecimal idPlayer;
 
 	@MDInheritLink
-	@MDField(name = "id_contact_parent")
+	@MDField(fieldName = "id_contact_parent")
 	public BigDecimal idContact;
 
-	@MDField(name = "pseudo")
+	@MDField(fieldName = "pseudo")
 	public String pseudo;
 
 	@Override

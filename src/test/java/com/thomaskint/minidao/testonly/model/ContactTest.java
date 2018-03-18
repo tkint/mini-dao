@@ -9,19 +9,19 @@ import java.math.BigDecimal;
 /**
  * @author Thomas Kint
  */
-@MDEntity(name = "contact")
+@MDEntity(tableName = "contact")
 public class ContactTest {
 
 	public static final String idContactField = "id_contact";
 
 	@MDId
-	@MDField(name = idContactField)
+	@MDField(fieldName = idContactField)
 	public BigDecimal idContact;
 
-	@MDField(name = "first_name")
+	@MDField(fieldName = "first_name")
 	public String firstName;
 
-	@MDField(name = "last_name")
+	@MDField(fieldName = "last_name")
 	public String lastName;
 
 	@Override
