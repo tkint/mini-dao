@@ -7,7 +7,7 @@ import com.thomaskint.minidao.utils.MDIncomingFeature;
  */
 @MDIncomingFeature(
 		featureName = "Control of load policy",
-		description = "LAZY: Load targeted entity when needed | HEAVY: Always load targeted entity")
+		description = "LAZY: Load targeted target when needed | HEAVY: Always load targeted target")
 public enum MDLoadPolicy {
 	LAZY,
 	HEAVY;

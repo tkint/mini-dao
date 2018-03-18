@@ -21,7 +21,7 @@ import static com.thomaskint.minidao.enumeration.MDVerb.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MDField {
 
-	String name();
+	String fieldName();
 
 	MDVerb[] verbs() default {SELECT, INSERT, UPDATE};
 }

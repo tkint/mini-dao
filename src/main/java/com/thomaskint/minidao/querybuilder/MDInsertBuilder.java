@@ -101,7 +101,7 @@ public class MDInsertBuilder extends MDQueryBuilder<MDInsertBuilder> {
 	@Override
 	public String build() throws MDException {
 		if (baseEntityInfo == null) {
-			throw new MDException("No entity!");
+			throw new MDException("No target!");
 		}
 		buildVerbPart();
 		buildTablePart();

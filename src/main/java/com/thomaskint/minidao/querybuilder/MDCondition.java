@@ -4,7 +4,8 @@ import com.thomaskint.minidao.enumeration.MDConditionLink;
 import com.thomaskint.minidao.enumeration.MDConditionOperator;
 import com.thomaskint.minidao.model.MDEntityInfo;
 
-import static com.thomaskint.minidao.utils.MDStringUtils.*;
+import static com.thomaskint.minidao.utils.MDStringUtils.QUOTE;
+import static com.thomaskint.minidao.utils.MDStringUtils.SPACE;
 
 public class MDCondition {
 

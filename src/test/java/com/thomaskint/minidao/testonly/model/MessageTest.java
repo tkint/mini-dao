@@ -4,32 +4,32 @@ import com.thomaskint.minidao.annotation.MDEntity;
 import com.thomaskint.minidao.annotation.MDField;
 import com.thomaskint.minidao.annotation.MDId;
 import com.thomaskint.minidao.annotation.MDManyToOne;
-import com.thomaskint.minidao.enumeration.MDVerb;
 
 import java.math.BigDecimal;
 
 import static com.thomaskint.minidao.enumeration.MDLoadPolicy.HEAVY;
 import static com.thomaskint.minidao.enumeration.MDVerb.SELECT;
+import static com.thomaskint.minidao.testonly.model.UserTest.idUserFieldName;
 
 /**
  * @author Thomas Kint
  */
-@MDEntity(name = "message")
+@MDEntity(tableName = "message")
 public class MessageTest {
 
-	private static final String idUserFieldName = "id_author";
+	public static final String idAuthorFieldName = "id_author";
 
 	@MDId
-	@MDField(name = "id_message", verbs = SELECT)
+	@MDField(fieldName = "id_message", verbs = SELECT)
 	public BigDecimal idMessage;
 
-	@MDField(name = idUserFieldName)
+	@MDField(fieldName = idAuthorFieldName)
 	public BigDecimal idUser;
 
-	@MDManyToOne(name = idUserFieldName, entity = UserTest.class, loadPolicy = HEAVY)
+	@MDManyToOne(fieldName = idAuthorFieldName, target = UserTest.class, loadPolicy = HEAVY)
 	public UserTest userTest;
 
-	@MDField(name = "content")
+	@MDField(fieldName = "content")
 	public String content;
 
 	public MessageTest() {

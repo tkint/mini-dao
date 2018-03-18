@@ -21,7 +21,7 @@ import static com.thomaskint.minidao.enumeration.MDVerb.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MDEntity {
 
-	String name();
+	String tableName();
 
 	MDVerb[] params() default {SELECT, INSERT, UPDATE, DELETE};
 }

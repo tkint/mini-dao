@@ -33,9 +33,11 @@ public class MDFieldInfo {
 	public String getFieldName() {
 		String fieldName = null;
 		if (isMDField()) {
-			fieldName = getMDField().name();
-		} else {
-			fieldName = getMDManyToOne().name();
+			fieldName = getMDField().fieldName();
+		} else if (isManyToOne()) {
+			fieldName = getMDManyToOne().fieldName();
+		}else if (isOneToMany()) {
+			fieldName = getMDOneToMany().fieldName();
 		}
 		return fieldName;
 	}
@@ -76,12 +78,12 @@ public class MDFieldInfo {
 		return getMDField() != null;
 	}
 
-	public boolean isRelation() {
-		return getMDOneToMany() != null || getMDManyToOne() != null;
+	public boolean isManyToOne() {
+		return getMDManyToOne() != null;
 	}
 
-	public boolean isMDFieldOrRelation() {
-		return isMDField() || isRelation();
+	public boolean isOneToMany() {
+		return getMDOneToMany() != null;
 	}
 
 	public boolean includeParam(MDVerb verb) {

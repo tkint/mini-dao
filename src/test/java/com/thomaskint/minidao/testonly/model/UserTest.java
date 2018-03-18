@@ -11,11 +11,12 @@ import java.util.List;
 
 import static com.thomaskint.minidao.enumeration.MDLoadPolicy.HEAVY;
 import static com.thomaskint.minidao.enumeration.MDVerb.SELECT;
+import static com.thomaskint.minidao.testonly.model.MessageTest.idAuthorFieldName;
 
 /**
  * @author Thomas Kint
  */
-@MDEntity(name = "user")
+@MDEntity(tableName = "user")
 public class UserTest {
 
 	public static final String idUserFieldName = "id_user";
@@ -25,19 +26,19 @@ public class UserTest {
 	public static final String loginFieldName = "login";
 
 	@MDId
-	@MDField(name = idUserFieldName, verbs = SELECT)
+	@MDField(fieldName = idUserFieldName, verbs = SELECT)
 	public BigDecimal id;
 
-	@MDField(name = pseudoFieldName)
+	@MDField(fieldName = pseudoFieldName)
 	public String pseudo;
 
-	@MDField(name = loginFieldName)
+	@MDField(fieldName = loginFieldName)
 	public String login;
 
-	@MDField(name = "password")
+	@MDField(fieldName = "password")
 	public String password;
 
-	@MDOneToMany(name = idUserFieldName, entity = MessageTest.class, loadPolicy = HEAVY)
+	@MDOneToMany(fieldName = idUserFieldName, targetFieldName = idAuthorFieldName, target = MessageTest.class, loadPolicy = HEAVY)
 	public List<MessageTest> messages;
 
 	public UserTest() {

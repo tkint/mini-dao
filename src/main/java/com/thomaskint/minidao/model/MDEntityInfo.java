@@ -1,11 +1,11 @@
 package com.thomaskint.minidao.model;
 
-import com.thomaskint.minidao.annotation.MDEntity;
-import com.thomaskint.minidao.annotation.MDId;
-import com.thomaskint.minidao.annotation.MDInheritLink;
-import com.thomaskint.minidao.annotation.MDManyToOne;
+import com.thomaskint.minidao.annotation.*;
+import com.thomaskint.minidao.crud.MDRead;
 import com.thomaskint.minidao.enumeration.MDLoadPolicy;
 import com.thomaskint.minidao.enumeration.MDVerb;
+import com.thomaskint.minidao.exception.MDException;
+import com.thomaskint.minidao.querybuilder.MDCondition;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.thomaskint.minidao.enumeration.MDConditionOperator.EQUAL;
 import static com.thomaskint.minidao.enumeration.MDLoadPolicy.HEAVY;
 
 /**
@@ -27,7 +28,7 @@ public class MDEntityInfo {
 
 	private List<MDFieldInfo> fieldInfos = new ArrayList<>();
 
-	public <T> MDEntityInfo(Class<T> entityClass) {
+	public MDEntityInfo(Class entityClass) {
 		this.entityClass = entityClass;
 		this.annotations = entityClass.getDeclaredAnnotations();
 		for (Field field : entityClass.getFields()) {
@@ -55,7 +56,7 @@ public class MDEntityInfo {
 	}
 
 	public String getTableName() {
-		return getMDEntity().name();
+		return getMDEntity().tableName();
 	}
 
 	public <T extends Annotation> Annotation getAnnotation(Class<T> annotation) {
@@ -105,11 +106,21 @@ public class MDEntityInfo {
 		MDEntityInfo entityInfo;
 		for (MDFieldInfo fieldInfo : getManyToOnes()) {
 			if (fieldInfo.getMDManyToOne().loadPolicy().equals(loadPolicy)) {
-				entityInfo = new MDEntityInfo(fieldInfo.getMDManyToOne().entity());
+				entityInfo = new MDEntityInfo(fieldInfo.getMDManyToOne().target());
 				entityInfos.add(entityInfo);
 			}
 		}
 		return entityInfos;
+	}
+
+	public List<MDFieldInfo> getOneToManyFieldInfos(MDLoadPolicy loadPolicy) {
+		List<MDFieldInfo> fieldInfos = new ArrayList<>();
+		for (MDFieldInfo fieldInfo : getOneToManys()) {
+			if (fieldInfo.getMDOneToMany().loadPolicy().equals(loadPolicy)) {
+				fieldInfos.add(fieldInfo);
+			}
+		}
+		return fieldInfos;
 	}
 
 	public MDFieldInfo getIDFieldInfo() {
@@ -122,6 +133,10 @@ public class MDEntityInfo {
 
 	public List<MDFieldInfo> getManyToOnes() {
 		return getFieldsByAnnotation(MDManyToOne.class);
+	}
+
+	public List<MDFieldInfo> getOneToManys() {
+		return getFieldsByAnnotation(MDOneToMany.class);
 	}
 
 	private <U extends Annotation> List<MDFieldInfo> getFieldsByAnnotation(Class<U> annotation) {
@@ -147,32 +162,53 @@ public class MDEntityInfo {
 		return mdFieldInfo;
 	}
 
-	public <T> T mapEntity(ResultSet resultSet) {
+	public <T> T mapEntity(ResultSet resultSet, MDRead read, boolean subRequest) throws MDException {
 		T instance = null;
 
 		try {
 			instance = (T) entityClass.newInstance();
 
-			Object object;
+			// ID Field
+			Object id = null;
 			MDFieldInfo idFieldInfo = getIDFieldInfo();
 			if (idFieldInfo != null) {
-				object = resultSet.getObject(idFieldInfo.getFieldName());
-				idFieldInfo.getField().set(instance, object);
+				id = resultSet.getObject(idFieldInfo.getFieldName());
+				idFieldInfo.getField().set(instance, id);
 			}
 
+			// Fields
+			Object object;
 			for (MDFieldInfo fieldInfo : fieldInfos) {
 				object = resultSet.getObject(fieldInfo.getFieldName());
 				fieldInfo.getField().set(instance, object);
 			}
 
-			Object foreignObject;
-			List<MDFieldInfo> manyToOneFieldInfos = getManyToOnes();
-			MDEntityInfo entityInfo;
-			for (MDFieldInfo fieldInfo : manyToOneFieldInfos) {
-				if (fieldInfo.getMDManyToOne().loadPolicy().equals(HEAVY)) {
-					entityInfo = new MDEntityInfo(fieldInfo.getMDManyToOne().entity());
-					foreignObject = entityInfo.mapEntity(resultSet);
-					fieldInfo.getField().set(instance, foreignObject);
+			// Many To Ones
+			if (!subRequest) {
+				List<MDFieldInfo> manyToOneFieldInfos = getManyToOnes();
+				MDEntityInfo entityInfo;
+				for (MDFieldInfo fieldInfo : manyToOneFieldInfos) {
+					if (fieldInfo.getMDManyToOne().loadPolicy().equals(HEAVY)) {
+						entityInfo = new MDEntityInfo(fieldInfo.getMDManyToOne().target());
+						object = entityInfo.mapEntity(resultSet, read, true);
+						fieldInfo.getField().set(instance, object);
+					}
+				}
+			}
+
+			// One To Manys
+			if (!subRequest) {
+				List entities;
+				MDOneToMany oneToMany;
+				MDCondition subCondition;
+				List<MDFieldInfo> oneToManyFieldInfos = getOneToManyFieldInfos(HEAVY);
+				if (id != null) {
+					for (MDFieldInfo oneToManyFieldInfo : oneToManyFieldInfos) {
+						oneToMany = oneToManyFieldInfo.getMDOneToMany();
+						subCondition = new MDCondition(oneToMany.targetFieldName(), EQUAL, id);
+						entities = read.getEntities(oneToMany.target(), subCondition, true);
+						oneToManyFieldInfo.getField().set(instance, entities);
+					}
 				}
 			}
 		} catch (InstantiationException | IllegalAccessException | SQLException e) {
@@ -199,7 +235,7 @@ public class MDEntityInfo {
 		List<MDFieldInfo> fieldInfos = getFieldsByAnnotation(MDManyToOne.class);
 		int i = 0;
 		while (i < fieldInfos.size() && fieldInfo == null) {
-			if (fieldInfos.get(i).getMDManyToOne().entity().equals(entityClass)) {
+			if (fieldInfos.get(i).getMDManyToOne().target().equals(entityClass)) {
 				fieldInfo = fieldInfos.get(i);
 			}
 			i++;
