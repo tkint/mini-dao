@@ -4,30 +4,44 @@ import com.thomaskint.minidao.annotation.MDField;
 import com.thomaskint.minidao.annotation.MDInheritLink;
 import com.thomaskint.minidao.annotation.MDManyToOne;
 import com.thomaskint.minidao.annotation.MDOneToMany;
-import com.thomaskint.minidao.enumeration.MDVerb;
+import com.thomaskint.minidao.enumeration.MDSQLAction;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
 /**
+ * Class wrapper used to interact with fields parameters
+ *
  * @author Thomas Kint
  */
 public class MDFieldInfo {
 
 	private Field field;
 
-	private Annotation[] annotations;
-
 	private Class entityClass;
 
-	public MDFieldInfo(Field field) {
+	private MDEntityInfo entityInfo;
+
+	public MDFieldInfo(Field field, MDEntityInfo entityInfo) {
 		this.field = field;
-		this.annotations = field.getDeclaredAnnotations();
 		this.entityClass = field.getDeclaringClass();
+		this.entityInfo = entityInfo;
 	}
 
 	public Field getField() {
 		return field;
+	}
+
+	public Class getEntityClass() {
+		return entityClass;
+	}
+
+	public MDEntityInfo getMDEntityInfo() {
+		return new MDEntityInfo(entityClass);
+	}
+
+	public String getTableName() {
+		return getMDEntityInfo().getTableName();
 	}
 
 	public String getFieldName() {
@@ -36,7 +50,7 @@ public class MDFieldInfo {
 			fieldName = getMDField().fieldName();
 		} else if (isManyToOne()) {
 			fieldName = getMDManyToOne().fieldName();
-		}else if (isOneToMany()) {
+		} else if (isOneToMany()) {
 			fieldName = getMDOneToMany().fieldName();
 		}
 		return fieldName;
@@ -62,14 +76,6 @@ public class MDFieldInfo {
 		return (MDManyToOne) getAnnotation(MDManyToOne.class);
 	}
 
-	public Class getEntityClass() {
-		return entityClass;
-	}
-
-	public String getTableName() {
-		return getMDEntityInfo().getTableName();
-	}
-
 	public <T extends Annotation> Annotation getAnnotation(Class<T> annotation) {
 		return field.getDeclaredAnnotation(annotation);
 	}
@@ -86,25 +92,27 @@ public class MDFieldInfo {
 		return getMDOneToMany() != null;
 	}
 
-	public boolean includeParam(MDVerb verb) {
-		boolean includeParam = false;
+	/**
+	 * Verify if the SQL action is allowed on this field
+	 *
+	 * @param sqlAction {@link MDSQLAction}
+	 * @return allowed boolean
+	 */
+	public boolean isSQLActionAllowed(MDSQLAction sqlAction) {
+		boolean allowed = false;
 
-		if (verb != null) {
+		if (sqlAction != null) {
 			int i = 0;
-			while (i < getMDField().verbs().length && !includeParam) {
-				if (getMDField().verbs()[i].equals(verb)) {
-					includeParam = true;
+			while (i < getMDField().allowedSQLActions().length && !allowed) {
+				if (getMDField().allowedSQLActions()[i].equals(sqlAction)) {
+					allowed = true;
 				}
 				i++;
 			}
 		} else {
-			includeParam = true;
+			allowed = true;
 		}
 
-		return includeParam;
-	}
-
-	public MDEntityInfo getMDEntityInfo() {
-		return new MDEntityInfo(entityClass);
+		return allowed;
 	}
 }

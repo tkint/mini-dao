@@ -10,7 +10,7 @@ import java.util.Map;
 import static com.thomaskint.minidao.enumeration.MDConditionOperator.EQUAL;
 import static com.thomaskint.minidao.enumeration.MDSQLWord.INTO;
 import static com.thomaskint.minidao.enumeration.MDSQLWord.SET;
-import static com.thomaskint.minidao.enumeration.MDVerb.INSERT;
+import static com.thomaskint.minidao.enumeration.MDSQLAction.INSERT;
 import static com.thomaskint.minidao.utils.MDStringUtils.*;
 
 /**

@@ -5,7 +5,7 @@ import com.thomaskint.minidao.model.MDFieldInfo;
 
 import static com.thomaskint.minidao.enumeration.MDSQLWord.ALL;
 import static com.thomaskint.minidao.enumeration.MDSQLWord.FROM;
-import static com.thomaskint.minidao.enumeration.MDVerb.SELECT;
+import static com.thomaskint.minidao.enumeration.MDSQLAction.SELECT;
 import static com.thomaskint.minidao.utils.MDStringUtils.COMMA;
 import static com.thomaskint.minidao.utils.MDStringUtils.SPACE;
 

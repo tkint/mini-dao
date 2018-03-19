@@ -8,8 +8,7 @@ import com.thomaskint.minidao.annotation.MDManyToOne;
 import java.math.BigDecimal;
 
 import static com.thomaskint.minidao.enumeration.MDLoadPolicy.HEAVY;
-import static com.thomaskint.minidao.enumeration.MDVerb.SELECT;
-import static com.thomaskint.minidao.testonly.model.UserTest.idUserFieldName;
+import static com.thomaskint.minidao.enumeration.MDSQLAction.SELECT;
 
 /**
  * @author Thomas Kint
@@ -20,7 +19,7 @@ public class MessageTest {
 	public static final String idAuthorFieldName = "id_author";
 
 	@MDId
-	@MDField(fieldName = "id_message", verbs = SELECT)
+	@MDField(fieldName = "id_message", allowedSQLActions = SELECT)
 	public BigDecimal idMessage;
 
 	@MDField(fieldName = idAuthorFieldName)
