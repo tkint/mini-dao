@@ -22,10 +22,14 @@
  * SOFTWARE.
  */
 
-package com.thomaskint.minidao.connection;
+package com.thomaskint.minidao.exception;
 
-import static org.junit.Assert.*;
+/**
+ * @author Thomas Kint
+ */
+public class MDNotAnMDEntityException extends MDException {
 
-public class MDDriverTest {
-
+	public MDNotAnMDEntityException(Class entityClass) {
+		super(entityClass.getName() + " is not an MDEntity");
+	}
 }

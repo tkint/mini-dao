@@ -22,10 +22,25 @@
  * SOFTWARE.
  */
 
-package com.thomaskint.minidao.connection;
+package com.thomaskint.minidao.enumeration;
 
-import static org.junit.Assert.*;
+/**
+ * @author Thomas Kint
+ */
+public enum MDSQLAction {
+	SELECT("SELECT"),
+	INSERT("INSERT"),
+	UPDATE("UPDATE"),
+	DELETE("DELETE");
 
-public class MDDriverTest {
+	private String value;
 
+	MDSQLAction(String value) {
+		this.value = value;
+	}
+
+	@Override
+	public String toString() {
+		return value;
+	}
 }
