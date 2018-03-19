@@ -3,7 +3,7 @@ package com.thomaskint.minidao.querybuilder;
 import com.thomaskint.minidao.enumeration.MDConditionLink;
 import com.thomaskint.minidao.enumeration.MDConditionOperator;
 import com.thomaskint.minidao.enumeration.MDJoinType;
-import com.thomaskint.minidao.enumeration.MDVerb;
+import com.thomaskint.minidao.enumeration.MDSQLAction;
 import com.thomaskint.minidao.exception.MDException;
 import com.thomaskint.minidao.model.MDEntityInfo;
 import com.thomaskint.minidao.model.MDFieldInfo;
@@ -28,13 +28,13 @@ import static com.thomaskint.minidao.utils.MDStringUtils.SPACE;
  */
 public abstract class MDQueryBuilder<U extends MDQueryBuilder<U>> {
 
-	MDVerb verb;
+	MDSQLAction verb;
 	MDEntityInfo baseEntityInfo;
 	Map<MDJoinType, MDEntityInfo> joinedEntitiesInfo;
 	Map<MDConditionLink, MDCondition> conditions;
 	StringBuilder queryBuilder;
 
-	MDQueryBuilder(MDVerb verb) {
+	MDQueryBuilder(MDSQLAction verb) {
 		this.verb = verb;
 		this.conditions = new HashMap<>();
 		this.joinedEntitiesInfo = new HashMap<>();
@@ -193,6 +193,6 @@ public abstract class MDQueryBuilder<U extends MDQueryBuilder<U>> {
 	}
 
 	protected boolean isFieldInfoParamValid(MDFieldInfo fieldInfo) {
-		return baseEntityInfo.includeParam(verb) && fieldInfo.includeParam(verb);
+		return baseEntityInfo.isSQLActionAllowed(verb) && fieldInfo.isSQLActionAllowed(verb);
 	}
 }

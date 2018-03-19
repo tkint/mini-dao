@@ -5,7 +5,7 @@ import com.thomaskint.minidao.model.MDEntityInfo;
 
 import static com.thomaskint.minidao.enumeration.MDConditionOperator.EQUAL;
 import static com.thomaskint.minidao.enumeration.MDSQLWord.FROM;
-import static com.thomaskint.minidao.enumeration.MDVerb.DELETE;
+import static com.thomaskint.minidao.enumeration.MDSQLAction.DELETE;
 import static com.thomaskint.minidao.utils.MDStringUtils.SPACE;
 
 /**

@@ -9,7 +9,7 @@ import java.util.Map;
 
 import static com.thomaskint.minidao.enumeration.MDConditionOperator.EQUAL;
 import static com.thomaskint.minidao.enumeration.MDSQLWord.VALUES;
-import static com.thomaskint.minidao.enumeration.MDVerb.UPDATE;
+import static com.thomaskint.minidao.enumeration.MDSQLAction.UPDATE;
 import static com.thomaskint.minidao.utils.MDStringUtils.*;
 
 /**

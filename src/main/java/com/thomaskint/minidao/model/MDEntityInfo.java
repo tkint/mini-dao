@@ -3,7 +3,7 @@ package com.thomaskint.minidao.model;
 import com.thomaskint.minidao.annotation.*;
 import com.thomaskint.minidao.crud.MDRead;
 import com.thomaskint.minidao.enumeration.MDLoadPolicy;
-import com.thomaskint.minidao.enumeration.MDVerb;
+import com.thomaskint.minidao.enumeration.MDSQLAction;
 import com.thomaskint.minidao.exception.MDException;
 import com.thomaskint.minidao.querybuilder.MDCondition;
 
@@ -18,6 +18,8 @@ import static com.thomaskint.minidao.enumeration.MDConditionOperator.EQUAL;
 import static com.thomaskint.minidao.enumeration.MDLoadPolicy.HEAVY;
 
 /**
+ * Class wrapper used to interact with entities parameters
+ *
  * @author Thomas Kint
  */
 public class MDEntityInfo {
@@ -31,12 +33,16 @@ public class MDEntityInfo {
 	public MDEntityInfo(Class entityClass) {
 		this.entityClass = entityClass;
 		this.annotations = entityClass.getDeclaredAnnotations();
+		MDFieldInfo fieldInfo;
 		for (Field field : entityClass.getFields()) {
-			MDFieldInfo mdFieldInfo;
-			if ((mdFieldInfo = new MDFieldInfo(field)).isMDField()) {
-				fieldInfos.add(mdFieldInfo);
+			if ((fieldInfo = new MDFieldInfo(field, this)).isMDField()) {
+				fieldInfos.add(fieldInfo);
 			}
 		}
+	}
+
+	public Class getEntityClass() {
+		return entityClass;
 	}
 
 	public Annotation[] getAnnotations() {
@@ -51,10 +57,6 @@ public class MDEntityInfo {
 		return (MDEntity) getAnnotation(MDEntity.class);
 	}
 
-	public Class getEntityClass() {
-		return entityClass;
-	}
-
 	public String getTableName() {
 		return getMDEntity().tableName();
 	}
@@ -67,28 +69,35 @@ public class MDEntityInfo {
 		return getMDEntity() != null;
 	}
 
-	public boolean includeParam(MDVerb mdVerb) {
-		boolean includeParam = false;
+	/**
+	 * Verify if the SQL action is allowed on this entity
+	 *
+	 * @param sqlAction {@link MDSQLAction}
+	 * @return allowed boolean
+	 */
+	public boolean isSQLActionAllowed(MDSQLAction sqlAction) {
+		boolean allowed = false;
 
-		if (mdVerb != null) {
+		if (sqlAction != null) {
 			int i = 0;
-			while (i < getMDEntity().params().length && !includeParam) {
-				if (getMDEntity().params()[i].equals(mdVerb)) {
-					includeParam = true;
+			while (i < getMDEntity().allowedSQLActions().length && !allowed) {
+				if (getMDEntity().allowedSQLActions()[i].equals(sqlAction)) {
+					allowed = true;
 				}
 				i++;
 			}
 		} else {
-			includeParam = true;
+			allowed = true;
 		}
 
-		return includeParam;
+		return allowed;
 	}
 
-	public boolean isChild() {
-		return getParentEntityInfo() != null;
-	}
-
+	/**
+	 * Get superClass as MDEntityInfo
+	 *
+	 * @return entityInfo {@link MDEntityInfo}
+	 */
 	public MDEntityInfo getParentEntityInfo() {
 		MDEntityInfo parent;
 		if (!(parent = new MDEntityInfo(entityClass.getSuperclass())).isMDEntity()) {
@@ -97,10 +106,12 @@ public class MDEntityInfo {
 		return parent;
 	}
 
-	public MDFieldInfo getParentIDFieldInfo() {
-		return getParentEntityInfo().getIDFieldInfo();
-	}
-
+	/**
+	 * Get every class as {@link MDEntityInfo} linked by a {@link MDManyToOne} annotation
+	 *
+	 * @param loadPolicy {@link MDLoadPolicy}
+	 * @return entityInfos {@link List}
+	 */
 	public List<MDEntityInfo> getManyToOneEntityInfos(MDLoadPolicy loadPolicy) {
 		List<MDEntityInfo> entityInfos = new ArrayList<>();
 		MDEntityInfo entityInfo;
@@ -113,6 +124,12 @@ public class MDEntityInfo {
 		return entityInfos;
 	}
 
+	/**
+	 * Get every fields as {@link MDFieldInfo} linked by a {@link MDOneToMany} annotation
+	 *
+	 * @param loadPolicy {@link MDLoadPolicy}
+	 * @return entityInfos {@link List}
+	 */
 	public List<MDFieldInfo> getOneToManyFieldInfos(MDLoadPolicy loadPolicy) {
 		List<MDFieldInfo> fieldInfos = new ArrayList<>();
 		for (MDFieldInfo fieldInfo : getOneToManys()) {
@@ -123,26 +140,53 @@ public class MDEntityInfo {
 		return fieldInfos;
 	}
 
+	/**
+	 * Get {@link MDId} annotation
+	 *
+	 * @return id {@link MDId}
+	 */
 	public MDFieldInfo getIDFieldInfo() {
 		return getFieldInfoByAnnotation(MDId.class);
 	}
 
+	/**
+	 * Get {@link MDInheritLink} annotation
+	 *
+	 * @return inheritLink {@link MDInheritLink}
+	 */
 	public MDFieldInfo getInheritLink() {
 		return getFieldInfoByAnnotation(MDInheritLink.class);
 	}
 
+	/**
+	 * Get {@link MDManyToOne} annotated fields
+	 *
+	 * @return fieldInfos {@link List}
+	 */
 	public List<MDFieldInfo> getManyToOnes() {
 		return getFieldsByAnnotation(MDManyToOne.class);
 	}
 
+	/**
+	 * Get {@link MDOneToMany} annotated fields
+	 *
+	 * @return fieldInfos {@link List}
+	 */
 	public List<MDFieldInfo> getOneToManys() {
 		return getFieldsByAnnotation(MDOneToMany.class);
 	}
 
+	/**
+	 * Get list of fields annotated by given annotation as a {@link MDFieldInfo} list
+	 *
+	 * @param annotation {@link Class}
+	 * @param <U>        U extends {@link Annotation}
+	 * @return fieldInfos {@link List}
+	 */
 	private <U extends Annotation> List<MDFieldInfo> getFieldsByAnnotation(Class<U> annotation) {
 		List<MDFieldInfo> fieldInfos = new ArrayList<>();
 		for (Field field : entityClass.getFields()) {
-			MDFieldInfo fieldInfo = new MDFieldInfo(field);
+			MDFieldInfo fieldInfo = new MDFieldInfo(field, this);
 			if (fieldInfo.getAnnotation(annotation) != null) {
 				fieldInfos.add(fieldInfo);
 			}
@@ -150,18 +194,35 @@ public class MDEntityInfo {
 		return fieldInfos;
 	}
 
+	/**
+	 * Get first field annotated by given annotation as an {@link MDFieldInfo}
+	 *
+	 * @param annotation {@link Class}
+	 * @param <U>        U extends {@link Annotation}
+	 * @return fieldInfo {@link MDFieldInfo}
+	 */
 	private <U extends Annotation> MDFieldInfo getFieldInfoByAnnotation(Class<U> annotation) {
-		MDFieldInfo mdFieldInfo = null;
+		MDFieldInfo fieldInfo = null;
 		int i = 0;
-		while (i < fieldInfos.size() && mdFieldInfo == null) {
+		while (i < fieldInfos.size() && fieldInfo == null) {
 			if (fieldInfos.get(i).getAnnotation(annotation) != null) {
-				mdFieldInfo = fieldInfos.get(i);
+				fieldInfo = fieldInfos.get(i);
 			}
 			i++;
 		}
-		return mdFieldInfo;
+		return fieldInfo;
 	}
 
+	/**
+	 * Instantiate an object and build it based on the given {@link ResultSet}
+	 *
+	 * @param resultSet  {@link ResultSet}
+	 * @param read       {@link MDRead}
+	 * @param subRequest boolean
+	 * @param <T>        T
+	 * @return instance T
+	 * @throws MDException Something went wrong
+	 */
 	public <T> T mapEntity(ResultSet resultSet, MDRead read, boolean subRequest) throws MDException {
 		T instance = null;
 
@@ -218,18 +279,32 @@ public class MDEntityInfo {
 		return instance;
 	}
 
+	/**
+	 * Get first {@link MDFieldInfo} matching fieldName
+	 *
+	 * @param fieldName {@link String}
+	 * @return fieldInfo {@link MDFieldInfo}
+	 */
 	public MDFieldInfo getMDFieldInfoByFieldName(String fieldName) {
-		MDFieldInfo mdFieldInfo = null;
+		MDFieldInfo fieldInfo = null;
 		int i = 0;
-		while (i < fieldInfos.size() && mdFieldInfo == null) {
+		while (i < fieldInfos.size() && fieldInfo == null) {
 			if (fieldInfos.get(i).getFieldName().equals(fieldName)) {
-				mdFieldInfo = fieldInfos.get(i);
+				fieldInfo = fieldInfos.get(i);
 			}
 			i++;
 		}
-		return mdFieldInfo;
+		return fieldInfo;
 	}
 
+	/**
+	 * Get first {@link MDFieldInfo} pointing given {@link Class}
+	 * It may be either an {@link MDInheritLink} or an {@link MDManyToOne}
+	 *
+	 * @param entityClass {@link Class}
+	 * @param <T>         T
+	 * @return fieldInfo {@link MDFieldInfo}
+	 */
 	public <T> MDFieldInfo getFieldInfoLinkedTo(Class<T> entityClass) {
 		MDFieldInfo fieldInfo = null;
 		List<MDFieldInfo> fieldInfos = getFieldsByAnnotation(MDManyToOne.class);

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.thomaskint.minidao.enumeration.MDLoadPolicy.HEAVY;
-import static com.thomaskint.minidao.enumeration.MDVerb.SELECT;
+import static com.thomaskint.minidao.enumeration.MDSQLAction.SELECT;
 import static com.thomaskint.minidao.testonly.model.MessageTest.idAuthorFieldName;
 
 /**
@@ -26,7 +26,7 @@ public class UserTest {
 	public static final String loginFieldName = "login";
 
 	@MDId
-	@MDField(fieldName = idUserFieldName, verbs = SELECT)
+	@MDField(fieldName = idUserFieldName, allowedSQLActions = SELECT)
 	public BigDecimal id;
 
 	@MDField(fieldName = pseudoFieldName)
