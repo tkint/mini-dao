@@ -1,8 +1,27 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * MIT License
+ *
+ * Copyright (c) 2017 Thomas Kint
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
+
 package com.thomaskint.minidao.connection;
 
 /**
@@ -15,15 +34,15 @@ public class MDConnectionConfig {
 	private String port;
 	private String login;
 	private String password;
-	private String database;
+	private String instance;
 
-	public MDConnectionConfig(MDDriver mdDriver, String url, String port, String login, String password, String database) {
-		this.mdDriver = mdDriver;
+	public MDConnectionConfig(MDDriver driver, String url, String port, String login, String password, String instance) {
+		this.mdDriver = driver;
 		this.url = url;
 		this.port = port;
 		this.login = login;
 		this.password = password;
-		this.database = database;
+		this.instance = instance;
 	}
 
 	public MDDriver getMdDriver() {
@@ -33,8 +52,8 @@ public class MDConnectionConfig {
 		return mdDriver;
 	}
 
-	public void setMdDriver(MDDriver mdDriver) {
-		this.mdDriver = mdDriver;
+	public void setMdDriver(MDDriver driver) {
+		this.mdDriver = driver;
 	}
 
 	public String getUrl() {
@@ -69,15 +88,15 @@ public class MDConnectionConfig {
 		this.password = password;
 	}
 
-	public String getDatabase() {
-		return database;
+	public String getInstance() {
+		return instance;
 	}
 
-	public void setDatabase(String database) {
-		this.database = database;
+	public void setInstance(String instance) {
+		this.instance = instance;
 	}
 
 	public String getCompleteUrl() {
-		return mdDriver.getCompleteUrl(url, port, database);
+		return mdDriver.getCompleteUrl(url, port, instance);
 	}
 }
