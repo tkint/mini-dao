@@ -6,29 +6,6 @@
             <username>${env.OSSRH_JIRA_USERNAME}</username>
             <password>${env.OSSRH_JIRA_PASSWORD}</password>
         </server>
-        <!-- Oracle Maven Repository -->
-        <server>
-            <id>maven.oracle.com</id>
-            <username>${env.OTN_USERNAME}</username>
-            <password>${env.OTN_PASSWORD}</password>
-            <configuration>
-                <basicAuthScope>
-                    <host>ANY</host>
-                    <port>ANY</port>
-                    <realm>OAM 11g</realm>
-                </basicAuthScope>
-                <httpConfiguration>
-                    <all>
-                        <params>
-                            <property>
-                                <name>http.protocol.allow-circular-redirects</name>
-                                <value>%b,true</value>
-                            </property>
-                        </params>
-                    </all>
-                </httpConfiguration>
-            </configuration>
-        </server>
     </servers>
 
     <profiles>

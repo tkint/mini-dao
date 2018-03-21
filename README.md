@@ -92,20 +92,20 @@ MiniDAO miniDAO = new MiniDAO(connectionConfig);
 
 Create an object reflecting one of your database table:
 ```java
-@MDEntity(name = "user")
+@MDEntity(tableName = "user")
 public class User { 
     
     @MDId
-    @MDField(name = "id_user", verbs = SELECT)
+    @MDField(fieldName = "id_user", allowedSQLActions = SELECT)
     public BigDecimal id_user;
     
-    @MDField(name = "email")
+    @MDField(fieldName = "email")
     public String email;
     
-    @MDField(name = "login")
+    @MDField(fieldName = "login")
     public String login;
     
-    @MDField(name = "password")
+    @MDField(fieldName = "password")
     public String password;
 }
 ```
@@ -184,18 +184,20 @@ Define class as an object of database
 - constraints:
   - class must be public
   - must have an empty constructor if custom ones are defined
-- name: table name in database
-- params: authorized verbs on this entity
-  - default: { SELECT, INSERT, UPDATE, DELETE }
+- properties:
+    - tableName: table name in database
+    - allowedSQLActions: authorized verbs on this entity
+      - default: { SELECT, INSERT, UPDATE, DELETE }
 
 #### @MDField
 
 Define field as a column of the entity table
 - constraints:
   - field must be public
-- name: field name in database
-- verbs: authorized verbs on this field
-  - default: { SELECT, INSERT, UPDATE, DELETE }
+- properties:
+    - fieldName: field name in database
+    - allowedSQLActions: authorized verbs on this field
+      - default: { SELECT, INSERT, UPDATE, DELETE }
 
 #### @MDId
 
@@ -217,11 +219,12 @@ Define field as a foreign key link to the referenced entity
   - field must be public
   - field must be an MDEntity object reference
   - must not be on a field annotated with MDField
-- name: field name of the foreign key in database
-- entity: entity to link
-- loadPolicy:
-  - LAZY: avoid loading of linked entity when current one is retrieved
-  - HEAVY: force loading of linked entity when current one is retrieved
+- properties:
+    - fieldName: field name of the foreign key in database
+    - target: entity to link
+    - loadPolicy:
+      - LAZY: avoid loading of linked entity when current one is retrieved
+      - HEAVY: force loading of linked entity when current one is retrieved
 
 #### @MDOneToMany - _Feature incoming_
 
@@ -230,10 +233,13 @@ Define field as a foreign key link to the referenced entity
   - field must be public
   - field must be an MDEntity object reference
   - must not be on a field annotated with MDField
-- entity: entity to link
-- loadPolicy:
-  - LAZY: avoid loading of linked entity when current one is retrieved
-  - HEAVY: force loading of linked entity when current one is retrieved
+- properties:
+    - fieldName: field name of the link key in database
+    - targetFieldName: field name of the target foreign key
+    - target: entity to link
+    - loadPolicy:
+      - LAZY: avoid loading of linked entity when current one is retrieved
+      - HEAVY: force loading of linked entity when current one is retrieved
 
 # Configuration
 
