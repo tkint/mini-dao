@@ -31,7 +31,7 @@ import com.thomaskint.minidao.enumeration.MDConditionOperator;
  */
 public class MDBadOperatorException extends MDException {
 
-	public MDBadOperatorException(MDConditionOperator mdConditionOperator) {
-		super(mdConditionOperator + " is not a valid operator in this context");
+	public MDBadOperatorException(MDConditionOperator conditionOperator) {
+		super(conditionOperator + " is not a valid operator in this context");
 	}
 }

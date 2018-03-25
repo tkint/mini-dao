@@ -70,7 +70,7 @@ public class MDDeleteBuilder extends MDQueryBuilder<MDDeleteBuilder> {
 
 	@Override
 	protected void buildVerbPart() {
-		queryBuilder.append(verb);
+		queryBuilder.append(sqlAction);
 	}
 
 	@Override

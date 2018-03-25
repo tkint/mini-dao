@@ -80,7 +80,7 @@ public class MDInsertBuilder extends MDQueryBuilder<MDInsertBuilder> {
 
 	@Override
 	protected void buildVerbPart() {
-		queryBuilder.append(verb);
+		queryBuilder.append(sqlAction);
 	}
 
 	@Override

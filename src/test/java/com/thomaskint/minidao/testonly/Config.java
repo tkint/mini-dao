@@ -38,5 +38,5 @@ public class Config {
 
 	private static final String databaseName = "h2test";
 
-	public static final MDConnectionConfig mdConnectionConfig = new MDConnectionConfig(MDDriver.H2, file.getAbsolutePath(), null, "root", "password", databaseName);
+	public static final MDConnectionConfig connectionConfig = new MDConnectionConfig(MDDriver.H2, file.getAbsolutePath(), null, "root", "password", databaseName);
 }

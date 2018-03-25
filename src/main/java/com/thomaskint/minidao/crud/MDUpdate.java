@@ -41,8 +41,8 @@ import static com.thomaskint.minidao.enumeration.MDSQLAction.UPDATE;
  */
 public class MDUpdate extends MDCRUDBase {
 
-	public MDUpdate(MDConnectionConfig mdConnectionConfig) {
-		super(mdConnectionConfig);
+	public MDUpdate(MDConnectionConfig connectionConfig) {
+		super(connectionConfig);
 	}
 
 	/**

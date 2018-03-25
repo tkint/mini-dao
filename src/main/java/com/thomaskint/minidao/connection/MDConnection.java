@@ -37,7 +37,7 @@ public class MDConnection {
 
 	MDConnection(MDConnectionConfig connectionConfig) throws MDException {
 		try {
-			Class.forName(connectionConfig.getMdDriver().getValue());
+			Class.forName(connectionConfig.getDriver().getValue());
 
 			String completeUrl = connectionConfig.getCompleteUrl();
 			String login = connectionConfig.getLogin();
@@ -60,9 +60,9 @@ public class MDConnection {
 		}
 	}
 
-	public static int executeUpdate(MDConnectionConfig mdConnectionConfig, String sql) throws MDException {
+	public static int executeUpdate(MDConnectionConfig connectionConfig, String sql) throws MDException {
 		try {
-			return new MDConnection(mdConnectionConfig).statement.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
+			return new MDConnection(connectionConfig).statement.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
 		} catch (SQLException e) {
 			throw new MDException(e);
 		}

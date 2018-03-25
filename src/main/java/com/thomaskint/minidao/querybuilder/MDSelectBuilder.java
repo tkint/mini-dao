@@ -76,7 +76,7 @@ public class MDSelectBuilder extends MDQueryBuilder<MDSelectBuilder> {
 			}
 		}
 
-		queryBuilder.append(verb);
+		queryBuilder.append(sqlAction);
 		queryBuilder.append(SPACE);
 		if (addedFields == 0) {
 			queryBuilder.append(ALL);

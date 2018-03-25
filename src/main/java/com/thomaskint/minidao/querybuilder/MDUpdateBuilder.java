@@ -88,7 +88,7 @@ public class MDUpdateBuilder extends MDQueryBuilder<MDUpdateBuilder> {
 
 	@Override
 	protected void buildVerbPart() {
-		queryBuilder.append(verb);
+		queryBuilder.append(sqlAction);
 	}
 
 	@Override

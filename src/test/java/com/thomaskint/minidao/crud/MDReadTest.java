@@ -24,18 +24,17 @@
 
 package com.thomaskint.minidao.crud;
 
+import com.thomaskint.minidao.enumeration.MDConditionOperator;
 import com.thomaskint.minidao.exception.MDException;
-import com.thomaskint.minidao.testonly.model.MessageTest;
-import com.thomaskint.minidao.testonly.model.MessageTypeTest;
-import com.thomaskint.minidao.testonly.model.PlayerTest;
-import com.thomaskint.minidao.testonly.model.UserTest;
+import com.thomaskint.minidao.querybuilder.MDCondition;
+import com.thomaskint.minidao.testonly.model.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
 
-import static com.thomaskint.minidao.testonly.Config.mdConnectionConfig;
+import static com.thomaskint.minidao.testonly.Config.connectionConfig;
 
 /**
  * @author Thomas Kint
@@ -46,7 +45,7 @@ public class MDReadTest {
 
 	@Before
 	public void init() {
-		read = new MDRead(mdConnectionConfig);
+		read = new MDRead(connectionConfig);
 	}
 
 	@Test
@@ -57,6 +56,36 @@ public class MDReadTest {
 			users = read.getEntities(UserTest.class);
 			for (UserTest user : users) {
 				System.out.println(user);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.assertFalse(true);
+		}
+		Assert.assertTrue(true);
+	}
+
+	@Test
+	public void should_return_one_user() {
+		// GIVEN
+		UserTest user;
+		try {
+			user = read.getEntityById(UserTest.class, 30);
+			System.out.println(user);
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.assertFalse(true);
+		}
+		Assert.assertTrue(true);
+	}
+
+	@Test
+	public void should_return_list_of_roles_with_users() {
+		// GIVEN
+		List<RoleTest> roles;
+		try {
+			roles = read.getEntities(RoleTest.class);
+			for (RoleTest role : roles) {
+				System.out.println(role);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -105,6 +134,23 @@ public class MDReadTest {
 			messageTypes = read.getEntities(MessageTypeTest.class);
 			for (MessageTypeTest messageType : messageTypes) {
 				System.out.println(messageType);
+			}
+		} catch (MDException e) {
+			e.printStackTrace();
+			Assert.assertFalse(true);
+		}
+		Assert.assertTrue(true);
+	}
+
+	@Test
+	public void should_return_list_of_messages_based_on_author_id() {
+		// GIVEN
+		MDCondition condition = new MDCondition(MessageTest.idAuthorFieldName, MDConditionOperator.EQUAL, 10);
+		List<MessageTest> messages;
+		try {
+			messages = read.getEntities(MessageTest.class, condition);
+			for (MessageTest message : messages) {
+				System.out.println(message);
 			}
 		} catch (MDException e) {
 			e.printStackTrace();

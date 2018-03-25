@@ -91,4 +91,15 @@ public class MDCondition {
 	public boolean hasSubCondition() {
 		return subCondition != null && conditionLink != null;
 	}
+
+	@Override
+	public String toString() {
+		return "MDCondition{" +
+				"fieldName='" + fieldName + '\'' +
+				", operator=" + operator +
+				", value=" + value +
+				", conditionLink=" + conditionLink +
+				", subCondition=" + subCondition +
+				'}';
+	}
 }
