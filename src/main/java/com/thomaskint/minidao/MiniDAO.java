@@ -97,14 +97,14 @@ public class MiniDAO {
 	public <T> T mapResultSetToEntity(ResultSet resultSet, Class<T> entityClass) throws MDException, SQLException {
 		MDEntityInfo entityInfo = new MDEntityInfo(entityClass);
 		resultSet.next();
-		return entityInfo.mapEntity(resultSet, read, false);
+		return entityInfo.mapEntity(resultSet, read, null);
 	}
 
 	public <T> List<T> mapResultSetToEntities(ResultSet resultSet, Class<T> entityClass) throws MDException, SQLException {
 		List<T> entities = new ArrayList<>();
 		MDEntityInfo entityInfo = new MDEntityInfo(entityClass);
 		while (resultSet.next()) {
-			entities.add(entityInfo.mapEntity(resultSet, read, false));
+			entities.add(entityInfo.mapEntity(resultSet, read, null));
 		}
 		return entities;
 	}

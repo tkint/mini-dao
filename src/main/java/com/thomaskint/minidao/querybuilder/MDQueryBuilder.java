@@ -31,6 +31,7 @@ import com.thomaskint.minidao.enumeration.MDSQLAction;
 import com.thomaskint.minidao.exception.MDException;
 import com.thomaskint.minidao.model.MDEntityInfo;
 import com.thomaskint.minidao.model.MDFieldInfo;
+import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,14 +55,14 @@ public abstract class MDQueryBuilder<U extends MDQueryBuilder<U>> {
 
 	MDSQLAction verb;
 	MDEntityInfo baseEntityInfo;
-	Map<MDJoinType, MDEntityInfo> joinedEntitiesInfo;
-	Map<MDConditionLink, MDCondition> conditions;
+	List<Pair<MDJoinType, MDEntityInfo>> joinedEntitiesInfo;
+	List<Pair<MDConditionLink, MDCondition>> conditions;
 	StringBuilder queryBuilder;
 
 	MDQueryBuilder(MDSQLAction verb) {
 		this.verb = verb;
-		this.conditions = new HashMap<>();
-		this.joinedEntitiesInfo = new HashMap<>();
+		this.conditions = new ArrayList<>();
+		this.joinedEntitiesInfo = new ArrayList<>();
 		this.queryBuilder = new StringBuilder();
 	}
 
@@ -70,49 +71,49 @@ public abstract class MDQueryBuilder<U extends MDQueryBuilder<U>> {
 	}
 
 	public final <T> U leftOuterJoin(Class<T> entityClass) {
-		joinedEntitiesInfo.put(LEFT_OUTER_JOIN, new MDEntityInfo(entityClass));
+		joinedEntitiesInfo.add(new Pair<>(LEFT_OUTER_JOIN, new MDEntityInfo(entityClass)));
 		return (U) this;
 	}
 
 	public final <T> U rightOuterJoin(Class<T> entityClass) {
-		joinedEntitiesInfo.put(RIGHT_OUTER_JOIN, new MDEntityInfo(entityClass));
+		joinedEntitiesInfo.add(new Pair<>(RIGHT_OUTER_JOIN, new MDEntityInfo(entityClass)));
 		return (U) this;
 	}
 
 	public final <T> U join(MDJoinType joinType, Class<T> entityClass) {
-		joinedEntitiesInfo.put(joinType, new MDEntityInfo(entityClass));
+		joinedEntitiesInfo.add(new Pair<>(joinType, new MDEntityInfo(entityClass)));
 		return (U) this;
 	}
 
 	public final U where(String fieldName, MDConditionOperator operator, Object value) {
 		conditions.clear();
-		conditions.put(null, new MDCondition(fieldName, operator, value));
+		conditions.add(new Pair<>(null, new MDCondition(fieldName, operator, value)));
 		return (U) this;
 	}
 
 	public final U where(MDCondition condition) {
 		conditions.clear();
-		conditions.put(null, condition);
+		conditions.add(new Pair<>(null, condition));
 		return (U) this;
 	}
 
 	public final U and(String fieldName, MDConditionOperator operator, Object value) {
-		conditions.put(AND, new MDCondition(fieldName, operator, value));
+		conditions.add(new Pair<>(AND, new MDCondition(fieldName, operator, value)));
 		return (U) this;
 	}
 
 	public final U and(MDCondition condition) {
-		conditions.put(AND, condition);
+		conditions.add(new Pair<>(AND, condition));
 		return (U) this;
 	}
 
 	public final U or(String fieldName, MDConditionOperator operator, Object value) {
-		conditions.put(OR, new MDCondition(fieldName, operator, value));
+		conditions.add(new Pair<>(OR, new MDCondition(fieldName, operator, value)));
 		return (U) this;
 	}
 
 	public final U or(MDCondition condition) {
-		conditions.put(OR, condition);
+		conditions.add(new Pair<>(OR, condition));
 		return (U) this;
 	}
 
@@ -122,7 +123,7 @@ public abstract class MDQueryBuilder<U extends MDQueryBuilder<U>> {
 
 	protected void buildJoinPart() {
 		MDFieldInfo linkFieldInfo;
-		for (Map.Entry<MDJoinType, MDEntityInfo> joinedEntityInfo : joinedEntitiesInfo.entrySet()) {
+		for (Pair<MDJoinType, MDEntityInfo> joinedEntityInfo : joinedEntitiesInfo) {
 			linkFieldInfo = baseEntityInfo.getFieldInfoLinkedTo(joinedEntityInfo.getValue().getEntityClass());
 			if (linkFieldInfo != null) {
 				queryBuilder.append(SPACE);
@@ -147,16 +148,19 @@ public abstract class MDQueryBuilder<U extends MDQueryBuilder<U>> {
 
 		MDFieldInfo fieldInfo;
 		MDEntityInfo conditionEntityInfo;
-		for (Map.Entry<MDConditionLink, MDCondition> condition : conditions.entrySet()) {
+		for (Pair<MDConditionLink, MDCondition> condition : conditions) {
 			conditionEntityInfo = null;
 			if (baseEntityInfo.getMDFieldInfoByFieldName(condition.getValue().getFieldName()) != null) {
 				conditionEntityInfo = baseEntityInfo;
 			} else {
-				List<MDEntityInfo> joinedEntitiesInfos = new ArrayList<>(joinedEntitiesInfo.values());
+				List<MDEntityInfo> entityInfos = new ArrayList<>();
+				for (Pair<MDJoinType, MDEntityInfo> joinedEntityInfo : joinedEntitiesInfo) {
+					entityInfos.add(joinedEntityInfo.getValue());
+				}
 				int i = 0;
-				while (i < joinedEntitiesInfos.size() && conditionEntityInfo == null) {
-					if (joinedEntitiesInfos.get(i).getMDFieldInfoByFieldName(condition.getValue().getFieldName()) != null) {
-						conditionEntityInfo = joinedEntitiesInfos.get(i);
+				while (i < entityInfos.size() && conditionEntityInfo == null) {
+					if (entityInfos.get(i).getMDFieldInfoByFieldName(condition.getValue().getFieldName()) != null) {
+						conditionEntityInfo = entityInfos.get(i);
 					}
 					i++;
 				}
@@ -204,11 +208,14 @@ public abstract class MDQueryBuilder<U extends MDQueryBuilder<U>> {
 		if (this.baseEntityInfo != null && this.baseEntityInfo.getMDFieldInfoByFieldName(fieldName) != null) {
 			entityInfo = this.baseEntityInfo;
 		} else {
-			List<MDEntityInfo> entitiesInfo = new ArrayList<>(joinedEntitiesInfo.values());
+			List<MDEntityInfo> entityInfos = new ArrayList<>();
+			for (Pair<MDJoinType, MDEntityInfo> joinedEntityInfo : joinedEntitiesInfo) {
+				entityInfos.add(joinedEntityInfo.getValue());
+			}
 			int i = 0;
-			while (i < entitiesInfo.size() && entityInfo == null) {
-				if (entitiesInfo.get(i).getMDFieldInfoByFieldName(fieldName) != null) {
-					entityInfo = entitiesInfo.get(i);
+			while (i < entityInfos.size() && entityInfo == null) {
+				if (entityInfos.get(i).getMDFieldInfoByFieldName(fieldName) != null) {
+					entityInfo = entityInfos.get(i);
 				}
 				i++;
 			}

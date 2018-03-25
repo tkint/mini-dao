@@ -71,6 +71,6 @@ public class MDUpdate extends MDCRUDBase {
 		String query = updateBuilder.build();
 
 		// Executing crud
-		return MDConnection.executeUpdate(mdConnectionConfig, query) > 0;
+		return MDConnection.executeUpdate(connectionConfig, query) > 0;
 	}
 }

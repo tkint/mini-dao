@@ -42,6 +42,8 @@ public class MessageTest {
 
 	public static final String idAuthorFieldName = "id_author";
 
+	public static final String messageTypeFieldName = "message_type";
+
 	@MDId
 	@MDField(fieldName = "id_message", allowedSQLActions = SELECT)
 	public BigDecimal idMessage;
@@ -54,6 +56,9 @@ public class MessageTest {
 
 	@MDField(fieldName = "content")
 	public String content;
+
+	@MDManyToOne(fieldName = messageTypeFieldName, target = MessageTypeTest.class, loadPolicy = HEAVY)
+	public MessageTypeTest messageType;
 
 	public MessageTest() {
 	}
@@ -72,6 +77,7 @@ public class MessageTest {
 				", idUser=" + idUser +
 				", userTest=" + userTest +
 				", content='" + content + '\'' +
+				", messageType=" + messageType +
 				'}';
 	}
 }
