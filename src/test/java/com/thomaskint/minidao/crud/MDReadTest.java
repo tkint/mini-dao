@@ -26,6 +26,7 @@ package com.thomaskint.minidao.crud;
 
 import com.thomaskint.minidao.exception.MDException;
 import com.thomaskint.minidao.testonly.model.MessageTest;
+import com.thomaskint.minidao.testonly.model.MessageTypeTest;
 import com.thomaskint.minidao.testonly.model.PlayerTest;
 import com.thomaskint.minidao.testonly.model.UserTest;
 import org.junit.Assert;
@@ -88,6 +89,22 @@ public class MDReadTest {
 			messages = read.getEntities(MessageTest.class);
 			for (MessageTest message : messages) {
 				System.out.println(message);
+			}
+		} catch (MDException e) {
+			e.printStackTrace();
+			Assert.assertFalse(true);
+		}
+		Assert.assertTrue(true);
+	}
+
+	@Test
+	public void should_return_list_of_messagetypes_with_messages_and_authors() {
+		// GIVEN
+		List<MessageTypeTest> messageTypes;
+		try {
+			messageTypes = read.getEntities(MessageTypeTest.class);
+			for (MessageTypeTest messageType : messageTypes) {
+				System.out.println(messageType);
 			}
 		} catch (MDException e) {
 			e.printStackTrace();

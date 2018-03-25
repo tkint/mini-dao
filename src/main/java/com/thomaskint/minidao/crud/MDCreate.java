@@ -68,6 +68,6 @@ public class MDCreate extends MDCRUDBase {
 
 		String query = insertBuilder.build();
 
-		return MDConnection.executeUpdate(mdConnectionConfig, query) > 0;
+		return MDConnection.executeUpdate(connectionConfig, query) > 0;
 	}
 }

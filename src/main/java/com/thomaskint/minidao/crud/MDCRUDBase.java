@@ -28,9 +28,9 @@ import com.thomaskint.minidao.connection.MDConnectionConfig;
 
 abstract class MDCRUDBase {
 
-	final MDConnectionConfig mdConnectionConfig;
+	final MDConnectionConfig connectionConfig;
 
-	MDCRUDBase(MDConnectionConfig mdConnectionConfig) {
-		this.mdConnectionConfig = mdConnectionConfig;
+	MDCRUDBase(MDConnectionConfig connectionConfig) {
+		this.connectionConfig = connectionConfig;
 	}
 }

@@ -72,7 +72,7 @@ public class MDDelete extends MDCRUDBase {
 
 		String query = deleteBuilder.build();
 
-		return MDConnection.executeUpdate(mdConnectionConfig, query) > 0;
+		return MDConnection.executeUpdate(connectionConfig, query) > 0;
 	}
 
 	/**
@@ -153,6 +153,6 @@ public class MDDelete extends MDCRUDBase {
 
 		String query = deleteBuilder.build();
 
-		return MDConnection.executeUpdate(mdConnectionConfig, query) > 0;
+		return MDConnection.executeUpdate(connectionConfig, query) > 0;
 	}
 }

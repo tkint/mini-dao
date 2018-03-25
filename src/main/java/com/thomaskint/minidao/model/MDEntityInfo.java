@@ -37,6 +37,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static com.thomaskint.minidao.enumeration.MDConditionOperator.EQUAL;
 import static com.thomaskint.minidao.enumeration.MDLoadPolicy.HEAVY;
@@ -240,14 +241,14 @@ public class MDEntityInfo {
 	/**
 	 * Instantiate an object and build it based on the given {@link ResultSet}
 	 *
-	 * @param resultSet  {@link ResultSet}
-	 * @param read       {@link MDRead}
-	 * @param subRequest boolean
-	 * @param <T>        T
+	 * @param <T>                     T
+	 * @param resultSet               {@link ResultSet}
+	 * @param read                    {@link MDRead}
+	 * @param alreadyRetrievedClasses {@link Set}
 	 * @return instance T
 	 * @throws MDException Something went wrong
 	 */
-	public <T> T mapEntity(ResultSet resultSet, MDRead read, boolean subRequest) throws MDException {
+	public <T> T mapEntity(ResultSet resultSet, MDRead read, Set<Class> alreadyRetrievedClasses) throws MDException {
 		T instance = null;
 
 		try {
@@ -269,29 +270,31 @@ public class MDEntityInfo {
 			}
 
 			// Many To Ones
-			if (!subRequest) {
-				List<MDFieldInfo> manyToOneFieldInfos = getManyToOnes();
-				MDEntityInfo entityInfo;
-				for (MDFieldInfo fieldInfo : manyToOneFieldInfos) {
-					if (fieldInfo.getMDManyToOne().loadPolicy().equals(HEAVY)) {
-						entityInfo = new MDEntityInfo(fieldInfo.getMDManyToOne().target());
-						object = entityInfo.mapEntity(resultSet, read, true);
+			List<MDFieldInfo> manyToOneFieldInfos = getManyToOnes();
+			MDEntityInfo entityInfo;
+			for (MDFieldInfo fieldInfo : manyToOneFieldInfos) {
+				if (fieldInfo.getMDManyToOne().loadPolicy().equals(HEAVY)) {
+					entityInfo = new MDEntityInfo(fieldInfo.getMDManyToOne().target());
+					if (!alreadyRetrievedClasses.contains(entityInfo.getEntityClass())) {
+						alreadyRetrievedClasses.add(entityInfo.getEntityClass());
+						object = entityInfo.mapEntity(resultSet, read, alreadyRetrievedClasses);
 						fieldInfo.getField().set(instance, object);
 					}
 				}
 			}
 
 			// One To Manys
-			if (!subRequest) {
-				List entities;
-				MDOneToMany oneToMany;
-				MDCondition subCondition;
-				List<MDFieldInfo> oneToManyFieldInfos = getOneToManyFieldInfos(HEAVY);
-				if (id != null) {
-					for (MDFieldInfo oneToManyFieldInfo : oneToManyFieldInfos) {
-						oneToMany = oneToManyFieldInfo.getMDOneToMany();
+			List entities;
+			MDOneToMany oneToMany;
+			MDCondition subCondition;
+			List<MDFieldInfo> oneToManyFieldInfos = getOneToManyFieldInfos(HEAVY);
+			if (id != null) {
+				for (MDFieldInfo oneToManyFieldInfo : oneToManyFieldInfos) {
+					oneToMany = oneToManyFieldInfo.getMDOneToMany();
+					if (!alreadyRetrievedClasses.contains(oneToMany.target())) {
+						alreadyRetrievedClasses.add(oneToMany.target());
 						subCondition = new MDCondition(oneToMany.targetFieldName(), EQUAL, id);
-						entities = read.getEntities(oneToMany.target(), subCondition, true);
+						entities = read.getEntities(oneToMany.target(), subCondition, alreadyRetrievedClasses);
 						oneToManyFieldInfo.getField().set(instance, entities);
 					}
 				}
