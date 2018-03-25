@@ -58,8 +58,8 @@ public class MiniDAO {
 		this.delete = new MDDelete(connectionConfig);
 	}
 
-	public MiniDAO(MDDriver mdDriver, String url, String port, String login, String password, String database) {
-		this(new MDConnectionConfig(mdDriver, url, port, login, password, database));
+	public MiniDAO(MDDriver driver, String url, String port, String login, String password, String database) {
+		this(new MDConnectionConfig(driver, url, port, login, password, database));
 	}
 
 	public MiniDAO(String url, String port, String login, String password, String database) {

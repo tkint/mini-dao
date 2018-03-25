@@ -29,7 +29,7 @@ package com.thomaskint.minidao.connection;
  */
 public class MDConnectionConfig {
 
-	private MDDriver mdDriver;
+	private MDDriver driver;
 	private String url;
 	private String port;
 	private String login;
@@ -37,7 +37,7 @@ public class MDConnectionConfig {
 	private String instance;
 
 	public MDConnectionConfig(MDDriver driver, String url, String port, String login, String password, String instance) {
-		this.mdDriver = driver;
+		this.driver = driver;
 		this.url = url;
 		this.port = port;
 		this.login = login;
@@ -45,15 +45,15 @@ public class MDConnectionConfig {
 		this.instance = instance;
 	}
 
-	public MDDriver getMdDriver() {
-		if (mdDriver == null) {
-			mdDriver = MDDriver.DEFAULT;
+	public MDDriver getDriver() {
+		if (driver == null) {
+			driver = MDDriver.DEFAULT;
 		}
-		return mdDriver;
+		return driver;
 	}
 
-	public void setMdDriver(MDDriver driver) {
-		this.mdDriver = driver;
+	public void setDriver(MDDriver driver) {
+		this.driver = driver;
 	}
 
 	public String getUrl() {
@@ -97,6 +97,6 @@ public class MDConnectionConfig {
 	}
 
 	public String getCompleteUrl() {
-		return mdDriver.getCompleteUrl(url, port, instance);
+		return driver.getCompleteUrl(url, port, instance);
 	}
 }

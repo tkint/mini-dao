@@ -43,8 +43,8 @@ import static com.thomaskint.minidao.enumeration.MDSQLAction.DELETE;
  */
 public class MDDelete extends MDCRUDBase {
 
-	public MDDelete(MDConnectionConfig mdConnectionConfig) {
-		super(mdConnectionConfig);
+	public MDDelete(MDConnectionConfig connectionConfig) {
+		super(connectionConfig);
 	}
 
 	/**

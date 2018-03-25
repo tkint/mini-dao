@@ -34,9 +34,7 @@ import com.thomaskint.minidao.model.MDFieldInfo;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static com.thomaskint.minidao.enumeration.MDConditionLink.AND;
 import static com.thomaskint.minidao.enumeration.MDConditionLink.OR;
@@ -44,23 +42,21 @@ import static com.thomaskint.minidao.enumeration.MDConditionOperator.EQUAL;
 import static com.thomaskint.minidao.enumeration.MDJoinType.*;
 import static com.thomaskint.minidao.enumeration.MDSQLWord.ON;
 import static com.thomaskint.minidao.enumeration.MDSQLWord.WHERE;
-import static com.thomaskint.minidao.utils.MDStringUtils.LEFT_PARENTHESIS;
-import static com.thomaskint.minidao.utils.MDStringUtils.RIGHT_PARENTHESIS;
-import static com.thomaskint.minidao.utils.MDStringUtils.SPACE;
+import static com.thomaskint.minidao.utils.MDStringUtils.*;
 
 /**
  * @author Thomas Kint
  */
 public abstract class MDQueryBuilder<U extends MDQueryBuilder<U>> {
 
-	MDSQLAction verb;
+	MDSQLAction sqlAction;
 	MDEntityInfo baseEntityInfo;
 	List<Pair<MDJoinType, MDEntityInfo>> joinedEntitiesInfo;
 	List<Pair<MDConditionLink, MDCondition>> conditions;
 	StringBuilder queryBuilder;
 
-	MDQueryBuilder(MDSQLAction verb) {
-		this.verb = verb;
+	MDQueryBuilder(MDSQLAction sqlAction) {
+		this.sqlAction = sqlAction;
 		this.conditions = new ArrayList<>();
 		this.joinedEntitiesInfo = new ArrayList<>();
 		this.queryBuilder = new StringBuilder();
@@ -153,19 +149,16 @@ public abstract class MDQueryBuilder<U extends MDQueryBuilder<U>> {
 			if (baseEntityInfo.getMDFieldInfoByFieldName(condition.getValue().getFieldName()) != null) {
 				conditionEntityInfo = baseEntityInfo;
 			} else {
-				List<MDEntityInfo> entityInfos = new ArrayList<>();
-				for (Pair<MDJoinType, MDEntityInfo> joinedEntityInfo : joinedEntitiesInfo) {
-					entityInfos.add(joinedEntityInfo.getValue());
-				}
 				int i = 0;
-				while (i < entityInfos.size() && conditionEntityInfo == null) {
-					if (entityInfos.get(i).getMDFieldInfoByFieldName(condition.getValue().getFieldName()) != null) {
-						conditionEntityInfo = entityInfos.get(i);
+				while (i < joinedEntitiesInfo.size() && conditionEntityInfo == null) {
+					if (joinedEntitiesInfo.get(i) != null
+							&& joinedEntitiesInfo.get(i).getValue() != null
+							&& joinedEntitiesInfo.get(i).getValue().getMDFieldInfoByFieldName(condition.getValue().getFieldName()) != null) {
+						conditionEntityInfo = joinedEntitiesInfo.get(i).getValue();
 					}
 					i++;
 				}
 			}
-
 			if (conditionEntityInfo != null) {
 				fieldInfo = conditionEntityInfo.getMDFieldInfoByFieldName(condition.getValue().getFieldName());
 				if (fieldInfo != null) {
@@ -208,14 +201,12 @@ public abstract class MDQueryBuilder<U extends MDQueryBuilder<U>> {
 		if (this.baseEntityInfo != null && this.baseEntityInfo.getMDFieldInfoByFieldName(fieldName) != null) {
 			entityInfo = this.baseEntityInfo;
 		} else {
-			List<MDEntityInfo> entityInfos = new ArrayList<>();
-			for (Pair<MDJoinType, MDEntityInfo> joinedEntityInfo : joinedEntitiesInfo) {
-				entityInfos.add(joinedEntityInfo.getValue());
-			}
 			int i = 0;
-			while (i < entityInfos.size() && entityInfo == null) {
-				if (entityInfos.get(i).getMDFieldInfoByFieldName(fieldName) != null) {
-					entityInfo = entityInfos.get(i);
+			while (i < joinedEntitiesInfo.size() && entityInfo == null) {
+				if (joinedEntitiesInfo.get(i) != null
+						&& joinedEntitiesInfo.get(i).getValue() != null
+						&& joinedEntitiesInfo.get(i).getValue().getMDFieldInfoByFieldName(fieldName) != null) {
+					entityInfo = joinedEntitiesInfo.get(i).getValue();
 				}
 				i++;
 			}
@@ -224,6 +215,6 @@ public abstract class MDQueryBuilder<U extends MDQueryBuilder<U>> {
 	}
 
 	protected boolean isFieldInfoParamValid(MDFieldInfo fieldInfo) {
-		return baseEntityInfo.isSQLActionAllowed(verb) && fieldInfo.isSQLActionAllowed(verb);
+		return baseEntityInfo.isSQLActionAllowed(sqlAction) && fieldInfo.isSQLActionAllowed(sqlAction);
 	}
 }

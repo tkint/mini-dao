@@ -31,7 +31,7 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 
-import static com.thomaskint.minidao.testonly.Config.mdConnectionConfig;
+import static com.thomaskint.minidao.testonly.Config.connectionConfig;
 
 /**
  * @author Thomas Kint
@@ -42,7 +42,7 @@ public class MDCreateTest {
 
 	@Before
 	public void init() {
-		create = new MDCreate(mdConnectionConfig);
+		create = new MDCreate(connectionConfig);
 	}
 
 	@Test

@@ -30,15 +30,14 @@ import com.thomaskint.minidao.exception.MDException;
 import com.thomaskint.minidao.exception.MDNotAnMDEntityException;
 import com.thomaskint.minidao.exception.MDParamNotIncludedInClassException;
 import com.thomaskint.minidao.model.MDEntityInfo;
+import com.thomaskint.minidao.model.MDFieldInfo;
 import com.thomaskint.minidao.querybuilder.MDCondition;
 import com.thomaskint.minidao.querybuilder.MDSelectBuilder;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static com.thomaskint.minidao.enumeration.MDConditionOperator.EQUAL;
 import static com.thomaskint.minidao.enumeration.MDLoadPolicy.HEAVY;
@@ -51,8 +50,8 @@ import static com.thomaskint.minidao.enumeration.MDSQLAction.SELECT;
  */
 public class MDRead extends MDCRUDBase {
 
-	public MDRead(MDConnectionConfig mdConnectionConfig) {
-		super(mdConnectionConfig);
+	public MDRead(MDConnectionConfig connectionConfig) {
+		super(connectionConfig);
 	}
 
 	/**
@@ -71,7 +70,20 @@ public class MDRead extends MDCRUDBase {
 
 		MDCondition condition = new MDCondition(fieldName, EQUAL, id);
 
-		List<T> entities = getEntities(entityInfo, condition);
+		return getEntityByCondition(entityInfo, condition, null);
+	}
+
+	/**
+	 * Retrieve entity based on its class and given condition
+	 *
+	 * @param entityInfo {@link MDEntityInfo}
+	 * @param condition  {@link MDCondition}
+	 * @param <T>        T
+	 * @return Entity
+	 * @throws MDException when can't retrieve data
+	 */
+	public <T> T getEntityByCondition(MDEntityInfo entityInfo, MDCondition condition, List<Class> parentClasses) throws MDException {
+		List<T> entities = getEntities(entityInfo, condition, parentClasses);
 
 		T entity = null;
 
@@ -111,16 +123,16 @@ public class MDRead extends MDCRUDBase {
 	/**
 	 * Retrieve entities based on class and condition
 	 *
-	 * @param entityClass             {@link Class}
-	 * @param condition               {@link MDCondition}
-	 * @param alreadyRetrievedClasses {@link Set}
-	 * @param <T>                     T
+	 * @param entityClass   {@link Class}
+	 * @param condition     {@link MDCondition}
+	 * @param parentClasses {@link Class}
+	 * @param <T>           T
 	 * @return List of entities
 	 * @throws MDException when can't retrieve data
 	 */
-	public <T> List<T> getEntities(Class<T> entityClass, MDCondition condition, Set alreadyRetrievedClasses) throws MDException {
+	public <T> List<T> getEntities(Class<T> entityClass, MDCondition condition, List<Class> parentClasses) throws MDException {
 		MDEntityInfo entityInfo = new MDEntityInfo(entityClass);
-		return getEntities(entityInfo, condition, alreadyRetrievedClasses);
+		return getEntities(entityInfo, condition, parentClasses);
 	}
 
 	/**
@@ -151,14 +163,14 @@ public class MDRead extends MDCRUDBase {
 	/**
 	 * Retrieve entities based on entityInfo and condition
 	 *
-	 * @param entityInfo              {@link MDEntityInfo}
-	 * @param condition               {@link MDCondition}
-	 * @param alreadyRetrievedClasses {@link Set}
-	 * @param <T>                     T
+	 * @param entityInfo    {@link MDEntityInfo}
+	 * @param condition     {@link MDCondition}
+	 * @param parentClasses {@link Class}
+	 * @param <T>           T
 	 * @return List of entities
 	 * @throws MDException when can't retrieve data
 	 */
-	private <T> List<T> getEntities(MDEntityInfo entityInfo, MDCondition condition, Set<Class> alreadyRetrievedClasses) throws MDException {
+	private <T> List<T> getEntities(MDEntityInfo entityInfo, MDCondition condition, List<Class> parentClasses) throws MDException {
 		// Control if it's an MDEntity
 		if (!entityInfo.isMDEntity()) {
 			throw new MDNotAnMDEntityException(entityInfo.getEntityClass());
@@ -167,10 +179,10 @@ public class MDRead extends MDCRUDBase {
 			throw new MDParamNotIncludedInClassException(entityInfo.getEntityClass(), SELECT);
 		}
 
-		if (alreadyRetrievedClasses == null) {
-			alreadyRetrievedClasses = new HashSet<>();
+		if (parentClasses == null) {
+			parentClasses = new ArrayList<>();
 		}
-		alreadyRetrievedClasses.add(entityInfo.getEntityClass());
+		parentClasses.add(entityInfo.getEntityClass());
 
 		MDSelectBuilder selectBuilder = new MDSelectBuilder();
 		selectBuilder.select().from(entityInfo.getEntityClass());
@@ -182,18 +194,8 @@ public class MDRead extends MDCRUDBase {
 
 		// InheritLink
 		MDEntityInfo parentEntityInfo = entityInfo.getParentEntityInfo();
-		if (parentEntityInfo != null && !alreadyRetrievedClasses.contains(parentEntityInfo.getEntityClass())) {
+		if (parentEntityInfo != null) {
 			selectBuilder.innerJoin(parentEntityInfo.getEntityClass());
-		}
-
-		// Many To Ones entities
-		List<MDEntityInfo> manyToOneEntityInfos = entityInfo.getManyToOneEntityInfos(HEAVY);
-		if (!manyToOneEntityInfos.isEmpty()) {
-			for (MDEntityInfo manyToOneEntityInfo : manyToOneEntityInfos) {
-				if (!alreadyRetrievedClasses.contains(manyToOneEntityInfo.getEntityClass())) {
-					selectBuilder.innerJoin(manyToOneEntityInfo.getEntityClass());
-				}
-			}
 		}
 
 		// Build query
@@ -207,7 +209,7 @@ public class MDRead extends MDCRUDBase {
 		try {
 			// Map resultset to the expected objet
 			while (resultSet.next()) {
-				entities.add(entityInfo.mapEntity(resultSet, this, alreadyRetrievedClasses));
+				entities.add(entityInfo.mapEntity(resultSet, this, parentClasses));
 			}
 		} catch (SQLException e) {
 			throw new MDException(e);

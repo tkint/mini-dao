@@ -24,10 +24,7 @@
 
 package com.thomaskint.minidao.testonly.model;
 
-import com.thomaskint.minidao.annotation.MDEntity;
-import com.thomaskint.minidao.annotation.MDField;
-import com.thomaskint.minidao.annotation.MDId;
-import com.thomaskint.minidao.annotation.MDOneToMany;
+import com.thomaskint.minidao.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -49,6 +46,8 @@ public class UserTest {
 
 	public static final String loginFieldName = "login";
 
+	public static final String roleFieldName = "role";
+
 	@MDId
 	@MDField(fieldName = idUserFieldName, allowedSQLActions = SELECT)
 	public BigDecimal id;
@@ -64,6 +63,9 @@ public class UserTest {
 
 	@MDOneToMany(fieldName = idUserFieldName, targetFieldName = idAuthorFieldName, target = MessageTest.class, loadPolicy = HEAVY)
 	public List<MessageTest> messages;
+
+	@MDManyToOne(fieldName = roleFieldName, target = RoleTest.class, loadPolicy = HEAVY)
+	public RoleTest role;
 
 	public UserTest() {
 	}
@@ -84,6 +86,7 @@ public class UserTest {
 				", login='" + login + '\'' +
 				", password='" + password + '\'' +
 				", messages=" + messages +
+				", role=" + role +
 				'}';
 	}
 }
