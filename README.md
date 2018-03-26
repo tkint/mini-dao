@@ -42,7 +42,7 @@ Java library for quick connection between java model and database tables.
   * [@MDId](#mdid)
   * [@MDInheritLink](#mdinheritlink)
   * [@MDManyToOne](#mdmanytoone)
-  * [@MDOneToMany](#mdonetomany---feature-incoming)
+  * [@MDOneToMany](#mdonetomany)
 * [Configuration](#configuration)
 * [Main class : MiniDAO](#main-class--minidao)
   * [read() - MDRead](#read---mdread)
