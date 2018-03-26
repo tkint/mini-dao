@@ -5,5 +5,5 @@ if [ -n "$TRAVIS_TAG" ]; then
     mvn deploy -P sign,build-extras -s travis/mvnsettings.xml
 elif [ $TRAVIS_BRANCH = 'develop' ]; then
     echo "Deploying snapshot"
-    mvn deploy -s travis/mvnsettings.xml
+    mvn deploy -P sign -s travis/mvnsettings.xml
 fi

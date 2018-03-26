@@ -42,7 +42,7 @@ Java library for quick connection between java model and database tables.
   * [@MDId](#mdid)
   * [@MDInheritLink](#mdinheritlink)
   * [@MDManyToOne](#mdmanytoone)
-  * [@MDOneToMany - _Feature Incoming_](#mdonetomany---feature-incoming)
+  * [@MDOneToMany](#mdonetomany---feature-incoming)
 * [Configuration](#configuration)
 * [Main class : MiniDAO](#main-class--minidao)
   * [read() - MDRead](#read---mdread)
@@ -220,13 +220,14 @@ Define field as a foreign key link to the referenced entity
   - field must be an MDEntity object reference
   - must not be on a field annotated with MDField
 - properties:
-    - fieldName: field name of the foreign key in database
+    - fieldName: field name of the link key in database
+    - targetFieldName: field name of the target key
     - target: entity to link
     - loadPolicy:
       - LAZY: avoid loading of linked entity when current one is retrieved
       - HEAVY: force loading of linked entity when current one is retrieved
 
-#### @MDOneToMany - _Feature incoming_
+#### @MDOneToMany
 
 Define field as a foreign key link to the referenced entity
 - constraints:
@@ -270,7 +271,33 @@ can use Query Builders to make your own queries and execute them.
 
 #### MDSelectBuilder
 
-_In progress_
+```java
+public class UserRetriever {
+    	
+    private MiniDAO miniDAO;
+    
+    public UserRetriever(MiniDAO miniDAO) {
+        this.miniDAO = miniDAO;
+    }
+	
+    public List<User> getUsersByFirstName(String firstName) throws MDException {
+        MDSelectBuilder selectBuilder = new MDSelectBuilder();
+        selectBuilder.select().from(User.class).where("first_name", EQUAL, firstName);
+        String query = selectBuilder.build();
+        
+        ResultSet resultSet;
+        List<User> users;
+        try {
+        	resultSet = miniDAO.executeQuery(query);
+        	users = miniDAO.mapResultSetToEntities(resultSet, User.class);
+        } catch (MDException exception) {
+        	throw exception;
+        }
+        
+        return users;
+    }
+}
+```
 
 #### MDInsertBuilder
 
