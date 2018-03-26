@@ -60,14 +60,13 @@ import static com.thomaskint.minidao.enumeration.MDSQLAction.SELECT;
 
 	public MessageTest(BigDecimal idMessage, BigDecimal idUser, UserTest userTest, String content) {
 		this.idMessage = idMessage;
-		//		this.idUser = idUser;
+		this.idUser = idUser;
 		this.userTest = userTest;
 		this.content = content;
 	}
 
 	@Override public String toString() {
-		return "MessageTest{" + "idMessage=" + idMessage +
-				//				", idUser=" + idUser +
-				", userTest=" + userTest + ", content='" + content + '\'' + ", messageType=" + messageType + '}';
+		return "MessageTest{" + "idMessage=" + idMessage + ", idUser=" + idUser + ", userTest=" + userTest
+				+ ", content='" + content + '\'' + ", messageType=" + messageType + '}';
 	}
 }
