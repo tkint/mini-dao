@@ -24,6 +24,11 @@
 
 package com.thomaskint.minidao;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.thomaskint.minidao.connection.MDConnection;
 import com.thomaskint.minidao.connection.MDConnectionConfig;
 import com.thomaskint.minidao.connection.MDDriver;
@@ -33,11 +38,6 @@ import com.thomaskint.minidao.crud.MDRead;
 import com.thomaskint.minidao.crud.MDUpdate;
 import com.thomaskint.minidao.exception.MDException;
 import com.thomaskint.minidao.model.MDEntityInfo;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Thomas Kint
@@ -94,17 +94,25 @@ public class MiniDAO {
 		return MDConnection.executeUpdate(connectionConfig, query);
 	}
 
-	public <T> T mapResultSetToEntity(ResultSet resultSet, Class<T> entityClass) throws MDException, SQLException {
+	public <T> T mapResultSetToEntity(ResultSet resultSet, Class<T> entityClass) throws MDException {
 		MDEntityInfo entityInfo = new MDEntityInfo(entityClass);
-		resultSet.next();
+		try {
+			resultSet.next();
+		} catch (SQLException e) {
+			throw new MDException(e);
+		}
 		return entityInfo.mapEntity(resultSet, read, null);
 	}
 
-	public <T> List<T> mapResultSetToEntities(ResultSet resultSet, Class<T> entityClass) throws MDException, SQLException {
+	public <T> List<T> mapResultSetToEntities(ResultSet resultSet, Class<T> entityClass) throws MDException {
 		List<T> entities = new ArrayList<>();
 		MDEntityInfo entityInfo = new MDEntityInfo(entityClass);
-		while (resultSet.next()) {
-			entities.add(entityInfo.mapEntity(resultSet, read, null));
+		try {
+			while (resultSet.next()) {
+				entities.add(entityInfo.mapEntity(resultSet, read, null));
+			}
+		} catch (SQLException e) {
+			throw new MDException(e);
 		}
 		return entities;
 	}
