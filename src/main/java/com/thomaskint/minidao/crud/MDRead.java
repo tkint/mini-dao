@@ -224,8 +224,6 @@ public class MDRead extends MDCRUDBase {
 		// Build query
 		String query = selectBuilder.build();
 
-		System.out.println(query);
-
 		// Execute query
 		ResultSet resultSet;
 		resultSet = MDConnection.executeQuery(connectionConfig, query);
