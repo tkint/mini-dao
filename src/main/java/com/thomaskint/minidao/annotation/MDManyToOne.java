@@ -24,13 +24,13 @@
 
 package com.thomaskint.minidao.annotation;
 
-import com.thomaskint.minidao.enumeration.MDLoadPolicy;
-import com.thomaskint.minidao.utils.MDIncomingFeature;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import com.thomaskint.minidao.enumeration.MDLoadPolicy;
+import com.thomaskint.minidao.utils.MDIncomingFeature;
 
 import static com.thomaskint.minidao.enumeration.MDLoadPolicy.LAZY;
 
@@ -42,6 +42,8 @@ import static com.thomaskint.minidao.enumeration.MDLoadPolicy.LAZY;
 public @interface MDManyToOne {
 
 	String fieldName();
+
+	String targetFieldName();
 
 	Class target();
 
