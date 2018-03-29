@@ -24,12 +24,12 @@
 
 package com.thomaskint.minidao.testonly.model;
 
+import java.math.BigDecimal;
+
 import com.thomaskint.minidao.annotation.MDEntity;
 import com.thomaskint.minidao.annotation.MDField;
 import com.thomaskint.minidao.annotation.MDId;
 import com.thomaskint.minidao.annotation.MDManyToOne;
-
-import java.math.BigDecimal;
 
 import static com.thomaskint.minidao.enumeration.MDLoadPolicy.HEAVY;
 import static com.thomaskint.minidao.enumeration.MDSQLAction.SELECT;
@@ -37,27 +37,22 @@ import static com.thomaskint.minidao.enumeration.MDSQLAction.SELECT;
 /**
  * @author Thomas Kint
  */
-@MDEntity(tableName = "message")
-public class MessageTest {
+@MDEntity(tableName = "message") public class MessageTest {
 
 	public static final String idAuthorFieldName = "id_author";
 
 	public static final String messageTypeFieldName = "message_type";
 
-	@MDId
-	@MDField(fieldName = "id_message", allowedSQLActions = SELECT)
-	public BigDecimal idMessage;
+	@MDId @MDField(fieldName = "id_message", allowedSQLActions = SELECT) public BigDecimal idMessage;
 
-	@MDField(fieldName = idAuthorFieldName)
-	public BigDecimal idUser;
+	@MDField(fieldName = idAuthorFieldName) public BigDecimal idUser;
 
-	@MDManyToOne(fieldName = idAuthorFieldName, target = UserTest.class, loadPolicy = HEAVY)
+	@MDManyToOne(fieldName = MessageTest.idAuthorFieldName, targetFieldName = UserTest.idUserFieldName, target = UserTest.class, loadPolicy = HEAVY)
 	public UserTest userTest;
 
-	@MDField(fieldName = "content")
-	public String content;
+	@MDField(fieldName = "content") public String content;
 
-	@MDManyToOne(fieldName = messageTypeFieldName, target = MessageTypeTest.class, loadPolicy = HEAVY)
+	@MDManyToOne(fieldName = MessageTest.messageTypeFieldName, targetFieldName = MessageTypeTest.valueFieldName, target = MessageTypeTest.class, loadPolicy = HEAVY)
 	public MessageTypeTest messageType;
 
 	public MessageTest() {
@@ -70,14 +65,8 @@ public class MessageTest {
 		this.content = content;
 	}
 
-	@Override
-	public String toString() {
-		return "MessageTest{" +
-				"idMessage=" + idMessage +
-				", idUser=" + idUser +
-				", userTest=" + userTest +
-				", content='" + content + '\'' +
-				", messageType=" + messageType +
-				'}';
+	@Override public String toString() {
+		return "MessageTest{" + "idMessage=" + idMessage + ", idUser=" + idUser + ", userTest=" + userTest
+				+ ", content='" + content + '\'' + ", messageType=" + messageType + '}';
 	}
 }
