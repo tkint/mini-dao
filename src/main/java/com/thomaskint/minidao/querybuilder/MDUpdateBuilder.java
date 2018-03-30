@@ -24,17 +24,19 @@
 
 package com.thomaskint.minidao.querybuilder;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.thomaskint.minidao.exception.MDException;
 import com.thomaskint.minidao.model.MDEntityInfo;
 import com.thomaskint.minidao.model.MDFieldInfo;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static com.thomaskint.minidao.enumeration.MDConditionOperator.EQUAL;
-import static com.thomaskint.minidao.enumeration.MDSQLWord.VALUES;
 import static com.thomaskint.minidao.enumeration.MDSQLAction.UPDATE;
-import static com.thomaskint.minidao.utils.MDStringUtils.*;
+import static com.thomaskint.minidao.enumeration.MDSQLWord.SET;
+import static com.thomaskint.minidao.utils.MDStringUtils.COMMA;
+import static com.thomaskint.minidao.utils.MDStringUtils.QUOTE;
+import static com.thomaskint.minidao.utils.MDStringUtils.SPACE;
 
 /**
  * @author Thomas Kint
@@ -86,66 +88,55 @@ public class MDUpdateBuilder extends MDQueryBuilder<MDUpdateBuilder> {
 		return this;
 	}
 
-	@Override
-	protected void buildVerbPart() {
+	@Override protected void buildVerbPart() {
 		queryBuilder.append(sqlAction);
 	}
 
-	@Override
-	protected void buildTablePart() {
+	@Override protected void buildTablePart() {
 		queryBuilder.append(SPACE);
 		queryBuilder.append(baseEntityInfo.getTableName());
 	}
 
-	private void buildKeysValuesPart() {
-		StringBuilder keysBuilder = new StringBuilder();
-		StringBuilder valuesBuilder = new StringBuilder();
+	private void buildSetPart() {
+		StringBuilder setBuilder = new StringBuilder();
 
 		MDFieldInfo fieldInfo;
 		int addedFields = 0;
 		for (Map.Entry<String, Object> keyValue : newValues.entrySet()) {
 			fieldInfo = baseEntityInfo.getMDFieldInfoByFieldName(keyValue.getKey());
-			if (fieldInfo != null
-					&& !fieldInfo.equals(baseEntityInfo.getIDFieldInfo())
-					&& isFieldInfoParamValid(fieldInfo)) {
+			if (fieldInfo != null && isFieldInfoParamValid(fieldInfo)) {
 				if (addedFields > 0) {
-					keysBuilder.append(COMMA);
-					keysBuilder.append(SPACE);
-					valuesBuilder.append(COMMA);
-					valuesBuilder.append(SPACE);
+					setBuilder.append(COMMA);
+					setBuilder.append(SPACE);
 				}
-				keysBuilder.append(QUOTE);
-				keysBuilder.append(keyValue.getKey());
-				keysBuilder.append(QUOTE);
-				valuesBuilder.append(QUOTE);
-				valuesBuilder.append(keyValue.getValue());
-				valuesBuilder.append(QUOTE);
+				setBuilder.append(QUOTE);
+				setBuilder.append(fieldInfo.getFieldName());
+				setBuilder.append(QUOTE);
+				setBuilder.append(SPACE);
+				setBuilder.append(EQUAL);
+				setBuilder.append(SPACE);
+				setBuilder.append(QUOTE);
+				setBuilder.append(keyValue.getValue());
+				setBuilder.append(QUOTE);
 				addedFields++;
 			}
 		}
 
 		if (addedFields > 0) {
 			queryBuilder.append(SPACE);
-			queryBuilder.append(LEFT_PARENTHESIS);
-			queryBuilder.append(keysBuilder);
-			queryBuilder.append(RIGHT_PARENTHESIS);
+			queryBuilder.append(SET);
 			queryBuilder.append(SPACE);
-			queryBuilder.append(VALUES);
-			queryBuilder.append(SPACE);
-			queryBuilder.append(LEFT_PARENTHESIS);
-			queryBuilder.append(valuesBuilder);
-			queryBuilder.append(RIGHT_PARENTHESIS);
+			queryBuilder.append(setBuilder);
 		}
 	}
 
-	@Override
-	public String build() throws MDException {
+	@Override public String build() throws MDException {
 		if (baseEntityInfo == null) {
 			throw new MDException("No target!");
 		}
 		buildVerbPart();
 		buildTablePart();
-		buildKeysValuesPart();
+		buildSetPart();
 		buildWherePart();
 		return queryBuilder.toString();
 	}
