@@ -108,9 +108,7 @@ public class MDInsertBuilder extends MDQueryBuilder<MDInsertBuilder> {
 					valuesBuilder.append(COMMA);
 					valuesBuilder.append(SPACE);
 				}
-				keysBuilder.append(QUOTE);
 				keysBuilder.append(keyValue.getKey());
-				keysBuilder.append(QUOTE);
 				valuesBuilder.append(QUOTE);
 				valuesBuilder.append(keyValue.getValue());
 				valuesBuilder.append(QUOTE);
