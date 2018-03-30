@@ -40,7 +40,7 @@ public class MDInsertBuilderTest {
 	@Test
 	public void should_construct_query() {
 		// GIVEN
-		String expectedQuery = "INSERT INTO message ('id_author', 'content') VALUES ('1', 'test-content')";
+		String expectedQuery = "INSERT INTO message (id_author, content) VALUES ('1', 'test-content')";
 		UserTest author = new UserTest(BigDecimal.valueOf(1), "pseudo", "login", "password");
 		MessageTest message = new MessageTest(BigDecimal.valueOf(1), BigDecimal.valueOf(1), author, "test-content");
 		MDInsertBuilder insertBuilder = new MDInsertBuilder();
@@ -58,7 +58,7 @@ public class MDInsertBuilderTest {
 	@Test
 	public void should_construct_query_bis() {
 		// GIVEN
-		String expectedQuery = "INSERT INTO message ('id_author', 'content') VALUES ('1', 'test-content')";
+		String expectedQuery = "INSERT INTO message (id_author, content) VALUES ('1', 'test-content')";
 		MDInsertBuilder insertBuilder = new MDInsertBuilder();
 		insertBuilder.into(MessageTest.class);
 		insertBuilder.set("id_author", 1);
