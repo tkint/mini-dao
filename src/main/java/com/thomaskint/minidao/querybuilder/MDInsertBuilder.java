@@ -24,21 +24,17 @@
 
 package com.thomaskint.minidao.querybuilder;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.thomaskint.minidao.exception.MDException;
 import com.thomaskint.minidao.model.MDEntityInfo;
 import com.thomaskint.minidao.model.MDFieldInfo;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static com.thomaskint.minidao.enumeration.MDSQLAction.INSERT;
 import static com.thomaskint.minidao.enumeration.MDSQLWord.INTO;
 import static com.thomaskint.minidao.enumeration.MDSQLWord.VALUES;
-import static com.thomaskint.minidao.utils.MDStringUtils.COMMA;
-import static com.thomaskint.minidao.utils.MDStringUtils.LEFT_PARENTHESIS;
-import static com.thomaskint.minidao.utils.MDStringUtils.QUOTE;
-import static com.thomaskint.minidao.utils.MDStringUtils.RIGHT_PARENTHESIS;
-import static com.thomaskint.minidao.utils.MDStringUtils.SPACE;
+import static com.thomaskint.minidao.utils.MDStringUtils.*;
 
 /**
  * @author Thomas Kint
@@ -81,11 +77,13 @@ public class MDInsertBuilder extends MDQueryBuilder<MDInsertBuilder> {
 		return this;
 	}
 
-	@Override protected void buildVerbPart() {
+	@Override
+	protected void buildVerbPart() {
 		queryBuilder.append(sqlAction);
 	}
 
-	@Override protected void buildTablePart() {
+	@Override
+	protected void buildTablePart() {
 		queryBuilder.append(SPACE);
 		queryBuilder.append(INTO);
 		queryBuilder.append(SPACE);
@@ -100,19 +98,26 @@ public class MDInsertBuilder extends MDQueryBuilder<MDInsertBuilder> {
 		int addedFields = 0;
 		for (Map.Entry<String, Object> keyValue : newValues.entrySet()) {
 			fieldInfo = baseEntityInfo.getMDFieldInfoByFieldName(keyValue.getKey());
-			if (fieldInfo != null && !fieldInfo.equals(baseEntityInfo.getIDFieldInfo()) && isFieldInfoParamValid(
-					fieldInfo)) {
-				if (addedFields > 0) {
-					keysBuilder.append(COMMA);
-					keysBuilder.append(SPACE);
-					valuesBuilder.append(COMMA);
-					valuesBuilder.append(SPACE);
+			if (fieldInfo != null
+					&& !(fieldInfo.equals(baseEntityInfo.getIDFieldInfo()) && !baseEntityInfo.getIDFieldInfo().isSQLActionAllowed(sqlAction))
+					&& isFieldInfoParamValid(fieldInfo)) {
+				if (keyValue.getValue() != null) {
+					if (addedFields > 0) {
+						keysBuilder.append(COMMA);
+						keysBuilder.append(SPACE);
+						valuesBuilder.append(COMMA);
+						valuesBuilder.append(SPACE);
+					}
+					keysBuilder.append(keyValue.getKey());
+					if (!(keyValue.getValue() instanceof Number)) {
+						valuesBuilder.append(QUOTE);
+					}
+					valuesBuilder.append(keyValue.getValue());
+					if (!(keyValue.getValue() instanceof Number)) {
+						valuesBuilder.append(QUOTE);
+					}
+					addedFields++;
 				}
-				keysBuilder.append(keyValue.getKey());
-				valuesBuilder.append(QUOTE);
-				valuesBuilder.append(keyValue.getValue());
-				valuesBuilder.append(QUOTE);
-				addedFields++;
 			}
 		}
 
@@ -130,7 +135,8 @@ public class MDInsertBuilder extends MDQueryBuilder<MDInsertBuilder> {
 		}
 	}
 
-	@Override public String build() throws MDException {
+	@Override
+	public String build() throws MDException {
 		if (baseEntityInfo == null) {
 			throw new MDException("No target!");
 		}
