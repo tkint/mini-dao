@@ -24,19 +24,17 @@
 
 package com.thomaskint.minidao.querybuilder;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.thomaskint.minidao.exception.MDException;
 import com.thomaskint.minidao.model.MDEntityInfo;
 import com.thomaskint.minidao.model.MDFieldInfo;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static com.thomaskint.minidao.enumeration.MDConditionOperator.EQUAL;
 import static com.thomaskint.minidao.enumeration.MDSQLAction.UPDATE;
 import static com.thomaskint.minidao.enumeration.MDSQLWord.SET;
-import static com.thomaskint.minidao.utils.MDStringUtils.COMMA;
-import static com.thomaskint.minidao.utils.MDStringUtils.QUOTE;
-import static com.thomaskint.minidao.utils.MDStringUtils.SPACE;
+import static com.thomaskint.minidao.utils.MDStringUtils.*;
 
 /**
  * @author Thomas Kint
@@ -88,11 +86,13 @@ public class MDUpdateBuilder extends MDQueryBuilder<MDUpdateBuilder> {
 		return this;
 	}
 
-	@Override protected void buildVerbPart() {
+	@Override
+	protected void buildVerbPart() {
 		queryBuilder.append(sqlAction);
 	}
 
-	@Override protected void buildTablePart() {
+	@Override
+	protected void buildTablePart() {
 		queryBuilder.append(SPACE);
 		queryBuilder.append(baseEntityInfo.getTableName());
 	}
@@ -109,15 +109,17 @@ public class MDUpdateBuilder extends MDQueryBuilder<MDUpdateBuilder> {
 					setBuilder.append(COMMA);
 					setBuilder.append(SPACE);
 				}
-				setBuilder.append(QUOTE);
 				setBuilder.append(fieldInfo.getFieldName());
-				setBuilder.append(QUOTE);
 				setBuilder.append(SPACE);
 				setBuilder.append(EQUAL);
 				setBuilder.append(SPACE);
-				setBuilder.append(QUOTE);
+				if (!(keyValue.getValue() instanceof Number)) {
+					setBuilder.append(QUOTE);
+				}
 				setBuilder.append(keyValue.getValue());
-				setBuilder.append(QUOTE);
+				if (!(keyValue.getValue() instanceof Number)) {
+					setBuilder.append(QUOTE);
+				}
 				addedFields++;
 			}
 		}
@@ -130,7 +132,8 @@ public class MDUpdateBuilder extends MDQueryBuilder<MDUpdateBuilder> {
 		}
 	}
 
-	@Override public String build() throws MDException {
+	@Override
+	public String build() throws MDException {
 		if (baseEntityInfo == null) {
 			throw new MDException("No target!");
 		}

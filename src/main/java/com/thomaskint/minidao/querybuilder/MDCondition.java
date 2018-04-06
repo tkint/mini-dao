@@ -76,9 +76,13 @@ public class MDCondition {
 		conditionBuilder.append(SPACE);
 		conditionBuilder.append(operator);
 		conditionBuilder.append(SPACE);
-		conditionBuilder.append(QUOTE);
+		if (!(value instanceof Number)) {
+			conditionBuilder.append(QUOTE);
+		}
 		conditionBuilder.append(value);
-		conditionBuilder.append(QUOTE);
+		if (!(value instanceof Number)) {
+			conditionBuilder.append(QUOTE);
+		}
 		if (hasSubCondition()) {
 			conditionBuilder.append(SPACE);
 			conditionBuilder.append(conditionLink);

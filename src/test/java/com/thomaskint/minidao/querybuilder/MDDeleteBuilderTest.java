@@ -85,7 +85,7 @@ public class MDDeleteBuilderTest {
 	@Test
 	public void should_construct_query_with_condition() {
 		// GIVEN
-		String expectedQuery = "DELETE FROM message WHERE message.id_message = '1'";
+		String expectedQuery = "DELETE FROM message WHERE message.id_message = 1";
 		MDDeleteBuilder deleteBuilder = new MDDeleteBuilder();
 		deleteBuilder.delete().from(MessageTest.class).where("id_message", EQUAL, 1);
 		// WHEN
@@ -102,7 +102,7 @@ public class MDDeleteBuilderTest {
 	@Test
 	public void should_construct_query_with_entity() {
 		// GIVEN
-		String expectedQuery = "DELETE FROM message WHERE message.id_message = '1'";
+		String expectedQuery = "DELETE FROM message WHERE message.id_message = 1";
 		UserTest author = new UserTest(BigDecimal.valueOf(1), "pseudo", "login", "password");
 		MessageTest message = new MessageTest(BigDecimal.valueOf(1), BigDecimal.valueOf(1), author, "test-content");
 		MDDeleteBuilder deleteBuilder = new MDDeleteBuilder();

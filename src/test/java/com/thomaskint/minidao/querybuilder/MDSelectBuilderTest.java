@@ -193,7 +193,7 @@ public class MDSelectBuilderTest {
 	@Test
 	public void should_construct_query_with_condition() {
 		// GIVEN
-		String expectedQuery = "SELECT * FROM message WHERE message.id_message = '1'";
+		String expectedQuery = "SELECT * FROM message WHERE message.id_message = 1";
 		MDSelectBuilder selectBuilder = new MDSelectBuilder();
 		selectBuilder.select().from(MessageTest.class).where("id_message", EQUAL, 1);
 		// WHEN
@@ -210,7 +210,7 @@ public class MDSelectBuilderTest {
 	@Test
 	public void should_construct_query_with_nested_conditions() {
 		// GIVEN
-		String expectedQuery = "SELECT * FROM message WHERE (message.id_message = '1' OR message.id_author = '1') AND message.content = 'BOB'";
+		String expectedQuery = "SELECT * FROM message WHERE (message.id_message = 1 OR message.id_author = 1) AND message.content = 'BOB'";
 
 		MDCondition subCondition = new MDCondition("id_author", EQUAL, 1);
 		MDCondition condition = new MDCondition("id_message", EQUAL, 1, MDConditionLink.OR, subCondition);
@@ -231,7 +231,7 @@ public class MDSelectBuilderTest {
 	@Test
 	public void should_construct_query_with_multiple_conditions() {
 		// GIVEN
-		String expectedQuery = "SELECT * FROM message WHERE message.id_message = '1' AND message.id_author = '1'";
+		String expectedQuery = "SELECT * FROM message WHERE message.id_message = 1 AND message.id_author = 1";
 		MDSelectBuilder selectBuilder = new MDSelectBuilder();
 		selectBuilder.select().from(MessageTest.class).where("id_message", EQUAL, 1).and("id_author", EQUAL, 1);
 		// WHEN
@@ -248,7 +248,7 @@ public class MDSelectBuilderTest {
 	@Test
 	public void should_construct_query_with_inner_join_and_condition() {
 		// GIVEN
-		String expectedQuery = "SELECT * FROM message INNER JOIN user ON message.id_author = user.id_user WHERE message.id_message = '1'";
+		String expectedQuery = "SELECT * FROM message INNER JOIN user ON message.id_author = user.id_user WHERE message.id_message = 1";
 		MDSelectBuilder selectBuilder = new MDSelectBuilder();
 		selectBuilder.select().from(MessageTest.class).innerJoin(UserTest.class).where("id_message", EQUAL, 1);
 		// WHEN
