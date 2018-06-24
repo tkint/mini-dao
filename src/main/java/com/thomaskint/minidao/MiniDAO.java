@@ -91,7 +91,11 @@ public class MiniDAO {
 	}
 
 	public int executeUpdate(String query) throws MDException {
-		return MDConnection.executeUpdate(connectionConfig, query);
+		try {
+			return MDConnection.executeUpdate(connectionConfig, query);
+		} finally {
+			MDConnection.close();
+		}
 	}
 
 	public <T> T mapResultSetToEntity(ResultSet resultSet, Class<T> entityClass) throws MDException {
@@ -115,5 +119,9 @@ public class MiniDAO {
 			throw new MDException(e);
 		}
 		return entities;
+	}
+
+	public void closeConnection() throws MDException {
+		MDConnection.close();
 	}
 }
