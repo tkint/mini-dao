@@ -55,19 +55,22 @@ public class MDCreate extends MDCRUDBase {
 	 */
 	public <T> boolean createEntity(T entity) throws MDException {
 		MDEntityInfo entityInfo = new MDEntityInfo(entity.getClass());
+		try {
+			if (!entityInfo.isMDEntity()) {
+				throw new MDNotAnMDEntityException(entityInfo.getEntityClass());
+			}
+			if (!entityInfo.isSQLActionAllowed(INSERT)) {
+				throw new MDParamNotIncludedInClassException(entityInfo.getEntityClass(), INSERT);
+			}
 
-		if (!entityInfo.isMDEntity()) {
-			throw new MDNotAnMDEntityException(entityInfo.getEntityClass());
+			MDInsertBuilder insertBuilder = new MDInsertBuilder();
+			insertBuilder.insert(entity);
+
+			String query = insertBuilder.build();
+
+			return MDConnection.executeUpdate(connectionConfig, query) > 0;
+		} finally {
+			MDConnection.close();
 		}
-		if (!entityInfo.isSQLActionAllowed(INSERT)) {
-			throw new MDParamNotIncludedInClassException(entityInfo.getEntityClass(), INSERT);
-		}
-
-		MDInsertBuilder insertBuilder = new MDInsertBuilder();
-		insertBuilder.insert(entity);
-
-		String query = insertBuilder.build();
-
-		return MDConnection.executeUpdate(connectionConfig, query) > 0;
 	}
 }

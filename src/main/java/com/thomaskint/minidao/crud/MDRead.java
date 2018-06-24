@@ -237,8 +237,11 @@ public class MDRead extends MDCRUDBase {
 			callStack.pop();
 		} catch (SQLException e) {
 			throw new MDException(e);
+		} finally {
+			if (callStack.isEmpty()) {
+				MDConnection.close();
+			}
 		}
-
 		return entities;
 	}
 }

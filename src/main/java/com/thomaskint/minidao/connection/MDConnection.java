@@ -39,6 +39,8 @@ public class MDConnection {
 
 	private Connection connection;
 
+	private Statement statement;
+
 	private MDConnection(MDConnectionConfig connectionConfig) throws MDException {
 		try {
 			Class.forName(connectionConfig.getDriver().getValue());
@@ -54,15 +56,20 @@ public class MDConnection {
 		}
 	}
 
-	public static MDConnection getInstance(MDConnectionConfig connectionConfig) throws MDException {
-		if (instance == null || !connectionConfig.equals(instance.connectionConfig)) {
-			instance = new MDConnection(connectionConfig);
+	private static MDConnection getInstance(MDConnectionConfig connectionConfig) throws MDException {
+		try {
+			if (instance == null || !connectionConfig.equals(instance.connectionConfig) || instance.connection.isClosed()) {
+				instance = new MDConnection(connectionConfig);
+			}
+		} catch (SQLException e) {
+			throw new MDException(e);
 		}
 		return instance;
 	}
 
-	public Statement getStatement() throws SQLException {
-		return this.connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+	private Statement getStatement() throws SQLException {
+		statement = this.connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+		return statement;
 	}
 
 	public static ResultSet executeQuery(MDConnectionConfig connectionConfig, String sql) throws MDException {
@@ -76,6 +83,22 @@ public class MDConnection {
 	public static int executeUpdate(MDConnectionConfig connectionConfig, String sql) throws MDException {
 		try {
 			return getInstance(connectionConfig).getStatement().executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
+		} catch (SQLException e) {
+			throw new MDException(e);
+		}
+	}
+
+	public static void close() throws MDException {
+		try {
+			if (instance.statement != null && !instance.statement.isClosed()) {
+				if (instance.statement.getResultSet() != null && !instance.statement.getResultSet().isClosed()) {
+					instance.statement.getResultSet().close();
+				}
+				instance.statement.close();
+			}
+			if (instance.connection != null && !instance.connection.isClosed()) {
+				instance.connection.close();
+			}
 		} catch (SQLException e) {
 			throw new MDException(e);
 		}
