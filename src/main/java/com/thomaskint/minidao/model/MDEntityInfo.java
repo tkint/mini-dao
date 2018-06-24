@@ -142,7 +142,7 @@ public class MDEntityInfo {
 	 */
 	public List<MDFieldInfo> getManyToOneFieldInfos(MDLoadPolicy loadPolicy) {
 		List<MDFieldInfo> fieldInfos = new ArrayList<>();
-		for (MDFieldInfo fieldInfo : getManyToOnes()) {
+		for (MDFieldInfo fieldInfo : mapManyToOnes()) {
 			if (fieldInfo.getMDManyToOne().loadPolicy().equals(loadPolicy)) {
 				fieldInfos.add(fieldInfo);
 			}
@@ -189,7 +189,7 @@ public class MDEntityInfo {
 	 *
 	 * @return fieldInfos {@link List}
 	 */
-	public List<MDFieldInfo> getManyToOnes() {
+	public List<MDFieldInfo> mapManyToOnes() {
 		return getFieldsByAnnotation(MDManyToOne.class);
 	}
 
@@ -256,7 +256,7 @@ public class MDEntityInfo {
 			instance = (T) entityClass.newInstance();
 
 			// ID Field
-			Object id = null;
+			Object id;
 			MDFieldInfo idFieldInfo = getIDFieldInfo();
 			if (idFieldInfo != null) {
 				id = resultSet.getObject(idFieldInfo.getFieldName());
@@ -270,51 +270,61 @@ public class MDEntityInfo {
 				fieldInfo.getField().set(instance, object);
 			}
 
-			// Many To Ones
-			Object ref;
-			MDManyToOne manyToOne;
-			MDCondition condition;
-			List<MDFieldInfo> manyToOneFieldInfos = getManyToOneFieldInfos(HEAVY);
-			// For each many to one relation
-			for (MDFieldInfo manyToOneFieldInfo : manyToOneFieldInfos) {
-				manyToOne = manyToOneFieldInfo.getMDManyToOne();
-				// If target not in callStack
-				if (callStack == null || !callStack.isPresent(manyToOne.target())) {
-					// Getting reference
-					ref = resultSet.getObject(manyToOne.fieldName());
-					// Condition target primary key = relation value
-					condition = new MDCondition(manyToOne.targetFieldName(), EQUAL, ref);
-					// Getting object
-					object = read.getEntityByCondition(manyToOne.target(), condition, callStack);
-					// Setting field with object
-					manyToOneFieldInfo.getField().set(instance, object);
-				}
-			}
+			mapManyToOnes(instance, resultSet, read, callStack);
 
-			// One To Manys
-			List objects;
-			MDOneToMany oneToMany;
-			List<MDFieldInfo> oneToManyFieldInfos = getOneToManyFieldInfos(HEAVY);
-			// For each one to many relation
-			for (MDFieldInfo oneToManyFieldInfo : oneToManyFieldInfos) {
-				oneToMany = oneToManyFieldInfo.getMDOneToMany();
-				// If target not in callStack
-				if (callStack == null || !callStack.isPresent(oneToMany.target())) {
-					// Getting reference
-					ref = resultSet.getObject(oneToMany.fieldName());
-					// Condition on target field name equals id
-					condition = new MDCondition(oneToMany.targetFieldName(), EQUAL, ref);
-					// Getting list of objects
-					objects = read.getEntities(oneToMany.target(), condition, callStack);
-					// Setting field with list of objects
-					oneToManyFieldInfo.getField().set(instance, objects);
-				}
-			}
+			mapOneToManys(instance, resultSet, read, callStack);
 		} catch (InstantiationException | IllegalAccessException | SQLException e) {
 			throw new MDException(e);
 		}
 
 		return instance;
+	}
+
+	private <T> void mapManyToOnes(T instance, ResultSet resultSet, MDRead read, MDCallStack<Class> callStack) throws MDException, IllegalAccessException, SQLException {
+		Object object;
+		Object ref;
+		MDManyToOne manyToOne;
+		MDCondition condition;
+		List<MDFieldInfo> manyToOneFieldInfos = getManyToOneFieldInfos(HEAVY);
+		// For each many to one relation
+		for (MDFieldInfo manyToOneFieldInfo : manyToOneFieldInfos) {
+			manyToOne = manyToOneFieldInfo.getMDManyToOne();
+			// If target not in callStack
+			if (callStack == null || !callStack.isPresent(manyToOne.target())) {
+				// Getting reference
+				ref = resultSet.getObject(manyToOne.fieldName());
+				// Condition target primary key = relation value
+				condition = new MDCondition(manyToOne.targetFieldName(), EQUAL, ref);
+				// Getting object
+				object = read.getEntityByCondition(manyToOne.target(), condition, callStack);
+				// Setting field with object
+				manyToOneFieldInfo.getField().set(instance, object);
+			}
+		}
+	}
+
+	private <T> void mapOneToManys(T instance, ResultSet resultSet, MDRead read, MDCallStack<Class> callStack) throws MDException, IllegalAccessException, SQLException {
+		// One To Manys
+		List objects;
+		Object ref;
+		MDCondition condition;
+		MDOneToMany oneToMany;
+		List<MDFieldInfo> oneToManyFieldInfos = getOneToManyFieldInfos(HEAVY);
+		// For each one to many relation
+		for (MDFieldInfo oneToManyFieldInfo : oneToManyFieldInfos) {
+			oneToMany = oneToManyFieldInfo.getMDOneToMany();
+			// If target not in callStack
+			if (callStack == null || !callStack.isPresent(oneToMany.target())) {
+				// Getting reference
+				ref = resultSet.getObject(oneToMany.fieldName());
+				// Condition on target field name equals id
+				condition = new MDCondition(oneToMany.targetFieldName(), EQUAL, ref);
+				// Getting list of objects
+				objects = read.getEntities(oneToMany.target(), condition, callStack);
+				// Setting field with list of objects
+				oneToManyFieldInfo.getField().set(instance, objects);
+			}
+		}
 	}
 
 	/**
@@ -327,7 +337,7 @@ public class MDEntityInfo {
 		List<MDFieldInfo> fieldInfos = new ArrayList<>();
 		fieldInfos.addAll(this.fieldInfos);
 		fieldInfos.addAll(getOneToManys());
-		fieldInfos.addAll(getManyToOnes());
+		fieldInfos.addAll(mapManyToOnes());
 		MDFieldInfo fieldInfo = null;
 		int i = 0;
 		while (i < fieldInfos.size() && fieldInfo == null) {
@@ -351,7 +361,7 @@ public class MDEntityInfo {
 		MDFieldInfo fieldInfo = null;
 		List<MDFieldInfo> fieldInfos = new ArrayList<>();
 		fieldInfos.addAll(getOneToManys());
-		fieldInfos.addAll(getManyToOnes());
+		fieldInfos.addAll(mapManyToOnes());
 		int i = 0;
 		while (i < fieldInfos.size() && fieldInfo == null) {
 			if ((fieldInfos.get(i).isOneToMany() && fieldInfos.get(i).getMDOneToMany().target().equals(entityClass))
