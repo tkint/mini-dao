@@ -33,9 +33,13 @@ import java.sql.*;
  */
 public class MDConnection {
 
-	private Statement statement;
+	private static MDConnection instance;
 
-	MDConnection(MDConnectionConfig connectionConfig) throws MDException {
+	private MDConnectionConfig connectionConfig;
+
+	private Connection connection;
+
+	private MDConnection(MDConnectionConfig connectionConfig) throws MDException {
 		try {
 			Class.forName(connectionConfig.getDriver().getValue());
 
@@ -43,18 +47,27 @@ public class MDConnection {
 			String login = connectionConfig.getLogin();
 			String password = connectionConfig.getPassword();
 
-			Connection connection = DriverManager.getConnection(completeUrl, login, password);
-
-			statement = connection.createStatement();
-
+			this.connection = DriverManager.getConnection(completeUrl, login, password);
+			this.connectionConfig = connectionConfig;
 		} catch (ClassNotFoundException | SQLException ex) {
 			throw new MDException(ex);
 		}
 	}
 
+	public static MDConnection getInstance(MDConnectionConfig connectionConfig) throws MDException {
+		if (instance == null || !connectionConfig.equals(instance.connectionConfig)) {
+			instance = new MDConnection(connectionConfig);
+		}
+		return instance;
+	}
+
+	public Statement getStatement() throws SQLException {
+		return this.connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+	}
+
 	public static ResultSet executeQuery(MDConnectionConfig connectionConfig, String sql) throws MDException {
 		try {
-			return new MDConnection(connectionConfig).statement.executeQuery(sql);
+			return getInstance(connectionConfig).getStatement().executeQuery(sql);
 		} catch (SQLException e) {
 			throw new MDException(e);
 		}
@@ -62,7 +75,7 @@ public class MDConnection {
 
 	public static int executeUpdate(MDConnectionConfig connectionConfig, String sql) throws MDException {
 		try {
-			return new MDConnection(connectionConfig).statement.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
+			return getInstance(connectionConfig).getStatement().executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
 		} catch (SQLException e) {
 			throw new MDException(e);
 		}
