@@ -57,20 +57,23 @@ public class MDUpdate extends MDCRUDBase {
 	 */
 	public <T> boolean updateEntity(T entity) throws MDException {
 		MDEntityInfo entityInfo = new MDEntityInfo(entity.getClass());
+		try {
+			if (!entityInfo.isMDEntity()) {
+				throw new MDNotAnMDEntityException(entityInfo.getEntityClass());
+			}
+			if (!entityInfo.isSQLActionAllowed(UPDATE)) {
+				throw new MDParamNotIncludedInClassException(entityInfo.getEntityClass(), UPDATE);
+			}
 
-		if (!entityInfo.isMDEntity()) {
-			throw new MDNotAnMDEntityException(entityInfo.getEntityClass());
+			MDUpdateBuilder updateBuilder = new MDUpdateBuilder();
+			updateBuilder.update(entity);
+
+			String query = updateBuilder.build();
+
+			// Executing crud
+			return MDConnection.executeUpdate(connectionConfig, query) > 0;
+		} finally {
+			MDConnection.close();
 		}
-		if (!entityInfo.isSQLActionAllowed(UPDATE)) {
-			throw new MDParamNotIncludedInClassException(entityInfo.getEntityClass(), UPDATE);
-		}
-
-		MDUpdateBuilder updateBuilder = new MDUpdateBuilder();
-		updateBuilder.update(entity);
-
-		String query = updateBuilder.build();
-
-		// Executing crud
-		return MDConnection.executeUpdate(connectionConfig, query) > 0;
 	}
 }

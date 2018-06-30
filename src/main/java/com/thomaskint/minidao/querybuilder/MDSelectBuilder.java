@@ -24,19 +24,20 @@
 
 package com.thomaskint.minidao.querybuilder;
 
+import com.thomaskint.minidao.exception.MDException;
 import com.thomaskint.minidao.model.MDEntityInfo;
 import com.thomaskint.minidao.model.MDFieldInfo;
 
-import static com.thomaskint.minidao.enumeration.MDSQLWord.ALL;
-import static com.thomaskint.minidao.enumeration.MDSQLWord.FROM;
 import static com.thomaskint.minidao.enumeration.MDSQLAction.SELECT;
-import static com.thomaskint.minidao.utils.MDStringUtils.COMMA;
-import static com.thomaskint.minidao.utils.MDStringUtils.SPACE;
+import static com.thomaskint.minidao.enumeration.MDSQLWord.*;
+import static com.thomaskint.minidao.utils.MDStringUtils.*;
 
 /**
  * @author Thomas Kint
  */
 public class MDSelectBuilder extends MDQueryBuilder<MDSelectBuilder> {
+
+	private boolean count = false;
 
 	private String[] fieldsName = new String[0];
 
@@ -54,34 +55,53 @@ public class MDSelectBuilder extends MDQueryBuilder<MDSelectBuilder> {
 		return this;
 	}
 
+	public <T> MDSelectBuilder count(Class<T> entityClass) {
+		from(entityClass);
+		count = true;
+		return this;
+	}
+
 	@Override
 	protected void buildVerbPart() {
-		int addedFields = 0;
-		StringBuilder tempBuilder = new StringBuilder();
+		if (!count) {
+			int addedFields = 0;
+			StringBuilder tempBuilder = new StringBuilder();
 
-		MDEntityInfo entityInfo;
-		MDFieldInfo fieldInfo;
-		for (String fieldName : fieldsName) {
-			entityInfo = getEntityInfoByFieldName(fieldName);
-			if (entityInfo != null) {
-				fieldInfo = entityInfo.getMDFieldInfoByFieldName(fieldName);
-				if (isFieldInfoParamValid(fieldInfo)) {
-					if (addedFields > 0) {
-						tempBuilder.append(COMMA);
-						tempBuilder.append(SPACE);
+			MDEntityInfo entityInfo;
+			MDFieldInfo fieldInfo;
+			for (String fieldName : fieldsName) {
+				entityInfo = getEntityInfoByFieldName(fieldName);
+				if (entityInfo != null) {
+					fieldInfo = entityInfo.getMDFieldInfoByFieldName(fieldName);
+					if (isFieldInfoParamValid(fieldInfo)) {
+						if (addedFields > 0) {
+							tempBuilder.append(COMMA);
+							tempBuilder.append(SPACE);
+						}
+						tempBuilder.append(fieldInfo.getFieldFullName());
+						addedFields++;
 					}
-					tempBuilder.append(fieldInfo.getFieldFullName());
-					addedFields++;
 				}
 			}
-		}
 
-		queryBuilder.append(sqlAction);
-		queryBuilder.append(SPACE);
-		if (addedFields == 0) {
-			queryBuilder.append(ALL);
+			queryBuilder.append(sqlAction);
+			queryBuilder.append(SPACE);
+			if (addedFields == 0) {
+				queryBuilder.append(ALL);
+			} else {
+				queryBuilder.append(tempBuilder);
+			}
 		} else {
-			queryBuilder.append(tempBuilder);
+			queryBuilder.append(sqlAction);
+			queryBuilder.append(SPACE);
+			queryBuilder.append(COUNT);
+			queryBuilder.append(LEFT_PARENTHESIS);
+			queryBuilder.append(ALL);
+			queryBuilder.append(RIGHT_PARENTHESIS);
+			queryBuilder.append(SPACE);
+			queryBuilder.append(AS);
+			queryBuilder.append(SPACE);
+			queryBuilder.append(TOTAL);
 		}
 	}
 

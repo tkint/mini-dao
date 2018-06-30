@@ -38,6 +38,7 @@ import com.thomaskint.minidao.model.MDCallStack;
 import com.thomaskint.minidao.model.MDEntityInfo;
 import com.thomaskint.minidao.querybuilder.MDCondition;
 import com.thomaskint.minidao.querybuilder.MDSelectBuilder;
+import com.thomaskint.minidao.utils.MDStringUtils;
 
 import static com.thomaskint.minidao.enumeration.MDConditionOperator.EQUAL;
 import static com.thomaskint.minidao.enumeration.MDSQLAction.SELECT;
@@ -235,10 +236,62 @@ public class MDRead extends MDCRUDBase {
 				entities.add(entityInfo.mapEntity(resultSet, this, callStack));
 			}
 			callStack.pop();
+			resultSet.close();
 		} catch (SQLException e) {
 			throw new MDException(e);
 		}
-
 		return entities;
+	}
+
+	public <T> int countEntities(Class<T> entityClass)
+			throws MDException {
+		MDEntityInfo entityInfo = new MDEntityInfo(entityClass);
+		return countEntities(entityInfo);
+	}
+
+	public <T> int countEntities(Class<T> entityClass, MDCondition condition)
+			throws MDException {
+		MDEntityInfo entityInfo = new MDEntityInfo(entityClass);
+		return countEntities(entityInfo, condition);
+	}
+
+	private int countEntities(MDEntityInfo entityInfo) throws MDException {
+		return countEntities(entityInfo, null);
+	}
+
+	private int countEntities(MDEntityInfo entityInfo, MDCondition condition) throws MDException {
+		// Control if it's an MDEntity
+		if (!entityInfo.isMDEntity()) {
+			throw new MDNotAnMDEntityException(entityInfo.getEntityClass());
+		}
+		if (!entityInfo.isSQLActionAllowed(SELECT)) {
+			throw new MDParamNotIncludedInClassException(entityInfo.getEntityClass(), SELECT);
+		}
+
+		MDSelectBuilder selectBuilder = new MDSelectBuilder();
+		selectBuilder.count(entityInfo.getEntityClass());
+
+		// Condition
+		if (condition != null) {
+			selectBuilder.where(condition);
+		}
+
+		// Build query
+		String query = selectBuilder.build();
+
+		// Execute query
+		ResultSet resultSet;
+		resultSet = MDConnection.executeQuery(connectionConfig, query);
+
+		int count = 0;
+		try {
+			if (resultSet.next()) {
+				count = resultSet.getInt(MDStringUtils.TOTAL);
+			}
+			resultSet.close();
+		} catch (SQLException e) {
+			throw new MDException(e);
+		}
+		return count;
 	}
 }
