@@ -91,29 +91,46 @@ public class MiniDAO {
 	}
 
 	public int executeUpdate(String query) throws MDException {
-		return MDConnection.executeUpdate(connectionConfig, query);
+		try {
+			return MDConnection.executeUpdate(connectionConfig, query);
+		} finally {
+			MDConnection.close();
+		}
 	}
 
 	public <T> T mapResultSetToEntity(ResultSet resultSet, Class<T> entityClass) throws MDException {
 		MDEntityInfo entityInfo = new MDEntityInfo(entityClass);
+		T entity = null;
 		try {
-			resultSet.next();
+			if (resultSet.next()) {
+				entity = entityInfo.mapEntity(resultSet, read, null);
+			}
+			resultSet.close();
 		} catch (SQLException e) {
 			throw new MDException(e);
 		}
-		return entityInfo.mapEntity(resultSet, read, null);
+		return entity;
 	}
 
-	public <T> List<T> mapResultSetToEntities(ResultSet resultSet, Class<T> entityClass) throws MDException {
+	public <T> List<T> mapResultSetToEntities(ResultSet resultSet, Class<T> entityClass, int offset, int limit) throws MDException {
 		List<T> entities = new ArrayList<>();
 		MDEntityInfo entityInfo = new MDEntityInfo(entityClass);
+		int count = 0;
 		try {
-			while (resultSet.next()) {
-				entities.add(entityInfo.mapEntity(resultSet, read, null));
+			if (resultSet.absolute(offset)) {
+				while (resultSet.next() && count < limit) {
+					entities.add(entityInfo.mapEntity(resultSet, read, null));
+					count++;
+				}
 			}
+			resultSet.close();
 		} catch (SQLException e) {
 			throw new MDException(e);
 		}
 		return entities;
+	}
+
+	public void closeConnection() throws MDException {
+		MDConnection.close();
 	}
 }

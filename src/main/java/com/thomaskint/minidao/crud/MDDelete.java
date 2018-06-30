@@ -59,20 +59,23 @@ public class MDDelete extends MDCRUDBase {
 	 */
 	public <T> boolean deleteEntity(T entity) throws MDException {
 		MDEntityInfo entityInfo = new MDEntityInfo(entity.getClass());
+		try {
+			if (!entityInfo.isMDEntity()) {
+				throw new MDNotAnMDEntityException(entityInfo.getEntityClass());
+			}
+			if (!entityInfo.isSQLActionAllowed(DELETE)) {
+				throw new MDParamNotIncludedInClassException(entityInfo.getEntityClass(), DELETE);
+			}
 
-		if (!entityInfo.isMDEntity()) {
+			MDDeleteBuilder deleteBuilder = new MDDeleteBuilder();
+			deleteBuilder.delete(entity);
 
+			String query = deleteBuilder.build();
+
+			return MDConnection.executeUpdate(connectionConfig, query) > 0;
+		} finally {
+			MDConnection.close();
 		}
-		if (!entityInfo.isSQLActionAllowed(DELETE)) {
-			throw new MDParamNotIncludedInClassException(entityInfo.getEntityClass(), DELETE);
-		}
-
-		MDDeleteBuilder deleteBuilder = new MDDeleteBuilder();
-		deleteBuilder.delete(entity);
-
-		String query = deleteBuilder.build();
-
-		return MDConnection.executeUpdate(connectionConfig, query) > 0;
 	}
 
 	/**
@@ -137,22 +140,26 @@ public class MDDelete extends MDCRUDBase {
 	 * @throws MDException Deletion encountered an exception
 	 */
 	private boolean deleteEntities(MDEntityInfo entityInfo, MDCondition condition) throws MDException {
-		if (!entityInfo.isMDEntity()) {
-			throw new MDNotAnMDEntityException(entityInfo.getEntityClass());
+		try {
+			if (!entityInfo.isMDEntity()) {
+				throw new MDNotAnMDEntityException(entityInfo.getEntityClass());
+			}
+			if (!entityInfo.isSQLActionAllowed(DELETE)) {
+				throw new MDParamNotIncludedInClassException(entityInfo.getEntityClass(), DELETE);
+			}
+
+			MDDeleteBuilder deleteBuilder = new MDDeleteBuilder();
+			deleteBuilder.delete(entityInfo.getEntityClass());
+
+			if (condition != null) {
+				deleteBuilder.where(condition);
+			}
+
+			String query = deleteBuilder.build();
+
+			return MDConnection.executeUpdate(connectionConfig, query) > 0;
+		} finally {
+			MDConnection.close();
 		}
-		if (!entityInfo.isSQLActionAllowed(DELETE)) {
-			throw new MDParamNotIncludedInClassException(entityInfo.getEntityClass(), DELETE);
-		}
-
-		MDDeleteBuilder deleteBuilder = new MDDeleteBuilder();
-		deleteBuilder.delete(entityInfo.getEntityClass());
-
-		if (condition != null) {
-			deleteBuilder.where(condition);
-		}
-
-		String query = deleteBuilder.build();
-
-		return MDConnection.executeUpdate(connectionConfig, query) > 0;
 	}
 }

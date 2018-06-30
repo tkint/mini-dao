@@ -61,6 +61,10 @@ public abstract class MDQueryBuilder<U extends MDQueryBuilder<U>> {
 	List<MDPair<MDConditionLink, MDCondition>> conditions;
 	StringBuilder queryBuilder;
 
+	int limit = -1;
+
+	int offset = -1;
+
 	MDQueryBuilder(MDSQLAction sqlAction) {
 		this.sqlAction = sqlAction;
 		this.conditions = new ArrayList<>();
@@ -116,6 +120,16 @@ public abstract class MDQueryBuilder<U extends MDQueryBuilder<U>> {
 
 	public final U or(MDCondition condition) {
 		conditions.add(new MDPair<>(OR, condition));
+		return (U) this;
+	}
+
+	public final U limit(int limit) {
+		this.limit = limit;
+		return (U) this;
+	}
+
+	public final U offset(int offset) {
+		this.offset = offset;
 		return (U) this;
 	}
 
@@ -201,7 +215,6 @@ public abstract class MDQueryBuilder<U extends MDQueryBuilder<U>> {
 		buildWherePart();
 		return queryBuilder.toString();
 	}
-
 	protected MDEntityInfo getEntityInfoByFieldName(String fieldName) {
 		MDEntityInfo entityInfo = null;
 		if (this.baseEntityInfo != null && this.baseEntityInfo.getMDFieldInfoByFieldName(fieldName) != null) {
