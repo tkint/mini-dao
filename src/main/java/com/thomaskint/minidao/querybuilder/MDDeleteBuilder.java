@@ -46,20 +46,24 @@ public class MDDeleteBuilder extends MDQueryBuilder<MDDeleteBuilder> {
 	}
 
 	public <T> MDDeleteBuilder delete(T entity) throws MDException {
-		MDDeleteBuilder deleteBuilder = this;
-		baseEntityInfo = new MDEntityInfo(entity.getClass());
+		delete(entity.getClass());
 		if (baseEntityInfo.getIDFieldInfo() != null) {
 			String idFieldName = baseEntityInfo.getIDFieldInfo().getFieldName();
 			if (baseEntityInfo.getIDFieldInfo().getField() != null) {
 				try {
 					Object value = baseEntityInfo.getIDFieldInfo().getField().get(entity);
-					deleteBuilder = where(idFieldName, EQUAL, value);
+					where(idFieldName, EQUAL, value);
 				} catch (IllegalAccessException e) {
 					throw new MDException("Can't access this field " + idFieldName);
 				}
 			}
 		}
-		return deleteBuilder;
+		return this;
+	}
+
+	public <T> MDDeleteBuilder delete(Class<T> entityClass) {
+		baseEntityInfo = new MDEntityInfo(entityClass);
+		return this;
 	}
 
 	public <T> MDDeleteBuilder from(Class<T> entityClass) {

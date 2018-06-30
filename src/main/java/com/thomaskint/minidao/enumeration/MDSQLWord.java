@@ -37,6 +37,8 @@ public enum MDSQLWord {
 	VALUES("VALUES"),
 	SET("SET"),
 	ALL("*"),
+	COUNT("COUNT"),
+	AS("AS"),
 	INTO("INTO");
 
 	private String value;
