@@ -45,6 +45,8 @@ public class MDStringUtils {
 
 	public static final String RIGHT_PARENTHESIS = ")";
 
+	public static final String TOTAL = "total";
+
 	public static String firstLetterToUpperCase(String string) {
 		return string.substring(0, 1).toUpperCase() + string.substring(1);
 	}
