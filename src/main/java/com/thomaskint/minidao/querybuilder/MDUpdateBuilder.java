@@ -28,6 +28,10 @@ import com.thomaskint.minidao.exception.MDException;
 import com.thomaskint.minidao.model.MDEntityInfo;
 import com.thomaskint.minidao.model.MDFieldInfo;
 
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -113,11 +117,24 @@ public class MDUpdateBuilder extends MDQueryBuilder<MDUpdateBuilder> {
 				setBuilder.append(SPACE);
 				setBuilder.append(EQUAL);
 				setBuilder.append(SPACE);
-				if (!(keyValue.getValue() instanceof Number)) {
+				if (!(keyValue.getValue() instanceof Number)
+						&& (keyValue.getValue() != null)) {
 					setBuilder.append(QUOTE);
 				}
-				setBuilder.append(keyValue.getValue());
-				if (!(keyValue.getValue() instanceof Number)) {
+				if (keyValue.getValue() instanceof Timestamp || keyValue.getValue() instanceof Date) {
+					Date date;
+					if (keyValue.getValue() instanceof Timestamp) {
+						date = new Date(((Timestamp) keyValue.getValue()).getTime());
+					} else {
+						date = (Date) keyValue.getValue();
+					}
+					DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM);
+					setBuilder.append(dateFormat.format(date));
+				} else {
+					setBuilder.append(keyValue.getValue());
+				}
+				if (!(keyValue.getValue() instanceof Number)
+						&& (keyValue.getValue() != null)) {
 					setBuilder.append(QUOTE);
 				}
 				addedFields++;
