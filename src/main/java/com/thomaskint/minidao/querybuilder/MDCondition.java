@@ -28,6 +28,7 @@ import com.thomaskint.minidao.enumeration.MDConditionLink;
 import com.thomaskint.minidao.enumeration.MDConditionOperator;
 import com.thomaskint.minidao.model.MDEntityInfo;
 
+import static com.thomaskint.minidao.enumeration.MDSQLWord.UPPER;
 import static com.thomaskint.minidao.utils.MDStringUtils.*;
 
 public class MDCondition {
@@ -42,6 +43,8 @@ public class MDCondition {
 
 	private MDCondition subCondition = null;
 
+	private boolean caseSensitive = true;
+
 	public MDCondition(String fieldName, MDConditionOperator operator, Object value, MDConditionLink conditionLink, MDCondition subCondition) {
 		this.fieldName = fieldName;
 		this.operator = operator;
@@ -50,10 +53,15 @@ public class MDCondition {
 		this.subCondition = subCondition;
 	}
 
-	public MDCondition(String fieldName, MDConditionOperator operator, Object value) {
+	public MDCondition(String fieldName, MDConditionOperator operator, Object value, boolean caseSensitive) {
 		this.fieldName = fieldName;
 		this.operator = operator;
 		this.value = value;
+		this.caseSensitive = caseSensitive;
+	}
+
+	public MDCondition(String fieldName, MDConditionOperator operator, Object value) {
+		this(fieldName, operator, value, true);
 	}
 
 	public String getFieldName() {
@@ -70,18 +78,32 @@ public class MDCondition {
 
 	public String build(MDEntityInfo entityInfo) {
 		StringBuilder conditionBuilder = new StringBuilder();
+		if (getValue() instanceof String && !caseSensitive) {
+			conditionBuilder.append(UPPER);
+			conditionBuilder.append(LEFT_PARENTHESIS);
+		}
 		conditionBuilder.append(entityInfo.getTableName());
 		conditionBuilder.append(DOT);
 		conditionBuilder.append(fieldName);
+		if (getValue() instanceof String && !caseSensitive) {
+			conditionBuilder.append(RIGHT_PARENTHESIS);
+		}
 		conditionBuilder.append(SPACE);
 		conditionBuilder.append(operator);
 		conditionBuilder.append(SPACE);
+		if (getValue() instanceof String && !caseSensitive) {
+			conditionBuilder.append(UPPER);
+			conditionBuilder.append(LEFT_PARENTHESIS);
+		}
 		if (!(value instanceof Number)) {
 			conditionBuilder.append(QUOTE);
 		}
 		conditionBuilder.append(value);
 		if (!(value instanceof Number)) {
 			conditionBuilder.append(QUOTE);
+		}
+		if (getValue() instanceof String && !caseSensitive) {
+			conditionBuilder.append(RIGHT_PARENTHESIS);
 		}
 		if (hasSubCondition()) {
 			conditionBuilder.append(SPACE);
