@@ -41,8 +41,11 @@ import static com.thomaskint.minidao.enumeration.MDSQLAction.UPDATE;
  */
 public class MDUpdate extends MDCRUDBase {
 
-	public MDUpdate(MDConnectionConfig connectionConfig) {
+	private final String dateFormat;
+
+	public MDUpdate(MDConnectionConfig connectionConfig, String dateFormat) {
 		super(connectionConfig);
+		this.dateFormat = dateFormat;
 	}
 
 	/**
@@ -65,7 +68,7 @@ public class MDUpdate extends MDCRUDBase {
 				throw new MDParamNotIncludedInClassException(entityInfo.getEntityClass(), UPDATE);
 			}
 
-			MDUpdateBuilder updateBuilder = new MDUpdateBuilder();
+			MDUpdateBuilder updateBuilder = new MDUpdateBuilder(this.dateFormat);
 			updateBuilder.update(entity);
 
 			String query = updateBuilder.build();
