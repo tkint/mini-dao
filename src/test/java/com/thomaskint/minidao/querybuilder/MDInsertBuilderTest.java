@@ -24,6 +24,7 @@
 
 package com.thomaskint.minidao.querybuilder;
 
+import com.thomaskint.minidao.MiniDAO;
 import com.thomaskint.minidao.exception.MDException;
 import com.thomaskint.minidao.testonly.model.MessageTest;
 import com.thomaskint.minidao.testonly.model.MessageTypeTest;
@@ -44,7 +45,7 @@ public class MDInsertBuilderTest {
 		String expectedQuery = "INSERT INTO message (id_author, content) VALUES (1, 'test-content')";
 		UserTest author = new UserTest(BigDecimal.valueOf(1), "pseudo", "login", "password");
 		MessageTest message = new MessageTest(BigDecimal.valueOf(1), BigDecimal.valueOf(1), author, "test-content");
-		MDInsertBuilder insertBuilder = new MDInsertBuilder();
+		MDInsertBuilder insertBuilder = new MDInsertBuilder(MiniDAO.getDefaultDateFormat());
 		// WHEN
 		String returnedQuery = null;
 		try {
@@ -60,7 +61,7 @@ public class MDInsertBuilderTest {
 	public void should_construct_query_bis() {
 		// GIVEN
 		String expectedQuery = "INSERT INTO message (id_author, content) VALUES (1, 'test-content')";
-		MDInsertBuilder insertBuilder = new MDInsertBuilder();
+		MDInsertBuilder insertBuilder = new MDInsertBuilder(MiniDAO.getDefaultDateFormat());
 		insertBuilder.into(MessageTest.class);
 		insertBuilder.set("id_author", 1);
 		insertBuilder.set("content", "test-content");
@@ -79,7 +80,7 @@ public class MDInsertBuilderTest {
 	public void should_construct_query_with_primary_key_when_insertable() {
 		// GIVEN
 		String expectedQuery = "INSERT INTO message_type (value) VALUES ('newValue')";
-		MDInsertBuilder insertBuilder = new MDInsertBuilder();
+		MDInsertBuilder insertBuilder = new MDInsertBuilder(MiniDAO.getDefaultDateFormat());
 		insertBuilder.into(MessageTypeTest.class);
 		insertBuilder.set(MessageTypeTest.valueFieldName, "newValue");
 		// WHEN
