@@ -25,6 +25,7 @@
 package com.thomaskint.minidao.connection;
 
 import com.thomaskint.minidao.exception.MDException;
+import com.thomaskint.minidao.model.MDPair;
 
 import java.sql.*;
 
@@ -67,11 +68,6 @@ public class MDConnection {
 		return instance;
 	}
 
-	private Statement getStatement() throws SQLException {
-		statement = this.connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-		return statement;
-	}
-
 	public static ResultSet executeQuery(MDConnectionConfig connectionConfig, String sql) throws MDException {
 		try {
 			return getInstance(connectionConfig).getStatement().executeQuery(sql);
@@ -80,9 +76,11 @@ public class MDConnection {
 		}
 	}
 
-	public static int executeUpdate(MDConnectionConfig connectionConfig, String sql) throws MDException {
+	public static MDPair<Statement, Integer> executeUpdate(MDConnectionConfig connectionConfig, String sql) throws MDException {
 		try {
-			return getInstance(connectionConfig).getStatement().executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
+			Statement statement = getInstance(connectionConfig).getStatement();
+			Integer lines = statement.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
+			return new MDPair<>(statement, lines);
 		} catch (SQLException e) {
 			throw new MDException(e);
 		}
@@ -102,5 +100,10 @@ public class MDConnection {
 		} catch (SQLException e) {
 			throw new MDException(e);
 		}
+	}
+
+	private Statement getStatement() throws SQLException {
+		statement = this.connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+		return statement;
 	}
 }
