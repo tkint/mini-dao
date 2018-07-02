@@ -30,7 +30,11 @@ import com.thomaskint.minidao.exception.MDException;
 import com.thomaskint.minidao.exception.MDNotAnMDEntityException;
 import com.thomaskint.minidao.exception.MDParamNotIncludedInClassException;
 import com.thomaskint.minidao.model.MDEntityInfo;
+import com.thomaskint.minidao.model.MDPair;
 import com.thomaskint.minidao.querybuilder.MDInsertBuilder;
+
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 import static com.thomaskint.minidao.enumeration.MDSQLAction.INSERT;
 
@@ -71,7 +75,16 @@ public class MDCreate extends MDCRUDBase {
 
 			String query = insertBuilder.build();
 
-			return MDConnection.executeUpdate(connectionConfig, query) > 0;
+			MDPair<Statement, Integer> result = MDConnection.executeUpdate(connectionConfig, query);
+
+			ResultSet generatedKeys = result.getKey().getGeneratedKeys();
+			if (generatedKeys.next()) {
+				entityInfo.getIDFieldInfo().getField().set(entity, generatedKeys.getObject(1));
+			}
+
+			return result.getValue() > 0;
+		} catch (Exception e) {
+			throw new MDException(e);
 		} finally {
 			MDConnection.close();
 		}

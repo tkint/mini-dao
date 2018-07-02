@@ -113,7 +113,7 @@ public class MiniDAO {
 
 	public int executeUpdate(String query) throws MDException {
 		try {
-			return MDConnection.executeUpdate(connectionConfig, query);
+			return MDConnection.executeUpdate(connectionConfig, query).getValue();
 		} finally {
 			MDConnection.close();
 		}
