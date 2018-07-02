@@ -24,6 +24,7 @@
 
 package com.thomaskint.minidao.crud;
 
+import com.thomaskint.minidao.MiniDAO;
 import com.thomaskint.minidao.testonly.model.UserTest;
 import org.junit.Assert;
 import org.junit.Before;
@@ -42,7 +43,7 @@ public class MDCreateTest {
 
 	@Before
 	public void init() {
-		create = new MDCreate(connectionConfig);
+		create = new MDCreate(connectionConfig, MiniDAO.getDefaultDateFormat());
 	}
 
 	@Test

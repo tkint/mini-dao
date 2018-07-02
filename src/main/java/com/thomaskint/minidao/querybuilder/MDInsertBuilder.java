@@ -28,6 +28,10 @@ import com.thomaskint.minidao.exception.MDException;
 import com.thomaskint.minidao.model.MDEntityInfo;
 import com.thomaskint.minidao.model.MDFieldInfo;
 
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,8 +47,11 @@ public class MDInsertBuilder extends MDQueryBuilder<MDInsertBuilder> {
 
 	private Map<String, Object> newValues = new HashMap<>();
 
-	public MDInsertBuilder() {
+	private final String dateFormat;
+
+	public MDInsertBuilder(String dateFormat) {
 		super(INSERT);
+		this.dateFormat = dateFormat;
 	}
 
 	public MDInsertBuilder insert() {
@@ -112,7 +119,18 @@ public class MDInsertBuilder extends MDQueryBuilder<MDInsertBuilder> {
 					if (!(keyValue.getValue() instanceof Number)) {
 						valuesBuilder.append(QUOTE);
 					}
-					valuesBuilder.append(keyValue.getValue());
+					if (keyValue.getValue() instanceof Timestamp || keyValue.getValue() instanceof Date) {
+						Date date;
+						if (keyValue.getValue() instanceof Timestamp) {
+							date = new Date(((Timestamp) keyValue.getValue()).getTime());
+						} else {
+							date = (Date) keyValue.getValue();
+						}
+						DateFormat dateFormat = new SimpleDateFormat(this.dateFormat);
+						valuesBuilder.append(dateFormat.format(date));
+					} else {
+						valuesBuilder.append(keyValue.getValue());
+					}
 					if (!(keyValue.getValue() instanceof Number)) {
 						valuesBuilder.append(QUOTE);
 					}

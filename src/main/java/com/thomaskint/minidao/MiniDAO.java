@@ -56,7 +56,7 @@ public class MiniDAO {
 	public MiniDAO(MDConnectionConfig connectionConfig) {
 		this.dateFormat = defaultDateFormat;
 		this.connectionConfig = connectionConfig;
-		this.create = new MDCreate(connectionConfig);
+		this.create = new MDCreate(connectionConfig, this.dateFormat);
 		this.read = new MDRead(connectionConfig);
 		this.update = new MDUpdate(connectionConfig, this.dateFormat);
 		this.delete = new MDDelete(connectionConfig);
@@ -65,7 +65,7 @@ public class MiniDAO {
 	public MiniDAO(MDConnectionConfig connectionConfig, String dateFormat) {
 		this.dateFormat = dateFormat;
 		this.connectionConfig = connectionConfig;
-		this.create = new MDCreate(connectionConfig);
+		this.create = new MDCreate(connectionConfig, this.dateFormat);
 		this.read = new MDRead(connectionConfig);
 		this.update = new MDUpdate(connectionConfig, dateFormat);
 		this.delete = new MDDelete(connectionConfig);

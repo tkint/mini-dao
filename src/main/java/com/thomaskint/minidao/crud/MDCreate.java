@@ -41,8 +41,11 @@ import static com.thomaskint.minidao.enumeration.MDSQLAction.INSERT;
  */
 public class MDCreate extends MDCRUDBase {
 
-	public MDCreate(MDConnectionConfig connectionConfig) {
+	private final String dateFormat;
+
+	public MDCreate(MDConnectionConfig connectionConfig, String dateFormat) {
 		super(connectionConfig);
+		this.dateFormat = dateFormat;
 	}
 
 	/**
@@ -63,7 +66,7 @@ public class MDCreate extends MDCRUDBase {
 				throw new MDParamNotIncludedInClassException(entityInfo.getEntityClass(), INSERT);
 			}
 
-			MDInsertBuilder insertBuilder = new MDInsertBuilder();
+			MDInsertBuilder insertBuilder = new MDInsertBuilder(this.dateFormat);
 			insertBuilder.insert(entity);
 
 			String query = insertBuilder.build();
