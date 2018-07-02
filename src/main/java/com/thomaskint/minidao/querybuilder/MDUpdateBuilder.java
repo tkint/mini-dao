@@ -30,6 +30,7 @@ import com.thomaskint.minidao.model.MDFieldInfo;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -47,8 +48,11 @@ public class MDUpdateBuilder extends MDQueryBuilder<MDUpdateBuilder> {
 
 	private Map<String, Object> newValues = new HashMap<>();
 
-	public MDUpdateBuilder() {
+	private final String dateFormat;
+
+	public MDUpdateBuilder(String dateFormat) {
 		super(UPDATE);
+		this.dateFormat = dateFormat;
 	}
 
 	public <T> MDUpdateBuilder update(Class<T> entityClass) {
@@ -128,7 +132,7 @@ public class MDUpdateBuilder extends MDQueryBuilder<MDUpdateBuilder> {
 					} else {
 						date = (Date) keyValue.getValue();
 					}
-					DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM);
+					DateFormat dateFormat = new SimpleDateFormat(this.dateFormat);
 					setBuilder.append(dateFormat.format(date));
 				} else {
 					setBuilder.append(keyValue.getValue());

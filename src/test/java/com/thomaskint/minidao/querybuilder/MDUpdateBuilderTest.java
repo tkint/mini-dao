@@ -24,6 +24,7 @@
 
 package com.thomaskint.minidao.querybuilder;
 
+import com.thomaskint.minidao.MiniDAO;
 import com.thomaskint.minidao.exception.MDException;
 import com.thomaskint.minidao.testonly.model.MessageTest;
 import com.thomaskint.minidao.testonly.model.UserTest;
@@ -41,7 +42,7 @@ public class MDUpdateBuilderTest {
 	public void should_construct_query() {
 		// GIVEN
 		String expectedQuery = "UPDATE message SET id_author = 1, content = 'BOB'";
-		MDUpdateBuilder updateBuilder = new MDUpdateBuilder();
+		MDUpdateBuilder updateBuilder = new MDUpdateBuilder(MiniDAO.getDefaultDateFormat());
 		updateBuilder.update(MessageTest.class);
 		updateBuilder.set("id_author", 1);
 		updateBuilder.set("content", "BOB");
@@ -63,7 +64,7 @@ public class MDUpdateBuilderTest {
 				"UPDATE message SET id_author = 1, content = 'test-content' WHERE message.id_message = 1";
 		UserTest author = new UserTest(BigDecimal.valueOf(1), "pseudo", "login", "password");
 		MessageTest message = new MessageTest(BigDecimal.valueOf(1), BigDecimal.valueOf(1), author, "test-content");
-		MDUpdateBuilder updateBuilder = new MDUpdateBuilder();
+		MDUpdateBuilder updateBuilder = new MDUpdateBuilder(MiniDAO.getDefaultDateFormat());
 		// WHEN
 		String returnedQuery = null;
 		try {

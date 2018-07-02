@@ -49,12 +49,25 @@ public class MiniDAO {
 	private final MDRead read;
 	private final MDUpdate update;
 	private final MDDelete delete;
+	private final String dateFormat;
+
+	private static final String defaultDateFormat = "dd/MM/yy HH:mm:ss";
 
 	public MiniDAO(MDConnectionConfig connectionConfig) {
+		this.dateFormat = defaultDateFormat;
 		this.connectionConfig = connectionConfig;
 		this.create = new MDCreate(connectionConfig);
 		this.read = new MDRead(connectionConfig);
-		this.update = new MDUpdate(connectionConfig);
+		this.update = new MDUpdate(connectionConfig, this.dateFormat);
+		this.delete = new MDDelete(connectionConfig);
+	}
+
+	public MiniDAO(MDConnectionConfig connectionConfig, String dateFormat) {
+		this.dateFormat = dateFormat;
+		this.connectionConfig = connectionConfig;
+		this.create = new MDCreate(connectionConfig);
+		this.read = new MDRead(connectionConfig);
+		this.update = new MDUpdate(connectionConfig, dateFormat);
 		this.delete = new MDDelete(connectionConfig);
 	}
 
@@ -84,6 +97,14 @@ public class MiniDAO {
 
 	public MDDelete delete() {
 		return delete;
+	}
+
+	public String getDateFormat() {
+		return dateFormat;
+	}
+
+	public static String getDefaultDateFormat() {
+		return defaultDateFormat;
 	}
 
 	public ResultSet executeQuery(String query) throws MDException {
