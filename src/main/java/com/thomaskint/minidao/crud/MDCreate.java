@@ -33,6 +33,8 @@ import com.thomaskint.minidao.model.MDEntityInfo;
 import com.thomaskint.minidao.model.MDPair;
 import com.thomaskint.minidao.querybuilder.MDInsertBuilder;
 
+import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
@@ -77,10 +79,15 @@ public class MDCreate extends MDCRUDBase {
 
 			MDPair<Statement, Integer> result = MDConnection.executeUpdate(connectionConfig, query);
 
-			ResultSet generatedKeys = result.getKey().getGeneratedKeys();
-			if (generatedKeys.next()) {
-				entityInfo.getIDFieldInfo().getField().set(entity, generatedKeys.getObject(1));
-			}
+//			ResultSet generatedKeys = result.getKey().getGeneratedKeys();
+//			if (generatedKeys.next()) {
+//				Field idField = entityInfo.getIDFieldInfo().getField();
+//				if (idField.getType().equals(BigDecimal.class)) {
+//					idField.set(entity, BigDecimal.valueOf(generatedKeys.getLong(1)));
+//				} else {
+//					idField.set(entity, generatedKeys.getLong(1));
+//				}
+//			}
 
 			return result.getValue() > 0;
 		} catch (Exception e) {
