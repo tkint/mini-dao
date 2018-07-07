@@ -40,7 +40,7 @@ public class MDConnection {
 
 	private Connection connection;
 
-	private Statement statement;
+	private PreparedStatement statement;
 
 	private MDConnection(MDConnectionConfig connectionConfig) throws MDException {
 		try {
@@ -68,18 +68,18 @@ public class MDConnection {
 		return instance;
 	}
 
-	public static ResultSet executeQuery(MDConnectionConfig connectionConfig, String sql) throws MDException {
+	public static ResultSet executeQuery(MDConnectionConfig connectionConfig, String query) throws MDException {
 		try {
-			return getInstance(connectionConfig).getStatement().executeQuery(sql);
+			return getInstance(connectionConfig).prepareStatement(query, null).executeQuery();
 		} catch (SQLException e) {
 			throw new MDException(e);
 		}
 	}
 
-	public static MDPair<Statement, Integer> executeUpdate(MDConnectionConfig connectionConfig, String sql) throws MDException {
+	public static MDPair<Statement, Integer> executeUpdate(MDConnectionConfig connectionConfig, String query, String idFieldName) throws MDException {
 		try {
-			Statement statement = getInstance(connectionConfig).getStatement();
-			Integer lines = statement.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
+			PreparedStatement statement = getInstance(connectionConfig).prepareStatement(query, idFieldName);
+			Integer lines = statement.executeUpdate();
 			return new MDPair<>(statement, lines);
 		} catch (SQLException e) {
 			throw new MDException(e);
@@ -102,8 +102,13 @@ public class MDConnection {
 		}
 	}
 
-	private Statement getStatement() throws SQLException {
-		statement = this.connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+	private PreparedStatement prepareStatement(String query, String idFieldName) throws SQLException {
+		if (idFieldName != null) {
+			this.statement = this.connection.prepareStatement(query, new String[]{idFieldName});
+		} else {
+			this.statement = this.connection.prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+		}
+//		statement = this.connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 		return statement;
 	}
 }

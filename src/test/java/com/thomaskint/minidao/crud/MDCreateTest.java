@@ -55,6 +55,7 @@ public class MDCreateTest {
 		boolean created = false;
 		try {
 			created = create.createEntity(userTest);
+			System.out.println(userTest);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
