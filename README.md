@@ -3,21 +3,27 @@
   <td>License</td>
   <td>Master</td>
   <td>Develop</td>
+  <td>Version</td>
  </tr>
  <tr>
   <td>
-   <a href="https://github.com/tkint/MiniDAO/blob/master/LICENSE">
+   <a href="https://gitlab.com/tkint/MiniDAO/blob/master/LICENSE">
     <img src="https://img.shields.io/badge/License-MIT-yellow.svg"/>
    </a>
   </td>
   <td>
-   <a href="https://travis-ci.org/tkint/MiniDAO">
-    <img src="https://travis-ci.org/tkint/MiniDAO.svg?branch=master"/>
+   <a href="https://gitlab.com/tkint/MiniDAO/commits/master">
+    <img alt="master status" src="https://gitlab.com/tkint/MiniDAO/badges/master/pipeline.svg"/>
    </a>
   </td>
   <td>
-   <a href="https://travis-ci.org/tkint/MiniDAO">
-    <img src="https://travis-ci.org/tkint/MiniDAO.svg?branch=develop"/>
+   <a href="https://gitlab.com/tkint/MiniDAO/commits/develop">
+    <img alt="develop status" src="https://gitlab.com/tkint/MiniDAO/badges/develop/pipeline.svg"/>
+   </a>
+  </td>
+  <td>
+   <a href='https://bintray.com/tkint/maven/MiniDAO/_latestVersion'>
+    <img src='https://api.bintray.com/packages/tkint/maven/MiniDAO/images/download.svg'>
    </a>
   </td>
  </tr>
