@@ -28,7 +28,7 @@ package com.thomaskint.minidao.connection;
  * @author Thomas Kint
  */
 public enum MDDriver {
-	MYSQL("com.mysql.jdbc.Driver", "mysql://", "/", "?zeroDateTimeBehavior=convertToNull"),
+	MYSQL("com.mysql.cj.jdbc.Driver", "mysql://", "/", "?zeroDateTimeBehavior=convertToNull"),
 	ORACLE("oracle.jdbc.driver.OracleDriver", "oracle:thin:@", ":"),
 	H2("org.h2.Driver", "h2:", "/");
 
