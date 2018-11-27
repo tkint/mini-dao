@@ -1,5 +1,4 @@
 target/
 .idea/
 *.iml
-settings.xml
 src/test/resources/database/h2test.trace.db
