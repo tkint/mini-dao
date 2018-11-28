@@ -34,7 +34,9 @@ import com.thomaskint.minidao.model.MDPair;
 import com.thomaskint.minidao.querybuilder.MDInsertBuilder;
 
 import java.lang.reflect.Field;
+import java.math.BigInteger;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 import static com.thomaskint.minidao.enumeration.MDSQLAction.INSERT;
@@ -81,16 +83,29 @@ public class MDCreate extends MDCRUDBase {
 			MDPair<Statement, Integer> result = MDConnection.executeUpdate(connectionConfig, query, idFieldName);
 
 			ResultSet generatedKeys = result.getKey().getGeneratedKeys();
-			if (generatedKeys.next()) {
-				Field idField = entityInfo.getIDFieldInfo().getField();
-				idField.set(entity, generatedKeys.getObject(1));
-			}
+			setPrimaryKey(entity, entityInfo, generatedKeys);
 
 			return result.getValue() > 0;
 		} catch (Exception e) {
 			throw new MDException(e);
 		} finally {
 			MDConnection.close();
+		}
+	}
+
+	private <T> void setPrimaryKey(T entity, MDEntityInfo entityInfo, ResultSet generatedKeys) throws SQLException, IllegalAccessException {
+		if (generatedKeys != null && generatedKeys.next()) {
+			Field idField = entityInfo.getIDFieldInfo().getField();
+			Object idValue = generatedKeys.getObject(1);
+			if (idValue != null) {
+				if (idField.getType().equals(idValue.getClass())) {
+					idField.set(entity, idValue);
+				} else if (idField.getType().equals(Integer.class)) {
+					if (idValue instanceof BigInteger) {
+						idField.set(entity, ((BigInteger) idValue).intValue());
+					}
+				}
+			}
 		}
 	}
 }
