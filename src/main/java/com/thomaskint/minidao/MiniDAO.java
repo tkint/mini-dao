@@ -24,11 +24,6 @@
 
 package com.thomaskint.minidao;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.thomaskint.minidao.connection.MDConnection;
 import com.thomaskint.minidao.connection.MDConnectionConfig;
 import com.thomaskint.minidao.connection.MDDriver;
@@ -38,6 +33,11 @@ import com.thomaskint.minidao.crud.MDRead;
 import com.thomaskint.minidao.crud.MDUpdate;
 import com.thomaskint.minidao.exception.MDException;
 import com.thomaskint.minidao.model.MDEntityInfo;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Thomas Kint
@@ -131,6 +131,20 @@ public class MiniDAO {
 			throw new MDException(e);
 		}
 		return entity;
+	}
+
+	public <T> List<T> mapResultSetToEntities(ResultSet resultSet, Class<T> entityClass) throws MDException {
+		List<T> entities = new ArrayList<>();
+		MDEntityInfo entityInfo = new MDEntityInfo(entityClass);
+		try {
+			while (resultSet.next()) {
+				entities.add(entityInfo.mapEntity(resultSet, read, null));
+			}
+			resultSet.close();
+		} catch (SQLException e) {
+			throw new MDException(e);
+		}
+		return entities;
 	}
 
 	public <T> List<T> mapResultSetToEntities(ResultSet resultSet, Class<T> entityClass, int offset, int limit) throws MDException {
