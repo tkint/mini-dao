@@ -99,11 +99,11 @@ MiniDAO miniDAO = new MiniDAO(connectionConfig);
 Create an object reflecting one of your database table:
 ```java
 @MDEntity(tableName = "user")
-public class User { 
+public class User {
     
     @MDId
-    @MDField(fieldName = "id_user", allowedSQLActions = SELECT)
-    public BigDecimal id_user;
+    @MDField(fieldName = "id", allowedSQLActions = SELECT)
+    public BigDecimal id;
     
     @MDField(fieldName = "email")
     public String email;
@@ -135,7 +135,7 @@ public List<User> getUsers() {
 
 Clone project:
 ```
-git clone https://github.com/tkint/MiniDAO.git
+git clone https://gitlab.com/tkint/MiniDAO.git
 ```
 
 If ojdbc8 (12.2.0.1) is not already installed in your local maven repository will need to [create an oracle account](https://profile.oracle.com/myprofile/account/create-account.jspx).
@@ -194,6 +194,16 @@ Define class as an object of database
     - tableName: table name in database
     - allowedSQLActions: authorized verbs on this entity
       - default: { SELECT, INSERT, UPDATE, DELETE }
+- examples:
+```java
+@MDEntity(tableName = "user")
+public class User {
+}
+
+@MDEntity(tableName = "user_token", allowedSQLActions = { SELECT, INSERT })
+public class UserToken {
+}
+```
 
 #### @MDField
 
@@ -204,12 +214,37 @@ Define field as a column of the entity table
     - fieldName: field name in database
     - allowedSQLActions: authorized verbs on this field
       - default: { SELECT, INSERT, UPDATE, DELETE }
+- examples:
+```java
+@MDEntity(tableName = "user")
+public class User {
+
+    @MDField(fieldName = "id", allowedSQLActions = SELECT)
+    public BigDecimal id;
+    
+    @MDField(fieldName = "email")
+    public String email;
+}
+```
 
 #### @MDId
 
 Define field as the primary key of the entity table
 - constraints:
   - must be on a field annotated with MDField
+- examples:
+```java
+@MDEntity(tableName = "user")
+public class User {
+    
+    @MDId
+    @MDField(fieldName = "id", allowedSQLActions = SELECT)
+    public BigDecimal id;
+    
+    @MDField(fieldName = "email")
+    public String email;
+}
+```
 
 #### @MDInheritLink
 
@@ -217,6 +252,36 @@ Define field as a link of the entity table to the parent class table
 - constraints:
   - must be on a field annotated with MDField
   - MDField must be a foreign key referencing the parent entity primary key
+- examples:
+```java
+@MDEntity(tableName = "user")
+public class User {
+    
+    @MDId
+    @MDField(fieldName = "id", allowedSQLActions = SELECT)
+    public BigDecimal id;
+    
+    @MDField(fieldName = "email")
+    public String email;
+}
+
+@MDEntity(tableName = "player")
+public class Player extends User {
+    
+	@MDId
+	@MDField(fieldName = "id_player")
+	public BigDecimal idPlayer;
+    
+	@MDInheritLink
+	@MDField(fieldName = "id_user")
+	public BigDecimal idUser;
+
+	@MDField(fieldName = "pseudo")
+	public String pseudo;
+}
+```
+
+NB: This feature is not really useful, I made it as a Proof of Concept for linking entities between them before making @MDManyToOne and @MDOneToMany
 
 #### @MDManyToOne
 
@@ -224,7 +289,7 @@ Define field as a foreign key link to the referenced entity
 - constraints:
   - field must be public
   - field must be an MDEntity object reference
-  - must not be on a field annotated with MDField
+  - field must <b>NOT</b> be annotated with MDField
 - properties:
     - fieldName: field name of the link key in database
     - targetFieldName: field name of the target key
@@ -232,14 +297,38 @@ Define field as a foreign key link to the referenced entity
     - loadPolicy:
       - LAZY: avoid loading of linked entity when current one is retrieved
       - HEAVY: force loading of linked entity when current one is retrieved
+- examples:
+```java
+@MDEntity(tableName = "user")
+public class User {
+    
+    @MDId
+    @MDField(fieldName = "id", allowedSQLActions = SELECT)
+    public BigDecimal id;
+    
+    @MDField(fieldName = "email")
+    public String email;
+}
+
+@MDEntity(tableName = "user_token")
+public class UserToken {
+    
+    @MDManyToOne(fieldName = "id_user", targetFieldName = "id", target = User.class, loadPolicy = HEAVY)
+    public User user;
+    
+    @MDField(fieldName = "token")
+    public String token;
+}
+```
+
 
 #### @MDOneToMany
 
 Define field as a foreign key link to the referenced entity
 - constraints:
   - field must be public
-  - field must be an MDEntity object reference
-  - must not be on a field annotated with MDField
+  - field must be a collection of MDEntity object
+  - field must <b>NOT</b> be annotated with MDField
 - properties:
     - fieldName: field name of the link key in database
     - targetFieldName: field name of the target foreign key
@@ -247,6 +336,33 @@ Define field as a foreign key link to the referenced entity
     - loadPolicy:
       - LAZY: avoid loading of linked entity when current one is retrieved
       - HEAVY: force loading of linked entity when current one is retrieved
+- examples:
+```java
+@MDEntity(tableName = "user")
+public class User {
+    
+    @MDId
+    @MDField(fieldName = "id", allowedSQLActions = SELECT)
+    public BigDecimal id;
+    
+    @MDField(fieldName = "email")
+    public String email;
+
+    @MDOneToMany(fieldName = "id", targetFieldName = "id_user", target = UserToken.class, loadPolicy = HEAVY)
+    public List<UserToken> userTokens;
+}
+
+@MDEntity(tableName = "user_token")
+public class UserToken {
+    
+    @MDManyToOne(fieldName = "id_user", targetFieldName = "id", target = User.class, loadPolicy = HEAVY)
+    public User user;
+    
+    @MDField(fieldName = "token")
+    public String token;
+}
+```
+
 
 # Configuration
 
@@ -319,4 +435,4 @@ _In progress_
 
 # License
 
-MiniDAO is developed and distributed under the terms of the [MIT License](https://github.com/tkint/MiniDAO/blob/master/LICENSE)
+MiniDAO is developed and distributed under the terms of the [MIT License](https://gitlab.com/tkint/MiniDAO/blob/master/LICENSE)
