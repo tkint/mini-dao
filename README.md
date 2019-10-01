@@ -31,7 +31,14 @@
 
 # MiniDAO 
 
-Java library for quick connection between java model and database tables.
+MiniDAO is a java library created to form a quick connection between java model and database.
+
+Its purpose is to simplify requests, but it is not made for creating a database automatically.
+I will maybe add a feature to execute scripts on initialization, or to expose a maven job,
+a bit like Artisan and Eloquent in PHP.
+
+If you want to participate, I'm fully open to it.
+If you want a new feature incorporated or encounter a bug, don't hesitate to fill an issue.
 
 # Summary
 
@@ -363,10 +370,26 @@ public class UserToken {
 }
 ```
 
-
 # Configuration
 
-_In progress_
+The MDConnectionConfig object allow you to setup a connection with a database. You can 
+instantiate multiple MiniDAO connections and MDConnectionConfig.
+
+This object has the following properties:
+ - MDDriver driver:<br/>
+    The driver is used by MiniDAO to build the uri and instantiate Connection.<br/>
+    For now, supported drivers are  MYSQL, ORACLE and H2 (file only).
+    In the future, MiniDAO will be able to do specific requests based on this value.
+ - String url:<br/>
+    Ip address or domain name of the database server
+ - String port:<br/>
+    Port used to access database server instance
+ - String login:<br/>
+    Login of the user
+ - String password:<br/>
+    Password of the user
+ - String instance:<br/>
+    Name of database
 
 # Main class : MiniDAO
 
