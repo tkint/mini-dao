@@ -40,7 +40,7 @@ public class ContactTest {
 
 	@MDId
 	@MDField(fieldName = idContactField)
-	public BigDecimal idContact;
+	public Long idContact;
 
 	@MDField(fieldName = "first_name")
 	public String firstName;

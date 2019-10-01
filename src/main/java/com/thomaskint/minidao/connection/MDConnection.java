@@ -40,7 +40,7 @@ public class MDConnection {
 
 	private Connection connection;
 
-	private PreparedStatement statement;
+	private Statement statement;
 
 	private MDConnection(MDConnectionConfig connectionConfig) throws MDException {
 		try {
@@ -71,6 +71,14 @@ public class MDConnection {
 	public static ResultSet executeQuery(MDConnectionConfig connectionConfig, String query) throws MDException {
 		try {
 			return getInstance(connectionConfig).prepareStatement(query, null).executeQuery();
+		} catch (SQLException e) {
+			throw new MDException(e);
+		}
+	}
+
+	public static boolean execute(MDConnectionConfig connectionConfig, String sql) throws MDException {
+		try {
+			return getInstance(connectionConfig).createStatement().execute(sql);
 		} catch (SQLException e) {
 			throw new MDException(e);
 		}
@@ -109,6 +117,11 @@ public class MDConnection {
 			this.statement = this.connection.prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 		}
 //		statement = this.connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+		return (PreparedStatement) statement;
+	}
+
+	private Statement createStatement() throws SQLException {
+		this.statement = this.connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 		return statement;
 	}
 }
