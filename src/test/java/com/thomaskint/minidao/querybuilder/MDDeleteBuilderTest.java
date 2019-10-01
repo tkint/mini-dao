@@ -103,8 +103,8 @@ public class MDDeleteBuilderTest {
 	public void should_construct_query_with_entity() {
 		// GIVEN
 		String expectedQuery = "DELETE FROM message WHERE message.id_message = 1";
-		UserTest author = new UserTest(BigDecimal.valueOf(1), "pseudo", "login", "password");
-		MessageTest message = new MessageTest(BigDecimal.valueOf(1), BigDecimal.valueOf(1), author, "test-content");
+		UserTest author = new UserTest(1L, "pseudo", "login", "password");
+		MessageTest message = new MessageTest(1L, 1L, author, "test-content");
 		MDDeleteBuilder deleteBuilder = new MDDeleteBuilder();
 		// WHEN
 		String returnedQuery = null;
