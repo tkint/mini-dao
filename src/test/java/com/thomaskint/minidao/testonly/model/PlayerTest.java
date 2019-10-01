@@ -39,11 +39,11 @@ public class PlayerTest extends ContactTest {
 
 	@MDId
 	@MDField(fieldName = "id_player")
-	public BigDecimal idPlayer;
+	public Long idPlayer;
 
 	@MDInheritLink
 	@MDField(fieldName = "id_contact_parent")
-	public BigDecimal idContact;
+	public Long idContact;
 
 	@MDField(fieldName = "pseudo")
 	public String pseudo;

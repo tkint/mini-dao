@@ -1,4 +1,5 @@
 target/
 .idea/
 *.iml
+src/test/resources/database/h2test.mv.db
 src/test/resources/database/h2test.trace.db

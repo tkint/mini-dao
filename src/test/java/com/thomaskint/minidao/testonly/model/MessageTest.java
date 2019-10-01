@@ -46,10 +46,10 @@ public class MessageTest {
 
 	@MDId
 	@MDField(fieldName = "id_message", allowedSQLActions = SELECT)
-	public BigDecimal idMessage;
+	public Long idMessage;
 
 	@MDField(fieldName = idAuthorFieldName)
-	public BigDecimal idUser;
+	public Long idUser;
 
 	@MDManyToOne(fieldName = MessageTest.idAuthorFieldName, targetFieldName = UserTest.idUserFieldName, target = UserTest.class, loadPolicy = HEAVY)
 	public UserTest userTest;
@@ -63,7 +63,7 @@ public class MessageTest {
 	public MessageTest() {
 	}
 
-	public MessageTest(BigDecimal idMessage, BigDecimal idUser, UserTest userTest, String content) {
+	public MessageTest(Long idMessage, Long idUser, UserTest userTest, String content) {
 		this.idMessage = idMessage;
 		this.idUser = idUser;
 		this.userTest = userTest;

@@ -41,7 +41,8 @@ import static com.thomaskint.minidao.testonly.model.MessageTest.idAuthorFieldNam
 /**
  * @author Thomas Kint
  */
-@MDEntity(tableName = "user") public class UserTest {
+@MDEntity(tableName = "user")
+public class UserTest {
 
 	public static final String idUserFieldName = "id_user";
 
@@ -51,13 +52,18 @@ import static com.thomaskint.minidao.testonly.model.MessageTest.idAuthorFieldNam
 
 	public static final String roleFieldName = "role";
 
-	@MDId @MDField(fieldName = idUserFieldName, allowedSQLActions = SELECT) public BigDecimal id;
+	@MDId
+	@MDField(fieldName = idUserFieldName, allowedSQLActions = SELECT)
+	public Long id;
 
-	@MDField(fieldName = pseudoFieldName) public String pseudo;
+	@MDField(fieldName = pseudoFieldName)
+	public String pseudo;
 
-	@MDField(fieldName = loginFieldName) public String login;
+	@MDField(fieldName = loginFieldName)
+	public String login;
 
-	@MDField(fieldName = "password") public String password;
+	@MDField(fieldName = "password")
+	public String password;
 
 	@MDOneToMany(fieldName = idUserFieldName, targetFieldName = idAuthorFieldName, target = MessageTest.class, loadPolicy = HEAVY)
 	public List<MessageTest> messages;
@@ -68,7 +74,7 @@ import static com.thomaskint.minidao.testonly.model.MessageTest.idAuthorFieldNam
 	public UserTest() {
 	}
 
-	public UserTest(BigDecimal id, String pseudo, String login, String password) {
+	public UserTest(Long id, String pseudo, String login, String password) {
 		this.id = id;
 		this.pseudo = pseudo;
 		this.login = login;
@@ -76,7 +82,8 @@ import static com.thomaskint.minidao.testonly.model.MessageTest.idAuthorFieldNam
 		this.messages = new ArrayList<>();
 	}
 
-	@Override public String toString() {
+	@Override
+	public String toString() {
 		return "UserTest{" + "id=" + id + ", pseudo='" + pseudo + '\'' + ", login='" + login + '\'' + ", password='"
 				+ password + '\'' + ", messages=" + messages + ", role=" + role + '}';
 	}
