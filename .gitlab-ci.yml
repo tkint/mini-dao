@@ -3,6 +3,7 @@ image: maven:3.5.0
 stages:
   - build
   - test
+  - verify
   - release
   - deploy
 
@@ -36,6 +37,11 @@ test:
   stage: test
   script:
     - mvn $MAVEN_CLI_OPTS test
+
+verify:
+  stage: verify
+  script:
+    - mvn $MAVEN_CLI_OPTS verify
 
 release:
   stage: release
