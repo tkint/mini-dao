@@ -24,19 +24,29 @@
 
 package com.thomaskint.minidao.testonly;
 
+import com.thomaskint.minidao.connection.MDConnection;
 import com.thomaskint.minidao.connection.MDConnectionConfig;
 import com.thomaskint.minidao.connection.MDDriver;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * @author Thomas Kint
  */
 public class Config {
 
-	private static final File file = new File("src/test/resources/database");
-
 	private static final String databaseName = "h2test";
 
+	private static final File file = new File("src/test/resources/database");
+
+	private static final String initFilePath = "src/test/resources/database/scripts/init.sql";
+
 	public static final MDConnectionConfig connectionConfig = new MDConnectionConfig(MDDriver.H2, file.getAbsolutePath(), null, "root", "password", databaseName);
+
+	public static void initDB() throws Exception {
+		String sql = new String(Files.readAllBytes(Paths.get(initFilePath)));
+		MDConnection.execute(connectionConfig, sql);
+	}
 }

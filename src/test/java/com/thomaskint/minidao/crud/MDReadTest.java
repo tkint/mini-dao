@@ -27,14 +27,13 @@ package com.thomaskint.minidao.crud;
 import com.thomaskint.minidao.enumeration.MDConditionOperator;
 import com.thomaskint.minidao.exception.MDException;
 import com.thomaskint.minidao.querybuilder.MDCondition;
+import com.thomaskint.minidao.testonly.Config;
 import com.thomaskint.minidao.testonly.model.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
-
-import static com.thomaskint.minidao.testonly.Config.connectionConfig;
 
 /**
  * @author Thomas Kint
@@ -44,14 +43,15 @@ public class MDReadTest {
 	private MDRead read;
 
 	@Before
-	public void init() {
-		read = new MDRead(connectionConfig);
+	public void init() throws Exception {
+		read = new MDRead(Config.connectionConfig);
+		Config.initDB();
 	}
 
 	@Test
 	public void should_return_list_of_users() {
 		// GIVEN
-		List<UserTest> users;
+		List<UserTest> users = null;
 		try {
 			users = read.getEntities(UserTest.class);
 			for (UserTest user : users) {
@@ -59,29 +59,29 @@ public class MDReadTest {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			Assert.assertFalse(true);
+			Assert.fail();
 		}
-		Assert.assertTrue(true);
+		Assert.assertNotNull(users);
 	}
 
 	@Test
 	public void should_return_one_user() {
 		// GIVEN
-		UserTest user;
+		UserTest user = null;
 		try {
-			user = read.getEntityById(UserTest.class, 30);
+			user = read.getEntityById(UserTest.class, 1);
 			System.out.println(user);
 		} catch (Exception e) {
 			e.printStackTrace();
-			Assert.assertFalse(true);
+			Assert.fail();
 		}
-		Assert.assertTrue(true);
+		Assert.assertNotNull(user);
 	}
 
 	@Test
 	public void should_return_list_of_roles_with_users() {
 		// GIVEN
-		List<RoleTest> roles;
+		List<RoleTest> roles = null;
 		try {
 			roles = read.getEntities(RoleTest.class);
 			for (RoleTest role : roles) {
@@ -89,15 +89,15 @@ public class MDReadTest {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			Assert.assertFalse(true);
+			Assert.fail();
 		}
-		Assert.assertTrue(true);
+		Assert.assertNotNull(roles);
 	}
 
 	@Test
 	public void should_return_list_of_players() {
 		// GIVEN
-		List<PlayerTest> players;
+		List<PlayerTest> players = null;
 		try {
 			players = read.getEntities(PlayerTest.class);
 			for (PlayerTest player : players) {
@@ -105,15 +105,15 @@ public class MDReadTest {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			Assert.assertFalse(true);
+			Assert.fail();
 		}
-		Assert.assertTrue(true);
+		Assert.assertNotNull(players);
 	}
 
 	@Test
 	public void should_return_list_of_messages_with_author() {
 		// GIVEN
-		List<MessageTest> messages;
+		List<MessageTest> messages = null;
 		try {
 			messages = read.getEntities(MessageTest.class);
 			for (MessageTest message : messages) {
@@ -121,15 +121,15 @@ public class MDReadTest {
 			}
 		} catch (MDException e) {
 			e.printStackTrace();
-			Assert.assertFalse(true);
+			Assert.fail();
 		}
-		Assert.assertTrue(true);
+		Assert.assertNotNull(messages);
 	}
 
 	@Test
 	public void should_return_list_of_messagetypes_with_messages_and_authors() {
 		// GIVEN
-		List<MessageTypeTest> messageTypes;
+		List<MessageTypeTest> messageTypes = null;
 		try {
 			messageTypes = read.getEntities(MessageTypeTest.class);
 			for (MessageTypeTest messageType : messageTypes) {
@@ -137,16 +137,16 @@ public class MDReadTest {
 			}
 		} catch (MDException e) {
 			e.printStackTrace();
-			Assert.assertFalse(true);
+			Assert.fail();
 		}
-		Assert.assertTrue(true);
+		Assert.assertNotNull(messageTypes);
 	}
 
 	@Test
 	public void should_return_list_of_messages_based_on_author_id() {
 		// GIVEN
 		MDCondition condition = new MDCondition(MessageTest.idAuthorFieldName, MDConditionOperator.EQUAL, 10);
-		List<MessageTest> messages;
+		List<MessageTest> messages = null;
 		try {
 			messages = read.getEntities(MessageTest.class, condition);
 			for (MessageTest message : messages) {
@@ -154,8 +154,8 @@ public class MDReadTest {
 			}
 		} catch (MDException e) {
 			e.printStackTrace();
-			Assert.assertFalse(true);
+			Assert.fail();
 		}
-		Assert.assertTrue(true);
+		Assert.assertNotNull(messages);
 	}
 }

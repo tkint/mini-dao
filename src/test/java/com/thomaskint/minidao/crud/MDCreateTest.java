@@ -25,14 +25,12 @@
 package com.thomaskint.minidao.crud;
 
 import com.thomaskint.minidao.MiniDAO;
+import com.thomaskint.minidao.testonly.Config;
 import com.thomaskint.minidao.testonly.model.UserTest;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.math.BigDecimal;
-
-import static com.thomaskint.minidao.testonly.Config.connectionConfig;
 
 /**
  * @author Thomas Kint
@@ -42,15 +40,16 @@ public class MDCreateTest {
 	private MDCreate create;
 
 	@Before
-	public void init() {
-		create = new MDCreate(connectionConfig, MiniDAO.getDefaultDateFormat());
+	public void init() throws Exception {
+		create = new MDCreate(Config.connectionConfig, MiniDAO.getDefaultDateFormat());
+		Config.initDB();
 	}
 
 	@Test
 	public void should_create_user() {
 		String rand = String.valueOf(Math.random() * 100000).substring(0, 5);
 
-		UserTest userTest = new UserTest(BigDecimal.valueOf(1), "pseudo", "login", "password");
+		UserTest userTest = new UserTest(1L, "pseudo", "login", "password");
 
 		boolean created = false;
 		try {

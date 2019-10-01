@@ -62,8 +62,8 @@ public class MDUpdateBuilderTest {
 		// GIVEN
 		String expectedQuery =
 				"UPDATE message SET id_author = 1, content = 'test-content' WHERE message.id_message = 1";
-		UserTest author = new UserTest(BigDecimal.valueOf(1), "pseudo", "login", "password");
-		MessageTest message = new MessageTest(BigDecimal.valueOf(1), BigDecimal.valueOf(1), author, "test-content");
+		UserTest author = new UserTest(1L, "pseudo", "login", "password");
+		MessageTest message = new MessageTest(1L, 1L, author, "test-content");
 		MDUpdateBuilder updateBuilder = new MDUpdateBuilder(MiniDAO.getDefaultDateFormat());
 		// WHEN
 		String returnedQuery = null;
