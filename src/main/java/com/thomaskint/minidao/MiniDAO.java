@@ -111,6 +111,14 @@ public class MiniDAO {
 		return MDConnection.executeQuery(connectionConfig, query);
 	}
 
+	public int executeUpdate(String query) throws MDException {
+		try {
+			return MDConnection.executeUpdate(connectionConfig, query, null).getValue();
+		} finally {
+			MDConnection.close();
+		}
+	}
+
 	public <T> T executeQueryAndMapToEntity(String query, Class<T> entityClass) throws MDException {
 		ResultSet resultSet = executeQuery(query);
 		return mapResultSetToEntity(resultSet, entityClass);
@@ -119,14 +127,6 @@ public class MiniDAO {
 	public <T> List<T> executeQueryAndMapToEntities(String query, Class<T> entityClass) throws MDException {
 		ResultSet resultSet = executeQuery(query);
 		return mapResultSetToEntities(resultSet, entityClass);
-	}
-
-	public int executeUpdate(String query) throws MDException {
-		try {
-			return MDConnection.executeUpdate(connectionConfig, query, null).getValue();
-		} finally {
-			MDConnection.close();
-		}
 	}
 
 	public <T> T mapResultSetToEntity(ResultSet resultSet, Class<T> entityClass) throws MDException {

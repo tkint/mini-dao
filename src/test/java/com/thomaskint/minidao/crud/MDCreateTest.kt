@@ -47,8 +47,6 @@ class MDCreateTest {
 
     @Test
     fun should_create_user() {
-        val rand = (Math.random() * 100000).toString().substring(0, 5)
-
         val userTest = UserTest(1L, "pseudo", "login", "password")
 
         var created = false
