@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-package com.thomaskint.minidao.connection;
+package com.thomaskint.minidao.crud
 
-import static org.junit.Assert.*;
-
-public class MDConnectionTest {
-
-}
+class MDUpdateTest

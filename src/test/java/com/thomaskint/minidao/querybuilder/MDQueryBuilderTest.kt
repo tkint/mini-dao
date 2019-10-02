@@ -22,8 +22,24 @@
  * SOFTWARE.
  */
 
-package com.thomaskint.minidao.crud;
+package com.thomaskint.minidao.querybuilder
 
-public class MDUpdateTest {
+import com.thomaskint.minidao.exception.MDException
+import org.junit.Test
 
+/**
+ * @author Thomas Kint
+ */
+class MDQueryBuilderTest {
+
+
+    @Test(expected = MDException::class)
+    @Throws(MDException::class)
+    fun should_not_construct_query_when_no_entity() {
+        // GIVEN
+        val deleteBuilder = MDDeleteBuilder()
+        // WHEN
+        deleteBuilder.build()
+        // THEN exception
+    }
 }

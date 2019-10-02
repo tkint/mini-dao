@@ -22,10 +22,9 @@
  * SOFTWARE.
  */
 
-package com.thomaskint.minidao.model;
+package com.thomaskint.minidao.crud
 
-import static org.junit.Assert.*;
-
-public class MDEntityInfoTest {
-
-}
+/**
+ * @author Thomas Kint
+ */
+class MDReadTest

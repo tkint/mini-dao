@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-package com.thomaskint.minidao.crud;
+package com.thomaskint.minidao.connection
 
-public class MDDeleteTest {
-
-}
+class MDDriverTest

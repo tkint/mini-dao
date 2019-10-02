@@ -62,7 +62,7 @@ public class MDEntityInfo {
 		this.entityClass = entityClass;
 		this.annotations = entityClass.getDeclaredAnnotations();
 		MDFieldInfo fieldInfo;
-		for (Field field : entityClass.getFields()) {
+		for (Field field : entityClass.getDeclaredFields()) {
 			if ((fieldInfo = new MDFieldInfo(field, this)).isMDField()) {
 				fieldInfos.add(fieldInfo);
 			}
@@ -211,7 +211,7 @@ public class MDEntityInfo {
 	 */
 	private <U extends Annotation> List<MDFieldInfo> getFieldsByAnnotation(Class<U> annotation) {
 		List<MDFieldInfo> fieldInfos = new ArrayList<>();
-		for (Field field : entityClass.getFields()) {
+		for (Field field : entityClass.getDeclaredFields()) {
 			MDFieldInfo fieldInfo = new MDFieldInfo(field, this);
 			if (fieldInfo.getAnnotation(annotation) != null) {
 				fieldInfos.add(fieldInfo);

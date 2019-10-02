@@ -52,6 +52,7 @@ public class MDFieldInfo {
 		this.field = field;
 		this.entityClass = field.getDeclaringClass();
 		this.entityInfo = entityInfo;
+		this.field.setAccessible(true);
 	}
 
 	public Field getField() {

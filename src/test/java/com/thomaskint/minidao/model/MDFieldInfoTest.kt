@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-package com.thomaskint.minidao.connection;
+package com.thomaskint.minidao.model
 
-import static org.junit.Assert.*;
-
-public class MDDriverTest {
-
-}
+class MDFieldInfoTest

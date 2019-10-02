@@ -22,10 +22,27 @@
  * SOFTWARE.
  */
 
-package com.thomaskint.minidao.crud;
+package com.thomaskint.minidao.testonly.model
+
+import com.thomaskint.minidao.annotation.MDEntity
+import com.thomaskint.minidao.annotation.MDField
+import com.thomaskint.minidao.annotation.MDId
+import com.thomaskint.minidao.annotation.MDInheritLink
+
 
 /**
  * @author Thomas Kint
  */
-public class MDReadTest {
-}
+@MDEntity(tableName = "player")
+open class PlayerTest(
+        @MDId
+        @MDField(fieldName = "id_player")
+        var idPlayer: Long? = null,
+
+        @MDInheritLink
+        @MDField(fieldName = "id_contact_parent")
+        override var idContact: Long? = null,
+
+        @MDField(fieldName = "pseudo")
+        var pseudo: String? = null
+) : ContactTest(idContact)
