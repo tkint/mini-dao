@@ -22,26 +22,17 @@
  * SOFTWARE.
  */
 
-package com.thomaskint.minidao.enumeration;
+package com.thomaskint.minidao.enumeration
 
 /**
  * @author Thomas Kint
  */
-public enum MDConditionOperator {
-	EQUAL("="),
-	DIFFERENT("!="),
-	STRICTLY_SUPERIOR(">"),
-	STRICTLY_INFERIOR("<"),
-	LIKE("LIKE");
+enum class MDJoinType constructor(private val value: String) {
+    INNER_JOIN("INNER JOIN"),
+    LEFT_OUTER_JOIN("LEFT OUTER JOIN"),
+    RIGHT_OUTER_JOIN("RIGHT OUTER JOIN");
 
-	private String value;
-
-	MDConditionOperator(String value) {
-		this.value = value;
-	}
-
-	@Override
-	public String toString() {
-		return value;
-	}
+    override fun toString(): String {
+        return value
+    }
 }

@@ -24,7 +24,6 @@
 
 package com.thomaskint.minidao.querybuilder;
 
-import com.thomaskint.minidao.exception.MDException;
 import com.thomaskint.minidao.model.MDEntityInfo;
 import com.thomaskint.minidao.model.MDFieldInfo;
 

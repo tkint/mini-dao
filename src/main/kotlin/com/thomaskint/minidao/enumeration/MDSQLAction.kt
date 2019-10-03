@@ -22,40 +22,18 @@
  * SOFTWARE.
  */
 
-package com.thomaskint.minidao.testonly.model;
-
-import com.thomaskint.minidao.annotation.MDEntity;
-import com.thomaskint.minidao.annotation.MDField;
-import com.thomaskint.minidao.annotation.MDId;
-import com.thomaskint.minidao.annotation.MDInheritLink;
-
-import java.math.BigDecimal;
+package com.thomaskint.minidao.enumeration
 
 /**
  * @author Thomas Kint
  */
-@MDEntity(tableName = "player")
-public class PlayerTest extends ContactTest {
+enum class MDSQLAction constructor(private val value: String) {
+    SELECT("SELECT"),
+    INSERT("INSERT"),
+    UPDATE("UPDATE"),
+    DELETE("DELETE");
 
-	@MDId
-	@MDField(fieldName = "id_player")
-	public Long idPlayer;
-
-	@MDInheritLink
-	@MDField(fieldName = "id_contact_parent")
-	public Long idContact;
-
-	@MDField(fieldName = "pseudo")
-	public String pseudo;
-
-	@Override
-	public String toString() {
-		return "PlayerTest{" +
-				"idPlayer=" + idPlayer +
-				", idContact=" + idContact +
-				", pseudo='" + pseudo + '\'' +
-				"} " + super.toString();
-	}
+    override fun toString(): String {
+        return value
+    }
 }
-
-

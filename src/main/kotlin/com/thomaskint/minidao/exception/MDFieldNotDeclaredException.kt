@@ -22,42 +22,11 @@
  * SOFTWARE.
  */
 
-package com.thomaskint.minidao.crud;
-
-import com.thomaskint.minidao.MiniDAO;
-import com.thomaskint.minidao.testonly.Config;
-import com.thomaskint.minidao.testonly.model.UserTest;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
+package com.thomaskint.minidao.exception
 
 /**
  * @author Thomas Kint
  */
-public class MDCreateTest {
-
-	private MDCreate create;
-
-	@Before
-	public void init() throws Exception {
-		create = new MDCreate(Config.getConnectionConfig(), MiniDAO.getDefaultDateFormat());
-		Config.initDB();
-	}
-
-	@Test
-	public void should_create_user() {
-		String rand = String.valueOf(Math.random() * 100000).substring(0, 5);
-
-		UserTest userTest = new UserTest(1L, "pseudo", "login", "password");
-
-		boolean created = false;
-		try {
-			created = create.createEntity(userTest);
-			System.out.println(userTest);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		Assert.assertTrue(created);
-	}
-}
+class MDFieldNotDeclaredException(entityClass: Class<*>, field: String) : MDException(
+        entityClass.name + " has no " + field + " declared as MDField"
+)

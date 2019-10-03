@@ -22,22 +22,34 @@
  * SOFTWARE.
  */
 
-package com.thomaskint.minidao.enumeration;
+package com.thomaskint.minidao.testonly
 
-import com.thomaskint.minidao.utils.MDIncomingFeature;
+import com.thomaskint.minidao.connection.MDConnection
+import com.thomaskint.minidao.connection.MDConnectionConfig
+import com.thomaskint.minidao.connection.MDDriver
+
+import java.io.File
+import java.nio.file.Files
+import java.nio.file.Paths
 
 /**
  * @author Thomas Kint
  */
-@MDIncomingFeature(
-		featureName = "Control of load policy",
-		description = "LAZY: Load target when needed | HEAVY: Always load target")
-public enum MDLoadPolicy {
-	LAZY,
-	HEAVY;
+object Config {
 
-	@Override
-	public String toString() {
-		return name();
-	}
+    private const val databaseName = "h2test"
+
+    private val file = File("src/test/resources/database")
+
+    private const val initFilePath = "src/test/resources/database/scripts/init.sql"
+
+    @JvmStatic
+    val connectionConfig = MDConnectionConfig(MDDriver.H2, file.absolutePath, null, "root", "password", databaseName)
+
+    @JvmStatic
+    @Throws(Exception::class)
+    fun initDB() {
+        val sql = String(Files.readAllBytes(Paths.get(initFilePath)))
+        MDConnection.execute(connectionConfig, sql)
+    }
 }

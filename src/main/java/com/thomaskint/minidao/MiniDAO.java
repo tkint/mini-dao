@@ -76,7 +76,7 @@ public class MiniDAO {
 	}
 
 	public MiniDAO(String url, String port, String login, String password, String database) {
-		this(new MDConnectionConfig(MDDriver.DEFAULT, url, port, login, password, database));
+		this(new MDConnectionConfig(MDDriver.Companion.getDEFAULT(), url, port, login, password, database));
 	}
 
 	public MDConnectionConfig getConnectionConfig() {

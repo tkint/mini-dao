@@ -22,38 +22,13 @@
  * SOFTWARE.
  */
 
-package com.thomaskint.minidao.testonly.model;
+package com.thomaskint.minidao.exception
 
-import com.thomaskint.minidao.annotation.MDEntity;
-import com.thomaskint.minidao.annotation.MDField;
-import com.thomaskint.minidao.annotation.MDId;
-
-import java.math.BigDecimal;
+import com.thomaskint.minidao.enumeration.MDSQLAction
 
 /**
  * @author Thomas Kint
  */
-@MDEntity(tableName = "contact")
-public class ContactTest {
-
-	public static final String idContactField = "id_contact";
-
-	@MDId
-	@MDField(fieldName = idContactField)
-	public Long idContact;
-
-	@MDField(fieldName = "first_name")
-	public String firstName;
-
-	@MDField(fieldName = "last_name")
-	public String lastName;
-
-	@Override
-	public String toString() {
-		return "ContactTest{" +
-				"idContact=" + idContact +
-				", firstName='" + firstName + '\'' +
-				", lastName='" + lastName + '\'' +
-				'}';
-	}
-}
+class MDParamNotIncludedInClassException(entityClass: Class<*>, param: MDSQLAction) : MDException(
+        entityClass.name + " does not permit " + param
+)

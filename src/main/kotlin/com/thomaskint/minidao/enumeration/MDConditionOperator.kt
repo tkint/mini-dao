@@ -22,14 +22,19 @@
  * SOFTWARE.
  */
 
-package com.thomaskint.minidao.exception;
+package com.thomaskint.minidao.enumeration
 
 /**
  * @author Thomas Kint
  */
-public class MDNotAnMDEntityException extends MDException {
+enum class MDConditionOperator constructor(private val value: String) {
+    EQUAL("="),
+    DIFFERENT("!="),
+    STRICTLY_SUPERIOR(">"),
+    STRICTLY_INFERIOR("<"),
+    LIKE("LIKE");
 
-	public MDNotAnMDEntityException(Class entityClass) {
-		super(entityClass.getName() + " is not an MDEntity");
-	}
+    override fun toString(): String {
+        return value
+    }
 }

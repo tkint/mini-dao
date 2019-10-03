@@ -76,7 +76,7 @@ class MiniDAOTest {
     fun should_call_execute_update() {
         // GIVEN
         val statement = mockk<Statement>()
-        val expectedMDPair = MDPair(statement, 0)
+        val expectedMDPair: MDPair<Statement?, Int?> = MDPair(statement, 0)
 
         mockkStatic(MDConnection::class)
 

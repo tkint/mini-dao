@@ -22,31 +22,28 @@
  * SOFTWARE.
  */
 
-package com.thomaskint.minidao.testonly;
+package com.thomaskint.minidao.testonly.model
 
-import com.thomaskint.minidao.connection.MDConnection;
-import com.thomaskint.minidao.connection.MDConnectionConfig;
-import com.thomaskint.minidao.connection.MDDriver;
+import com.thomaskint.minidao.annotation.MDEntity
+import com.thomaskint.minidao.annotation.MDField
+import com.thomaskint.minidao.annotation.MDId
+import com.thomaskint.minidao.annotation.MDInheritLink
 
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.math.BigDecimal
 
 /**
  * @author Thomas Kint
  */
-public class Config {
+@MDEntity(tableName = "player")
+open class PlayerTest(
+        @MDId
+        @MDField(fieldName = "id_player")
+        var idPlayer: Long? = null,
 
-	private static final String databaseName = "h2test";
+        @MDInheritLink
+        @MDField(fieldName = "id_contact_parent")
+        var idContactParent: Long? = null,
 
-	private static final File file = new File("src/test/resources/database");
-
-	private static final String initFilePath = "src/test/resources/database/scripts/init.sql";
-
-	public static final MDConnectionConfig connectionConfig = new MDConnectionConfig(MDDriver.H2, file.getAbsolutePath(), null, "root", "password", databaseName);
-
-	public static void initDB() throws Exception {
-		String sql = new String(Files.readAllBytes(Paths.get(initFilePath)));
-		MDConnection.execute(connectionConfig, sql);
-	}
-}
+        @MDField(fieldName = "pseudo")
+        var pseudo: String? = null
+) : ContactTest()

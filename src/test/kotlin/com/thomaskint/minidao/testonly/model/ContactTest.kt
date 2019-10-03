@@ -22,23 +22,30 @@
  * SOFTWARE.
  */
 
-package com.thomaskint.minidao.enumeration;
+package com.thomaskint.minidao.testonly.model
+
+import com.thomaskint.minidao.annotation.MDEntity
+import com.thomaskint.minidao.annotation.MDField
+import com.thomaskint.minidao.annotation.MDId
+
+import java.math.BigDecimal
 
 /**
  * @author Thomas Kint
  */
-public enum MDConditionLink {
-	OR("OR"),
-	AND("AND");
+@MDEntity(tableName = "contact")
+open class ContactTest(
+        @MDId
+        @MDField(fieldName = idContactField)
+        var idContact: Long? = null,
 
-	private String value;
+        @MDField(fieldName = "first_name")
+        var firstName: String? = null,
 
-	MDConditionLink(String value) {
-		this.value = value;
-	}
-
-	@Override
-	public String toString() {
-		return value;
-	}
+        @MDField(fieldName = "last_name")
+        var lastName: String? = null
+) {
+    companion object {
+        const val idContactField = "id_contact"
+    }
 }

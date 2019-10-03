@@ -44,7 +44,7 @@ public class MDReadIT {
 
 	@Before
 	public void init() throws Exception {
-		read = new MDRead(Config.connectionConfig);
+		read = new MDRead(Config.getConnectionConfig());
 		Config.initDB();
 	}
 

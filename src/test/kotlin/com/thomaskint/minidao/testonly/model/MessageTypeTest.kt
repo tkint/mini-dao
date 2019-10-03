@@ -22,25 +22,29 @@
  * SOFTWARE.
  */
 
-package com.thomaskint.minidao.enumeration;
+package com.thomaskint.minidao.testonly.model
+
+import com.thomaskint.minidao.annotation.MDEntity
+import com.thomaskint.minidao.annotation.MDField
+import com.thomaskint.minidao.annotation.MDId
+import com.thomaskint.minidao.annotation.MDOneToMany
+
+import com.thomaskint.minidao.enumeration.MDLoadPolicy.HEAVY
+import com.thomaskint.minidao.testonly.model.MessageTest.Companion.messageTypeFieldName
 
 /**
  * @author Thomas Kint
  */
-public enum MDSQLAction {
-	SELECT("SELECT"),
-	INSERT("INSERT"),
-	UPDATE("UPDATE"),
-	DELETE("DELETE");
+@MDEntity(tableName = "message_type")
+open class MessageTypeTest(
+        @MDId
+        @MDField(fieldName = valueFieldName)
+        var value: String? = null,
 
-	private String value;
-
-	MDSQLAction(String value) {
-		this.value = value;
-	}
-
-	@Override
-	public String toString() {
-		return value;
-	}
+        @MDOneToMany(fieldName = valueFieldName, targetFieldName = messageTypeFieldName, target = MessageTest::class, loadPolicy = HEAVY)
+        var messages: List<MessageTest>? = null
+) {
+    companion object {
+        const val valueFieldName = "value"
+    }
 }
