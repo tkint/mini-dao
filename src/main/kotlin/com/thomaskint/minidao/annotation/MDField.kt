@@ -22,33 +22,18 @@
  * SOFTWARE.
  */
 
-package com.thomaskint.minidao.annotation;
+package com.thomaskint.minidao.annotation
 
-import com.thomaskint.minidao.enumeration.MDLoadPolicy;
-import com.thomaskint.minidao.utils.MDIncomingFeature;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-import static com.thomaskint.minidao.enumeration.MDLoadPolicy.LAZY;
+import com.thomaskint.minidao.enumeration.MDSQLAction
+import com.thomaskint.minidao.enumeration.MDSQLAction.*
 
 /**
  * @author Thomas Kint
  */
-@Target(ElementType.FIELD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface MDOneToMany {
+@Target(AnnotationTarget.FIELD)
+@kotlin.annotation.Retention(AnnotationRetention.RUNTIME)
+annotation class MDField(
+        val fieldName: String,
 
-	String fieldName();
-
-	String targetFieldName();
-
-	Class target();
-
-	@MDIncomingFeature(
-			featureName = "Control of load policy",
-			description = "The load of the target will be affected by that value")
-	MDLoadPolicy loadPolicy() default LAZY;
-}
+        val allowedSQLActions: Array<MDSQLAction> = [SELECT, INSERT, UPDATE]
+)

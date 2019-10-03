@@ -22,13 +22,11 @@
  * SOFTWARE.
  */
 
-package com.thomaskint.minidao.utils;
+package com.thomaskint.minidao.annotation
 
-import static com.thomaskint.minidao.utils.MDStringUtils.EMPTY;
-
-public @interface MDIncomingFeature {
-
-	String featureName() default EMPTY;
-
-	String description() default EMPTY;
-}
+/**
+ * @author Thomas Kint
+ */
+@Target(AnnotationTarget.FIELD)
+@kotlin.annotation.Retention(AnnotationRetention.RUNTIME)
+annotation class MDInheritLink

@@ -96,14 +96,16 @@ public class MDConnection {
 
 	public static void close() throws MDException {
 		try {
-			if (instance.statement != null && !instance.statement.isClosed()) {
-				if (instance.statement.getResultSet() != null && !instance.statement.getResultSet().isClosed()) {
-					instance.statement.getResultSet().close();
+			if (instance != null) {
+				if (instance.statement != null && !instance.statement.isClosed()) {
+					if (instance.statement.getResultSet() != null && !instance.statement.getResultSet().isClosed()) {
+						instance.statement.getResultSet().close();
+					}
+					instance.statement.close();
 				}
-				instance.statement.close();
-			}
-			if (instance.connection != null && !instance.connection.isClosed()) {
-				instance.connection.close();
+				if (instance.connection != null && !instance.connection.isClosed()) {
+					instance.connection.close();
+				}
 			}
 		} catch (SQLException e) {
 			throw new MDException(e);

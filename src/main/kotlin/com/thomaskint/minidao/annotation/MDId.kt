@@ -22,18 +22,11 @@
  * SOFTWARE.
  */
 
-package com.thomaskint.minidao.annotation;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package com.thomaskint.minidao.annotation
 
 /**
  * @author Thomas Kint
  */
-@Target(ElementType.FIELD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface MDInheritLink {
-
-}
+@Target(AnnotationTarget.FIELD)
+@kotlin.annotation.Retention(AnnotationRetention.RUNTIME)
+annotation class MDId
