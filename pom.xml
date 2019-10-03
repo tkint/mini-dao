@@ -9,13 +9,13 @@
     <version>1.2.4-SNAPSHOT</version>
 
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>11</java.version>
         <git.path>gitlab.com/tkint/MiniDAO</git.path>
         <git.fullpath>${git.path}.git</git.fullpath>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
 
-        <powermock.version>1.7.4</powermock.version>
+        <powermock.version>2.0.2</powermock.version>
     </properties>
 
     <name>MiniDAO</name>
@@ -124,7 +124,7 @@
 
         <dependency>
             <groupId>org.powermock</groupId>
-            <artifactId>powermock-api-mockito</artifactId>
+            <artifactId>powermock-api-mockito2</artifactId>
             <version>${powermock.version}</version>
             <scope>test</scope>
         </dependency>
